@@ -43,6 +43,10 @@ logs/
 # Vite
 .vite/
 
+# TanStack Router
+**/routeTree.gen.ts
+frontend/src/routeTree.gen.ts
+
 # OS
 .DS_Store
 Thumbs.db

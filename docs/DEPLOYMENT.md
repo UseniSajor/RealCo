@@ -1,218 +1,363 @@
 # Deployment Guide
 
-This document outlines the deployment process for the RealCo Platform to Railway (backend) and Vercel (frontend).
+## Railway Backend Settings
 
-## Overview
+- **Root Directory**: `backend`
+- **Build Command**: `npm ci && npx prisma generate && npm run build`
+- **Start Command**: `npm run railway:start`
 
-- **Backend**: Deployed on Railway (Node.js + Fastify + Prisma + PostgreSQL)
-- **Frontend**: Deployed on Vercel (Vite + React)
+### Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `DATABASE_URL` | ✅ Yes | PostgreSQL connection string from Railway Postgres service |
+| `JWT_SECRET` | ✅ Yes | Secret key for JWT token signing |
+| `CORS_ORIGIN` | ✅ Yes | Frontend URL(s), comma-separated (e.g., `https://app.vercel.app`) |
+| `NODE_ENV` | ❌ No | Set to `production` in production |
+| `PORT` | ❌ No | Auto-set by Railway |
+
+## Railway Postgres Environment Variables
+
+- `DATABASE_URL` - Automatically provided when Postgres service is linked to backend service
+
+## Vercel Frontend Settings
+
+- **Root Directory**: `frontend`
+- **Framework Preset**: Vite
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- **Install Command**: `npm install`
+
+### Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `VITE_API_URL` | ✅ Yes | Backend URL without trailing slash (e.g., `https://backend.up.railway.app`) |
+
+## CORS Settings
+
+- Set `CORS_ORIGIN` in Railway backend to match your Vercel frontend URL
+- In production, CORS strictly validates origins - unknown origins are rejected
+- Multiple origins can be comma-separated: `https://app1.vercel.app,https://app2.vercel.app`
+
+## Troubleshooting Checklist
+
+- [ ] Backend `DATABASE_URL` is set and points to Railway Postgres
+- [ ] Backend `CORS_ORIGIN` includes exact frontend URL (no trailing slash)
+- [ ] Frontend `VITE_API_URL` matches backend URL (no trailing slash)
+- [ ] Backend health check works: `https://backend.up.railway.app/health`
+- [ ] Backend ready check works: `https://backend.up.railway.app/api/v1/ready`
+- [ ] Frontend can call backend API endpoints
+- [ ] Browser console shows no CORS errors
 
 ---
 
-## Backend Deployment (Railway)
+# ADD NODE_ENV AND OTHER CRITICAL ENVIRONMENT VARIABLES
 
-### Prerequisites
+NODE_ENV is missing from your Railway backend. Let's add it and verify all 
+required environment variables are set.
 
-- Railway account (sign up at [railway.app](https://railway.app))
-- GitHub repository connected to Railway
-
-### Setup Steps
-
-1. **Create New Project**
-   - Go to Railway dashboard
-   - Click "New Project"
-   - Select "Deploy from GitHub repo"
-   - Choose your repository
-
-2. **Configure Service**
-   - Add a new service: "Empty Service"
-   - Set the **Root Directory** to: `backend`
-   - Railway will auto-detect Node.js
-
-3. **Add PostgreSQL Database**
-   - Click "+ New" → "Database" → "Add PostgreSQL"
-   - Railway will automatically provision a PostgreSQL instance
-   - The `DATABASE_URL` environment variable will be automatically set
-
-4. **Configure Environment Variables**
-   
-   Go to the service → Variables tab and add:
-   
-   ```
-   DATABASE_URL=<auto-provided by Railway PostgreSQL service>
-   JWT_SECRET=<generate a secure random string>
-   CORS_ORIGIN=https://your-frontend-domain.vercel.app
-   PORT=<auto-set by Railway, typically don't override>
-   ```
-   
-   **Note**: Copy the `DATABASE_URL` from the PostgreSQL service's "Connect" tab and paste it into your backend service variables.
-
-5. **Configure Build Settings** (if needed)
-   
-   Railway typically auto-detects, but you can set:
-   - **Build Command**: `npm install && npm run prisma:generate && npm run build`
-   - **Start Command**: `npm start`
-   - **Root Directory**: `backend`
-
-6. **Run Prisma Migrations**
-   
-   After first deployment, run migrations:
-   - Go to service → "Deployments" → Click on latest deployment
-   - Open "Logs" or use Railway CLI:
-   
-   ```bash
-   railway run --service backend npm run prisma:migrate
-   ```
-   
-   Or connect to the service and run:
-   ```bash
-   railway connect
-   cd backend
-   npm run prisma:migrate
-   ```
-
-7. **Deploy**
-   - Railway will automatically deploy on every push to your main branch
-   - Check the "Deployments" tab for build logs and status
-   - Your backend will be available at: `https://your-service-name.up.railway.app`
-
-### Environment Variables Reference (Backend)
-
-| Variable | Required | Description | Example |
-|----------|----------|-------------|---------|
-| `DATABASE_URL` | ✅ Yes | PostgreSQL connection string | `postgresql://user:pass@host:5432/db` |
-| `JWT_SECRET` | ✅ Yes | Secret key for JWT token signing | `your-secure-random-string-here` |
-| `CORS_ORIGIN` | ❌ No | Allowed CORS origins (comma-separated) | `https://app.vercel.app` |
-| `PORT` | ❌ No | Server port (Railway sets this automatically) | `5001` |
-
-### Generating JWT_SECRET
-
-Generate a secure random string:
+═══════════════════════════════════════════════════════════════════════════════
+STEP 1: ADD NODE_ENV TO RAILWAY
+═══════════════════════════════════════════════════════════════════════════════
 ```bash
-# Using Node.js
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+cd backend
 
-# Using OpenSSL
-openssl rand -hex 32
+# Set NODE_ENV to production
+railway variables set NODE_ENV=production
+
+# Verify it was added
+railway variables | grep NODE_ENV
+
+# Should output:
+# NODE_ENV=production
 ```
 
----
+═══════════════════════════════════════════════════════════════════════════════
+STEP 2: ADD ALL REQUIRED ENVIRONMENT VARIABLES
+═══════════════════════════════════════════════════════════════════════════════
 
-## Frontend Deployment (Vercel)
-
-### Prerequisites
-
-- Vercel account (sign up at [vercel.com](https://vercel.com))
-- GitHub repository connected to Vercel
-
-### Setup Steps
-
-1. **Import Project**
-   - Go to Vercel dashboard
-   - Click "Add New" → "Project"
-   - Import your GitHub repository
-
-2. **Configure Project Settings**
-   
-   In the project configuration:
-   
-   - **Framework Preset**: Vite
-   - **Root Directory**: `frontend`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-   - **Install Command**: `npm install`
-
-3. **Set Environment Variables**
-   
-   Go to Project Settings → Environment Variables and add:
-   
-   ```
-   VITE_API_URL=https://your-backend-service.up.railway.app
-   ```
-   
-   **Important**: Replace `your-backend-service.up.railway.app` with your actual Railway backend URL.
-
-4. **Deploy**
-   - Click "Deploy"
-   - Vercel will build and deploy your frontend
-   - Your site will be available at: `https://your-project.vercel.app`
-
-5. **Update Backend CORS_ORIGIN**
-   
-   After deploying frontend, update the backend `CORS_ORIGIN` environment variable in Railway to include your Vercel domain:
-   ```
-   CORS_ORIGIN=https://your-project.vercel.app
-   ```
-
-### Environment Variables Reference (Frontend)
-
-| Variable | Required | Description | Example |
-|----------|----------|-------------|---------|
-| `VITE_API_URL` | ✅ Yes | Backend API base URL (without `/api/v1`) | `https://backend.up.railway.app` |
-
----
-
-## Post-Deployment Checklist
-
-- [ ] Backend deployed successfully on Railway
-- [ ] PostgreSQL database provisioned and connected
-- [ ] Prisma migrations run successfully
-- [ ] Backend health check works: `https://your-backend.railway.app/health`
-- [ ] Frontend deployed successfully on Vercel
-- [ ] `VITE_API_URL` set correctly in Vercel environment variables
-- [ ] `CORS_ORIGIN` in Railway backend includes frontend URL
-- [ ] Test authentication flow end-to-end
-- [ ] Verify API calls from frontend to backend work correctly
-
----
-
-## Continuous Deployment
-
-Both Railway and Vercel support automatic deployments:
-
-- **Railway**: Automatically deploys on every push to the main branch (configure in project settings)
-- **Vercel**: Automatically deploys on every push to the main branch (default behavior)
-
-To deploy from a specific branch, configure branch settings in each platform's dashboard.
-
----
-
-## Troubleshooting
-
-### Backend Issues
-
-- **Database connection errors**: Verify `DATABASE_URL` is correctly set and accessible
-- **Prisma client errors**: Ensure `npm run prisma:generate` runs during build
-- **CORS errors**: Check `CORS_ORIGIN` includes your frontend URL
-- **Port binding**: Railway sets `PORT` automatically; don't override unless necessary
-
-### Frontend Issues
-
-- **API connection errors**: Verify `VITE_API_URL` matches your Railway backend URL
-- **Build failures**: Check build logs in Vercel dashboard for TypeScript or build errors
-- **Environment variables not working**: Ensure variables are prefixed with `VITE_` for Vite apps
-
----
-
-## Railway CLI (Optional)
-
-For advanced operations, install Railway CLI:
-
+Let's add ALL the environment variables your backend needs:
 ```bash
+cd backend
+
+echo "=== SETTING ALL RAILWAY ENVIRONMENT VARIABLES ==="
+
+# 1. NODE_ENV (production mode)
+railway variables set NODE_ENV=production
+
+# 2. PORT (Railway needs this)
+railway variables set PORT=5001
+
+# 3. JWT_SECRET (secure random string for authentication)
+railway variables set JWT_SECRET=$(openssl rand -base64 32)
+
+# 4. CORS_ORIGIN (your Vercel frontend URL)
+# IMPORTANT: Get your actual Vercel URL first
+cd ../frontend
+vercel ls
+# Copy the production URL, then:
+cd ../backend
+
+# Replace with YOUR actual Vercel URL:
+railway variables set CORS_ORIGIN=https://kealee-platform.vercel.app
+
+# 5. Optional: Stripe keys (if you have them)
+# railway variables set STRIPE_SECRET_KEY=sk_live_...
+# railway variables set STRIPE_PUBLISHABLE_KEY=pk_live_...
+
+# 6. Optional: Anthropic API key (for ML features)
+# railway variables set ANTHROPIC_API_KEY=sk-ant-...
+
+echo "✅ Environment variables set"
+```
+
+═══════════════════════════════════════════════════════════════════════════════
+STEP 3: VERIFY ALL VARIABLES ARE SET
+═══════════════════════════════════════════════════════════════════════════════
+```bash
+cd backend
+
+echo "=== CURRENT RAILWAY ENVIRONMENT VARIABLES ==="
+
+railway variables
+
+# You should see:
+# ┌────────────────────┬──────────────────────────────────────────┐
+# │ Name               │ Value                                     │
+# ├────────────────────┼──────────────────────────────────────────┤
+# │ DATABASE_URL       │ postgresql://postgres:***@***            │
+# │ NODE_ENV           │ production                               │
+# │ PORT               │ 5001                                     │
+# │ JWT_SECRET         │ *** (hidden)                             │
+# │ CORS_ORIGIN        │ https://kealee-platform.vercel.app       │
+# └────────────────────┴──────────────────────────────────────────┘
+
+# Check for required variables:
+railway variables | grep -E "DATABASE_URL|NODE_ENV|PORT|JWT_SECRET|CORS_ORIGIN"
+```
+
+═══════════════════════════════════════════════════════════════════════════════
+STEP 4: REDEPLOY BACKEND WITH NEW VARIABLES
+═══════════════════════════════════════════════════════════════════════════════
+
+After setting environment variables, redeploy so they take effect:
+```bash
+cd backend
+
+echo "=== REDEPLOYING BACKEND WITH NEW ENVIRONMENT VARIABLES ==="
+
+railway up
+
+# Wait for deployment to complete (1-2 minutes)
+# You'll see:
+# ✓ Build successful
+# ✓ Deployment successful
+```
+
+═══════════════════════════════════════════════════════════════════════════════
+STEP 5: TEST BACKEND WITH NEW VARIABLES
+═══════════════════════════════════════════════════════════════════════════════
+```bash
+# Get your Railway backend URL
+railway status
+
+# Or get it directly:
+BACKEND_URL=$(railway status --json | grep "url" | cut -d'"' -f4)
+
+echo "Testing backend at: $BACKEND_URL"
+
+# Test 1: Health check
+curl -s "$BACKEND_URL/api/health"
+
+# Test 2: Check if NODE_ENV is working
+# View logs to see if "production" mode is logged
+railway logs --tail 20
+
+# Should see something like:
+# Server running in production mode
+# Database connected
+# Server started on port 5001
+
+echo "✅ Backend deployed with NODE_ENV=production"
+```
+
+═══════════════════════════════════════════════════════════════════════════════
+ALTERNATIVE: SET VARIABLES VIA RAILWAY DASHBOARD
+═══════════════════════════════════════════════════════════════════════════════
+
+If CLI doesn't work, use the Railway web dashboard:
+
+STEP-BY-STEP:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Go to https://railway.app
+2. Log in to your account
+3. Click on your backend project
+4. Click "Variables" tab (on the left sidebar)
+5. Click "+ New Variable" button
+6. Add each variable:
+
+   Variable Name: NODE_ENV
+   Value: production
+   [Add Variable]
+
+   Variable Name: PORT
+   Value: 5001
+   [Add Variable]
+
+   Variable Name: JWT_SECRET
+   Value: [paste output of: openssl rand -base64 32]
+   [Add Variable]
+
+   Variable Name: CORS_ORIGIN
+   Value: https://your-vercel-url.vercel.app
+   [Add Variable]
+
+7. Railway will auto-redeploy with new variables
+
+═══════════════════════════════════════════════════════════════════════════════
+STEP 6: VERIFY CORS_ORIGIN MATCHES YOUR VERCEL URL
+═══════════════════════════════════════════════════════════════════════════════
+
+CRITICAL: CORS_ORIGIN must EXACTLY match your Vercel frontend URL.
+```bash
+# Get your exact Vercel URL
+cd frontend
+vercel ls
+
+# You'll see output like:
+# Age    Deployment                          Status
+# 5m     kealee-platform-abc123.vercel.app   Ready (Production)
+
+# Copy the production URL (without https://)
+# Then set it on Railway:
+cd ../backend
+
+# IMPORTANT: Use YOUR actual URL, not this example
+railway variables set CORS_ORIGIN=https://kealee-platform-abc123.vercel.app
+
+# Redeploy
+railway up
+```
+
+═══════════════════════════════════════════════════════════════════════════════
+TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════════
+
+ISSUE: "railway: command not found"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```bash
+# Install Railway CLI
 npm install -g @railway/cli
-railway login
-railway link  # Link to your project
-railway up    # Deploy from current directory
+
+# Or use the dashboard method above
 ```
 
-## Vercel CLI (Optional)
-
-For local testing and deployments:
-
+ISSUE: "railway variables" shows no output
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```bash
-npm install -g vercel
-vercel login
-vercel          # Deploy preview
-vercel --prod   # Deploy to production
+# Link to your Railway project
+railway link
+
+# Select your backend project from the list
+# Then try again:
+railway variables
 ```
 
+ISSUE: Cannot generate JWT_SECRET (Windows/no openssl)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```bash
+# Option 1: Use Node.js to generate
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+
+# Option 2: Use a password generator
+# Go to: https://passwordsgenerator.net/
+# Generate a 32+ character password
+# Use that as JWT_SECRET
+
+# Option 3: Just use a long random string
+railway variables set JWT_SECRET=your-very-long-random-string-min-32-chars-abc123xyz789
+```
+
+═══════════════════════════════════════════════════════════════════════════════
+COMPLETE ENVIRONMENT VARIABLE CHECKLIST
+═══════════════════════════════════════════════════════════════════════════════
+
+REQUIRED VARIABLES (Backend - Railway):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+□ DATABASE_URL (auto-set by Railway when you add Postgres)
+□ NODE_ENV=production
+□ PORT=5001
+□ JWT_SECRET=<random-32-char-string>
+□ CORS_ORIGIN=https://your-vercel-url.vercel.app
+
+OPTIONAL VARIABLES (Backend - Railway):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+□ STRIPE_SECRET_KEY=sk_live_... (for payments)
+□ STRIPE_PUBLISHABLE_KEY=pk_live_... (for payments)
+□ ANTHROPIC_API_KEY=sk-ant-... (for ML features)
+
+REQUIRED VARIABLES (Frontend - Vercel):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+□ VITE_API_URL=https://your-railway-backend.up.railway.app
+
+OPTIONAL VARIABLES (Frontend - Vercel):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+□ VITE_STRIPE_PUBLISHABLE_KEY=pk_live_... (for payments)
+
+═══════════════════════════════════════════════════════════════════════════════
+QUICK COPY-PASTE FIX
+═══════════════════════════════════════════════════════════════════════════════
+
+Run this complete script to set everything at once:
+```bash
+cd backend
+
+# Set all required variables
+railway variables set NODE_ENV=production
+railway variables set PORT=5001
+railway variables set JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('base64'))")
+
+# Get Vercel URL and set CORS
+cd ../frontend
+VERCEL_URL=$(vercel ls --json 2>/dev/null | grep -o '"url":"[^"]*"' | head -1 | cut -d'"' -f4)
+cd ../backend
+railway variables set CORS_ORIGIN=https://$VERCEL_URL
+
+# Redeploy
+railway up
+
+echo "✅ All environment variables set and deployed"
+echo ""
+echo "Verify with: railway variables"
+```
+
+═══════════════════════════════════════════════════════════════════════════════
+AFTER SETTING VARIABLES
+═══════════════════════════════════════════════════════════════════════════════
+
+Once all variables are set and backend is redeployed:
+
+1. ✅ Check variables are set:
+```bash
+   railway variables
+```
+
+2. ✅ Check logs for successful startup:
+```bash
+   railway logs --tail 50
+```
+
+3. ✅ Test backend responds:
+```bash
+   curl https://your-backend.up.railway.app/api/health
+```
+
+4. ✅ Test CORS from frontend:
+   - Open your Vercel frontend in browser
+   - Open DevTools (F12)
+   - Try to login/register
+   - Check for CORS errors (should be none)
+
+═══════════════════════════════════════════════════════════════════════════════

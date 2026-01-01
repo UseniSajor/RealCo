@@ -1,10 +1,32 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
+import { readFileSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { requireAuth } from '../middlewares/auth.js';
 import { prisma } from '../lib/prisma.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const packageJson = JSON.parse(readFileSync(join(__dirname, '../../package.json'), 'utf-8'));
+
 export async function registerV1Routes(app: FastifyInstance) {
+  // Version endpoint - unauthenticated
+  app.get('/version', async () => {
+    return {
+      name: 'realco',
+      version: packageJson.version,
+      ...(process.env.RAILWAY_GIT_COMMIT_SHA && { sha: process.env.RAILWAY_GIT_COMMIT_SHA }),
+    };
+  });
+
+  // Ready endpoint - unauthenticated (DB health check)
+  app.get('/ready', async () => {
+    await prisma.$queryRaw`SELECT 1`;
+    return { ok: true };
+  });
+
   // Login endpoint
   app.post('/auth/login', async (req, reply) => {
     const body = z

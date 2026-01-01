@@ -1,17 +1,10 @@
-import * as React from 'react';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import React from "react";
 
-export const Route = createFileRoute('/')({
-  component: Home,
-});
-
-function Home() {
+export function IndexPage() {
   return (
-    <div>
-      <p>Welcome. Choose a module:</p>
-      <ul>
-        <li><Link to="/offerings">Offerings</Link></li>
-      </ul>
+    <div style={{ padding: 16 }}>
+      <h1>RealCo</h1>
+      <p>Welcome.</p>
     </div>
   );
 }

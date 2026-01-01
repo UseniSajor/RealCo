@@ -7,7 +7,18 @@ export interface ApiError {
   details?: unknown;
 }
 
-const API_BASE_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/v1`;
+// Read and normalize VITE_API_URL (remove trailing slash)
+const rawApiUrl = import.meta.env.VITE_API_URL;
+
+// In production, VITE_API_URL must be set
+if (import.meta.env.PROD && !rawApiUrl) {
+  throw new Error('VITE_API_URL environment variable is required in production. Please set it in your deployment configuration.');
+}
+
+// Fallback to localhost for development
+const apiUrl = rawApiUrl || 'http://localhost:5001';
+const normalizedApiUrl = apiUrl.replace(/\/+$/, '');
+const API_BASE_URL = `${normalizedApiUrl}/api/v1`;
 
 class ApiClient {
   private client: AxiosInstance;

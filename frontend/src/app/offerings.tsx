@@ -1,15 +1,10 @@
-import * as React from 'react';
-import { createFileRoute, redirect } from '@tanstack/react-router';
-import { OfferingsPage } from '../features/offerings/OfferingsPage';
-import { auth } from '../lib/auth';
+import React from "react";
 
-export const Route = createFileRoute('/offerings')({
-  beforeLoad: () => {
-    if (!auth.isAuthenticated()) {
-      throw redirect({
-        to: '/login',
-      });
-    }
-  },
-  component: () => <OfferingsPage />,
-});
+export function OfferingsPage() {
+  return (
+    <div style={{ padding: 16 }}>
+      <h1>Offerings</h1>
+      <p>Offerings list goes here.</p>
+    </div>
+  );
+}
