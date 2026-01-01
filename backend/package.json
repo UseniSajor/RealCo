@@ -11,6 +11,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
+    "db:push": "prisma db push",
+    "railway:start": "node scripts/railwayStart.mjs",
     "seed": "tsx prisma/seed.ts",
     "test": "vitest run"
   },

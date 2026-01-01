@@ -7,10 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/**
- * RealCo schema placeholder.
- * Replace with the ERD tables per the RealCo build spec.
- */
+// RealCo schema placeholder.
+// Replace with the ERD tables per the RealCo build spec.
 model Organization {
   id        String   @id @default(uuid())
   name      String

@@ -1,8 +1,8 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
-import { requireAuth } from '../middlewares/auth';
-import { prisma } from '../lib/prisma';
+import { requireAuth } from '../middlewares/auth.js';
+import { prisma } from '../lib/prisma.js';
 
 export async function registerV1Routes(app: FastifyInstance) {
   // Login endpoint
@@ -61,14 +61,26 @@ export async function registerV1Routes(app: FastifyInstance) {
     });
   }
 
+  // Debug config endpoint - only available in development
+  if (process.env.NODE_ENV === 'development') {
+    app.get('/debug/config', async () => {
+      return {
+        nodeEnv: process.env.NODE_ENV || null,
+        hasDatabaseUrl: !!process.env.DATABASE_URL,
+        corsOrigin: process.env.CORS_ORIGIN || null,
+      };
+    });
+  }
+
   // Get offerings - organization scoped
   app.get('/offerings', { preHandler: [requireAuth] }, async (req) => {
-    if (!req.user) {
+    const user = (req as any).user as { userId: string; orgId: string };
+    if (!user) {
       throw new Error('User not authenticated');
     }
 
     const offerings = await prisma.offering.findMany({
-      where: { orgId: req.user.orgId },
+      where: { orgId: user.orgId },
       select: {
         id: true,
         name: true,
@@ -85,7 +97,8 @@ export async function registerV1Routes(app: FastifyInstance) {
 
   // Create offering - organization scoped
   app.post('/offerings', { preHandler: [requireAuth] }, async (req) => {
-    if (!req.user) {
+    const user = (req as any).user as { userId: string; orgId: string };
+    if (!user) {
       throw new Error('User not authenticated');
     }
 
@@ -101,7 +114,7 @@ export async function registerV1Routes(app: FastifyInstance) {
         name: body.name,
         regulationMode: body.regulation_mode,
         status: 'draft',
-        orgId: req.user.orgId,
+        orgId: user.orgId,
       },
       select: {
         id: true,
