@@ -1,4 +1,4 @@
-import { createRootRoute, createRoute } from "@tanstack/react-router";
+import { createRootRoute, createRoute, Outlet } from "@tanstack/react-router";
 import React from "react";
 
 import { IndexPage } from "./index";
@@ -6,7 +6,7 @@ import { LoginPage } from "./login";
 import { OfferingsPage } from "./offerings";
 
 const RootRoute = createRootRoute({
-  component: ({ children }) => <>{children}</>,
+  component: () => <Outlet />,
 });
 
 const IndexRoute = createRoute({

@@ -6,9 +6,10 @@ import { registerV1Routes } from './api/v1.js';
 
 // Startup guards
 if (!process.env.DATABASE_URL) {
-  console.error('DATABASE_URL missing (set Railway Variables)');
+  console.error('ERROR: DATABASE_URL missing (set Railway Variables)');
   process.exit(1);
 }
+
 
 if (process.env.NODE_ENV === 'production') {
   try {
@@ -20,6 +21,12 @@ if (process.env.NODE_ENV === 'production') {
     }
   } catch {
     // If URL parsing fails, skip the check (will fail later at connection time)
+  }
+
+  // JWT_SECRET is required in production
+  if (!process.env.JWT_SECRET) {
+    console.error('ERROR: JWT_SECRET is required in production (set Railway Variables)');
+    process.exit(1);
   }
 }
 
@@ -62,7 +69,7 @@ await app.register(jwt, {
   secret: process.env.JWT_SECRET || 'dev_only_change_me',
 });
 
-app.get('/health', async () => ({ ok: true, service: 'realco-backend', env: process.env.NODE_ENV }));
+app.get('/health', async () => ({ ok: true }));
 
 app.setErrorHandler((err, _req, reply) => {
   const status = err.statusCode ?? 500;
@@ -77,5 +84,13 @@ app.setErrorHandler((err, _req, reply) => {
 
 await app.register(registerV1Routes, { prefix: '/api/v1' });
 
-const port = Number(process.env.PORT);
+// Startup diagnostics
+console.log('PORT =', process.env.PORT);
+console.log('NODE_ENV =', process.env.NODE_ENV);
+console.log('has DATABASE_URL =', Boolean(process.env.DATABASE_URL));
+try {
+  console.log('DB_HOST', new URL(process.env.DATABASE_URL!).hostname);
+} catch {}
+
+const port = Number(process.env.PORT || 5001);
 await app.listen({ port, host: '0.0.0.0' });
