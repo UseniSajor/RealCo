@@ -1,5 +1,11 @@
 console.log("BOOT_OK");
-import 'dotenv/config';
+
+// Only load dotenv in development
+if (process.env.NODE_ENV !== "production") {
+  const dotenv = await import("dotenv");
+  dotenv.config();
+}
+
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
