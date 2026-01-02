@@ -1,8 +1,13 @@
+console.log("BOOT_OK");
 import 'dotenv/config';
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import { registerV1Routes } from './api/v1.js';
+
+// Process-level error handlers
+process.on("unhandledRejection", (e) => console.error("unhandledRejection", e));
+process.on("uncaughtException", (e) => console.error("uncaughtException", e));
 
 // Startup guards
 if (!process.env.DATABASE_URL) {
@@ -31,6 +36,13 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const app = Fastify({ logger: true });
+
+// Define routes BEFORE middleware (Railway health checks)
+app.get('/', async (_req, reply) => {
+  reply.status(200).send('ok');
+});
+
+app.get('/health', async () => ({ ok: true }));
 
 // Configure CORS
 const allowedOrigins = process.env.CORS_ORIGIN
@@ -69,20 +81,18 @@ await app.register(jwt, {
   secret: process.env.JWT_SECRET || 'dev_only_change_me',
 });
 
-app.get('/health', async () => ({ ok: true }));
+await app.register(registerV1Routes, { prefix: '/api/v1' });
 
+// Error handler middleware at the end
 app.setErrorHandler((err, _req, reply) => {
+  console.error("UNHANDLED_ERROR", err);
   const status = err.statusCode ?? 500;
   reply.status(status).send({
-    error: {
-      code: (err as any).code ?? 'INTERNAL_ERROR',
-      message: err.message ?? 'Unknown error',
-      details: (err as any).validation ?? undefined,
-    },
+    error: status === 500 ? "internal_error" : (err as any).code ?? 'INTERNAL_ERROR',
+    message: err.message ?? 'Unknown error',
+    details: (err as any).validation ?? undefined,
   });
 });
-
-await app.register(registerV1Routes, { prefix: '/api/v1' });
 
 // Startup diagnostics
 console.log('PORT =', process.env.PORT);
@@ -92,5 +102,8 @@ try {
   console.log('DB_HOST', new URL(process.env.DATABASE_URL!).hostname);
 } catch {}
 
-const port = Number(process.env.PORT || 5001);
-await app.listen({ port, host: '0.0.0.0' });
+const port = Number(process.env.PORT);
+if (!port) throw new Error("Missing PORT");
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server listening on ${port}`);
+});
