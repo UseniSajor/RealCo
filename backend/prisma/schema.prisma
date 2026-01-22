@@ -7,8 +7,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// RealCo schema placeholder.
-// Replace with the ERD tables per the RealCo build spec.
+// =============================================================================
+// EXISTING REALCO MODELS
+// =============================================================================
+
 model Organization {
   id        String   @id @default(uuid())
   name      String
@@ -16,6 +18,7 @@ model Organization {
   updatedAt DateTime @updatedAt
   users     User[]
   offerings Offering[]
+  developmentProjects DevelopmentProject[]
 }
 
 model User {
@@ -26,6 +29,15 @@ model User {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  assignedTasks    Task[]       @relation("TaskAssignee")
+  dailyLogsCreated DailyLog[]
+  rfiResponses     Rfi[]
+  inspectionLead   Inspection[]
+  bankAccounts     BankAccount[]
+  transactionsFrom Transaction[] @relation("TransactionsFrom")
+  transactionsTo   Transaction[] @relation("TransactionsTo")
+
+  @@index([orgId])
 }
 
 model Offering {
@@ -37,6 +49,796 @@ model Offering {
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   organization   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  developmentProjects DevelopmentProject[]
+  transactions   Transaction[]
+  escrowAccount  EscrowAccount?
+  distributions  Distribution[]
+  investments    Investment[]
 
   @@index([orgId])
+}
+
+// =============================================================================
+// CONSTRUCTION PROJECT MANAGEMENT (Kealee m-os-pm integration)
+// =============================================================================
+
+model DevelopmentProject {
+  id          String   @id @default(uuid())
+  name        String
+  address     String?
+  projectType String?  // NEW_CONSTRUCTION | RENOVATION | MULTI_FAMILY | COMMERCIAL
+  orgId       String
+  offeringId  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  offering     Offering?     @relation(fields: [offeringId], references: [id], onDelete: SetNull)
+  project      Project?
+
+  @@index([orgId])
+  @@index([offeringId])
+}
+
+enum ProjectPhase {
+  PRE_CONSTRUCTION
+  FOUNDATION
+  FRAMING
+  MEP_ROUGH_IN
+  ENCLOSURE
+  INTERIOR_FINISH
+  CLOSEOUT
+  COMPLETED
+}
+
+enum TaskStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum WeatherCondition {
+  CLEAR
+  CLOUDY
+  RAIN
+  SNOW
+  WIND
+  EXTREME_HEAT
+  EXTREME_COLD
+  OTHER
+}
+
+enum RfiStatus {
+  OPEN
+  PENDING_RESPONSE
+  ANSWERED
+  CLOSED
+}
+
+enum SubmittalStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  REVISED
+}
+
+enum InspectionStatus {
+  SCHEDULED
+  IN_PROGRESS
+  PASSED
+  FAILED
+  DEFERRED
+  CANCELLED
+}
+
+model Project {
+  id                    String       @id @default(uuid())
+  projectCode           String       @unique // RC-YYYY-NNN
+  developmentProjectId  String       @unique
+  developmentProject    DevelopmentProject @relation(fields: [developmentProjectId], references: [id], onDelete: Cascade)
+  phase                 ProjectPhase @default(PRE_CONSTRUCTION)
+  percentComplete       Float        @default(0)
+  plannedStartDate      DateTime?
+  plannedEndDate        DateTime?
+  actualStartDate       DateTime?
+  actualEndDate         DateTime?
+  totalBudget           Float?
+  spentToDate           Float        @default(0)
+  scheduleVarianceDays  Int?         // positive = ahead, negative = behind
+  costVariance          Float?       // actual - planned
+  deletedAt             DateTime?
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+  tasks                 Task[]
+  milestones            Milestone[]
+  dailyLogs             DailyLog[]
+  rfis                  Rfi[]
+  submittals            Submittal[]
+  inspections           Inspection[]
+  safetyIncidents       SafetyIncident[]
+
+  @@index([developmentProjectId])
+  @@index([phase])
+  @@index([deletedAt])
+  @@map("projects")
+}
+
+model Task {
+  id                  String       @id @default(uuid())
+  projectId           String
+  project             Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  parentId            String?
+  parent              Task?        @relation("TaskHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children            Task[]       @relation("TaskHierarchy")
+  title               String
+  description         String?
+  status              TaskStatus   @default(NOT_STARTED)
+  priority            TaskPriority @default(MEDIUM)
+  percentComplete     Float        @default(0)
+  plannedStartDate    DateTime?
+  plannedEndDate      DateTime?
+  actualStartDate     DateTime?
+  actualEndDate       DateTime?
+  durationDays        Int?
+  predecessorTaskIds  String[]     @default([]) // predecessor task IDs (finish-to-start)
+  lagDays             Int          @default(0)  // finish-to-start lag
+  isCriticalPath      Boolean      @default(false)
+  budgetAmount        Float?
+  actualCost          Float?
+  assignedToId        String?
+  assignedTo          User?        @relation("TaskAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  attachmentUrls      String[]     @default([]) // S3 URLs
+  deletedAt           DateTime?
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  @@index([projectId])
+  @@index([status])
+  @@index([assignedToId])
+  @@index([parentId])
+  @@index([deletedAt])
+  @@map("tasks")
+}
+
+model Milestone {
+  id              String    @id @default(uuid())
+  projectId       String
+  project         Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name            String
+  description     String?
+  targetDate      DateTime?
+  completedDate   DateTime?
+  relatedTaskIds  String[]  @default([])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([projectId])
+  @@map("milestones")
+}
+
+model DailyLog {
+  id              String           @id @default(uuid())
+  projectId       String
+  project         Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  logDate         DateTime
+  weather         WeatherCondition?
+  temperature     Float?           // Fahrenheit
+  laborCount      Json?            // { trade: string; count: number }[]
+  equipmentUsed   String[]         @default([])
+  materialsDelivered String?
+  workCompleted   String?
+  issuesDelays    String?
+  visitorLog      String?
+  safetyObservations String?
+  createdById     String?
+  createdBy       User?            @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  photoUrls       String[]         @default([]) // S3 URLs
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@unique([projectId, logDate])
+  @@index([projectId])
+  @@index([logDate])
+  @@map("daily_logs")
+}
+
+model Rfi {
+  id            String    @id @default(uuid())
+  projectId     String
+  project       Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  rfiNumber     String    // e.g. RFI-001
+  subject       String
+  description   String
+  status        RfiStatus @default(OPEN)
+  response      String?
+  respondedById String?
+  respondedBy   User?     @relation(fields: [respondedById], references: [id], onDelete: SetNull)
+  respondedAt   DateTime?
+  dueDate       DateTime?
+  attachmentUrls String[] @default([])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([projectId, rfiNumber])
+  @@index([projectId])
+  @@index([status])
+  @@map("rfis")
+}
+
+model Submittal {
+  id            String         @id @default(uuid())
+  projectId     String
+  project       Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  submittalNumber String       // e.g. SUB-001
+  name          String
+  description   String?
+  specSection   String?
+  status        SubmittalStatus @default(DRAFT)
+  submittedAt   DateTime?
+  reviewedAt    DateTime?
+  reviewerNotes String?
+  attachmentUrls String[]      @default([])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@unique([projectId, submittalNumber])
+  @@index([projectId])
+  @@index([status])
+  @@map("submittals")
+}
+
+model Inspection {
+  id            String           @id @default(uuid())
+  projectId     String
+  project       Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  inspectionType String          // e.g. Foundation, Framing, MEP
+  scheduledDate DateTime?
+  completedDate DateTime?
+  status        InspectionStatus @default(SCHEDULED)
+  result        String?          // PASSED | FAILED | DEFERRED
+  notes         String?
+  leadInspectorId String?
+  leadInspector User?            @relation(fields: [leadInspectorId], references: [id], onDelete: SetNull)
+  photoUrls     String[]         @default([])
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@index([projectId])
+  @@index([status])
+  @@map("inspections")
+}
+
+model SafetyIncident {
+  id          String   @id @default(uuid())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  incidentType String  // NEAR_MISS | FIRST_AID | RECORDABLE | LOST_TIME
+  description String
+  incidentDate DateTime
+  location    String?
+  oshaReportable Boolean @default(false)
+  correctiveActions String?
+  photoUrls   String[] @default([])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([incidentDate])
+  @@map("safety_incidents")
+}
+
+model AuditEvent {
+  id         String   @id @default(uuid())
+  action     String
+  entityType String
+  entityId   String
+  userId     String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType])
+  @@index([entityId])
+  @@index([createdAt])
+  @@map("audit_events")
+}
+
+// =============================================================================
+// FINANCE & ESCROW (Kealee integration)
+// =============================================================================
+
+enum BankAccountType {
+  CHECKING
+  SAVINGS
+}
+
+enum BankAccountStatus {
+  PENDING_VERIFICATION
+  VERIFIED
+  VERIFICATION_FAILED
+  LOCKED
+  REMOVED
+}
+
+enum VerificationMethod {
+  PLAID
+  MICRO_DEPOSIT
+  MANUAL
+}
+
+model BankAccount {
+  id                String             @id @default(uuid())
+  userId            String
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountType       BankAccountType
+  accountHolderName String
+  last4             String             // Last 4 digits (plaintext)
+  routingNumberHash String            // Hashed routing number
+  accountNumberEnc  String             // Encrypted account number
+  plaidAccessTokenEnc String?          // Encrypted Plaid access token
+  plaidItemId       String?            // Plaid item ID
+  status            BankAccountStatus  @default(PENDING_VERIFICATION)
+  verificationMethod VerificationMethod?
+  isDefault         Boolean            @default(false)
+  microDepositAmount1 Float?           // First micro-deposit amount (encrypted in practice)
+  microDepositAmount2 Float?           // Second micro-deposit amount
+  microDepositExpiresAt DateTime?      // Expires after 7 days
+  verificationAttempts Int             @default(0)
+  lockedAt         DateTime?
+  removedAt        DateTime?          // Soft delete
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  transactionsFrom Transaction[]      @relation("TransactionFromAccount")
+  transactionsTo   Transaction[]      @relation("TransactionToAccount")
+  escrowAccounts   EscrowAccount[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([removedAt])
+  @@map("bank_accounts")
+}
+
+// =============================================================================
+// TRANSACTION & PAYMENT PROCESSING
+// =============================================================================
+
+enum TransactionType {
+  DEPOSIT              // Investor deposits funds
+  WITHDRAWAL           // Investor withdraws funds
+  DISTRIBUTION         // Return of capital / profit distribution
+  CONSTRUCTION_DRAW    // Payment to contractor/vendors
+  PLATFORM_FEE         // Platform commission
+  REFERRAL_FEE         // Referral commission
+  ESCROW_DEPOSIT       // Deposit into escrow
+  ESCROW_WITHDRAWAL    // Withdrawal from escrow
+  REFUND               // Refund to investor
+  TRANSFER             // Internal transfer
+}
+
+enum TransactionStatus {
+  INITIATED           // Transaction created
+  PENDING_APPROVAL    // Awaiting admin approval (large amounts)
+  APPROVED            // Approved for processing
+  QUEUED              // Queued for processing
+  PROCESSING          // Being processed
+  PENDING_SETTLEMENT  // ACH clearing period (3-5 days)
+  SETTLED             // Funds settled in account
+  COMPLETED           // Transaction complete
+  FAILED              // Processing failed
+  CANCELLED           // Cancelled before processing
+  REVERSED            // Refunded/reversed
+  PENDING_RETRY       // Queued for retry
+}
+
+enum PaymentMethod {
+  ACH                 // ACH bank transfer (Stripe)
+  WIRE                // Wire transfer
+  CHECK               // Physical check
+  CREDIT_CARD         // Credit card (limited use)
+  INTERNAL_TRANSFER   // Internal balance transfer
+}
+
+model Transaction {
+  id                    String            @id @default(uuid())
+  type                  TransactionType
+  status                TransactionStatus @default(INITIATED)
+  paymentMethod         PaymentMethod
+  amount                Float             // Transaction amount in dollars
+  feeAmount             Float             @default(0) // Platform + payment processor fees
+  netAmount             Float             // Amount - fees
+  currency              String            @default("USD")
+  
+  // Parties involved
+  fromUserId            String?
+  fromUser              User?             @relation("TransactionsFrom", fields: [fromUserId], references: [id], onDelete: SetNull)
+  toUserId              String?
+  toUser                User?             @relation("TransactionsTo", fields: [toUserId], references: [id], onDelete: SetNull)
+  
+  // Bank accounts
+  fromBankAccountId     String?
+  fromBankAccount       BankAccount?      @relation("TransactionFromAccount", fields: [fromBankAccountId], references: [id], onDelete: SetNull)
+  toBankAccountId       String?
+  toBankAccount         BankAccount?      @relation("TransactionToAccount", fields: [toBankAccountId], references: [id], onDelete: SetNull)
+  
+  // Related entities
+  offeringId            String?
+  offering              Offering?         @relation(fields: [offeringId], references: [id], onDelete: SetNull)
+  escrowAccountId       String?
+  escrowAccount         EscrowAccount?    @relation(fields: [escrowAccountId], references: [id], onDelete: SetNull)
+  distributionId        String?
+  distribution          Distribution?     @relation(fields: [distributionId], references: [id], onDelete: SetNull)
+  
+  // Payment processor references
+  stripePaymentIntentId String?          @unique
+  stripeChargeId        String?
+  stripeTransferId      String?
+  plaidTransactionId    String?
+  idempotencyKey        String           @unique
+  
+  // Processing details
+  description           String?
+  internalMemo          String?          // Admin notes
+  failureCode           String?          // Error code if failed
+  failureMessage        String?          // Error message
+  retryCount            Int              @default(0)
+  maxRetries            Int              @default(3)
+  nextRetryAt           DateTime?
+  
+  // Dates
+  approvedAt            DateTime?
+  processedAt           DateTime?
+  settledAt             DateTime?
+  completedAt           DateTime?
+  failedAt              DateTime?
+  cancelledAt           DateTime?
+  
+  // Audit & compliance
+  ipAddress             String?
+  userAgent             String?
+  complianceCheckPassed Boolean          @default(false)
+  complianceCheckData   Json?            // OFAC, limits, etc.
+  metadata              Json?            // Flexible additional data
+  
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  
+  webhookEvents         TransactionWebhook[]
+  ledgerEntries         EscrowLedgerEntry[]
+
+  @@index([type])
+  @@index([status])
+  @@index([fromUserId])
+  @@index([toUserId])
+  @@index([offeringId])
+  @@index([escrowAccountId])
+  @@index([distributionId])
+  @@index([stripePaymentIntentId])
+  @@index([createdAt])
+  @@index([status, nextRetryAt]) // For retry processing
+  @@map("transactions")
+}
+
+model TransactionWebhook {
+  id               String      @id @default(uuid())
+  transactionId    String?
+  transaction      Transaction? @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+  provider         String      // 'stripe' | 'plaid'
+  eventId          String      @unique // Provider's event ID (idempotency)
+  eventType        String      // e.g., 'payment_intent.succeeded'
+  rawPayload       Json        // Full webhook payload
+  processed        Boolean     @default(false)
+  processedAt      DateTime?
+  processingError  String?
+  signature        String?     // Webhook signature for verification
+  createdAt        DateTime    @default(now())
+
+  @@index([transactionId])
+  @@index([provider, eventId])
+  @@index([processed, createdAt])
+  @@map("transaction_webhooks")
+}
+
+// =============================================================================
+// ESCROW ACCOUNTS & LEDGER
+// =============================================================================
+
+enum EscrowAccountStatus {
+  ACTIVE
+  FROZEN          // Frozen due to compliance issue
+  CLOSED          // Offering completed
+  LIQUIDATING     // In process of final distributions
+}
+
+model EscrowAccount {
+  id                  String              @id @default(uuid())
+  offeringId          String              @unique
+  offering            Offering            @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  
+  // Account identifiers
+  accountNumber       String              @unique // Internal escrow account number
+  bankAccountId       String?
+  bankAccount         BankAccount?        @relation(fields: [bankAccountId], references: [id], onDelete: SetNull)
+  externalAccountId   String?             // External bank account ID (Stripe Connected Account)
+  
+  // Balance tracking (in cents for precision)
+  currentBalance      Float               @default(0) // Current total balance
+  availableBalance    Float               @default(0) // Available for distribution
+  pendingBalance      Float               @default(0) // Pending transactions
+  heldBalance         Float               @default(0) // On hold (compliance, disputes)
+  totalDeposits       Float               @default(0) // Lifetime deposits
+  totalWithdrawals    Float               @default(0) // Lifetime withdrawals
+  totalDistributions  Float               @default(0) // Lifetime distributions
+  
+  // Status and metadata
+  status              EscrowAccountStatus @default(ACTIVE)
+  frozenReason        String?
+  frozenAt            DateTime?
+  closedAt            DateTime?
+  lastReconciledAt    DateTime?           // Last reconciliation date
+  lastReconciledBalance Float?            // Balance at reconciliation
+  
+  metadata            Json?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  
+  transactions        Transaction[]
+  ledgerEntries       EscrowLedgerEntry[]
+  distributions       Distribution[]
+
+  @@index([offeringId])
+  @@index([status])
+  @@index([lastReconciledAt])
+  @@map("escrow_accounts")
+}
+
+enum LedgerEntryType {
+  DEPOSIT
+  WITHDRAWAL
+  DISTRIBUTION
+  FEE
+  REFUND
+  ADJUSTMENT      // Manual adjustment
+  RECONCILIATION  // Reconciliation entry
+}
+
+model EscrowLedgerEntry {
+  id                String           @id @default(uuid())
+  escrowAccountId   String
+  escrowAccount     EscrowAccount    @relation(fields: [escrowAccountId], references: [id], onDelete: Cascade)
+  transactionId     String?
+  transaction       Transaction?     @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+  distributionId    String?
+  distribution      Distribution?    @relation(fields: [distributionId], references: [id], onDelete: SetNull)
+  
+  // Ledger entry details
+  entryType         LedgerEntryType
+  amount            Float            // Positive = credit, Negative = debit
+  balanceBefore     Float            // Balance before this entry
+  balanceAfter      Float            // Balance after this entry
+  description       String
+  reference         String?          // External reference number
+  
+  // Audit
+  createdBy         String?          // Admin user who created entry
+  metadata          Json?
+  createdAt         DateTime         @default(now())
+
+  @@index([escrowAccountId])
+  @@index([transactionId])
+  @@index([distributionId])
+  @@index([createdAt])
+  @@index([escrowAccountId, createdAt]) // Composite for account history
+  @@map("escrow_ledger_entries")
+}
+
+// =============================================================================
+// DISTRIBUTIONS (Return of Capital + Profits)
+// =============================================================================
+
+enum DistributionStatus {
+  DRAFT              // Being calculated
+  PENDING_APPROVAL   // Awaiting admin approval
+  APPROVED           // Approved for execution
+  QUEUED             // Queued for processing
+  PROCESSING         // Payments being created
+  COMPLETED          // All payments sent
+  PARTIALLY_FAILED   // Some payments failed
+  FAILED             // All payments failed
+  CANCELLED          // Cancelled before processing
+}
+
+enum DistributionType {
+  RETURN_OF_CAPITAL   // Return investor principal
+  PREFERRED_RETURN    // Preferred return payment
+  PROFIT_SPLIT        // Profit distribution
+  SPECIAL             // Special one-off distribution
+}
+
+model Distribution {
+  id                    String              @id @default(uuid())
+  offeringId            String
+  offering              Offering            @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  escrowAccountId       String
+  escrowAccount         EscrowAccount       @relation(fields: [escrowAccountId], references: [id], onDelete: Cascade)
+  
+  // Distribution details
+  distributionNumber    String              @unique // DIST-YYYY-NNNN
+  distributionType      DistributionType
+  status                DistributionStatus  @default(DRAFT)
+  totalAmount           Float               // Total distribution amount
+  platformFeeAmount     Float               @default(0)
+  netAmount             Float               // Amount after fees
+  
+  // Waterfall calculation
+  returnOfCapitalAmount Float               @default(0)
+  preferredReturnAmount Float               @default(0)
+  sponsorCatchupAmount  Float               @default(0)
+  profitSplitAmount     Float               @default(0)
+  waterfallTiers        Json?               // Detailed waterfall breakdown
+  
+  // Processing
+  description           String?
+  approvedBy            String?             // Admin user ID
+  approvedAt            DateTime?
+  executedBy            String?             // Admin user ID
+  executedAt            DateTime?
+  completedAt           DateTime?
+  cancelledAt           DateTime?
+  cancelledBy           String?
+  cancellationReason    String?
+  
+  // Audit
+  metadata              Json?
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  
+  allocations           DistributionAllocation[]
+  transactions          Transaction[]
+  ledgerEntries         EscrowLedgerEntry[]
+
+  @@index([offeringId])
+  @@index([escrowAccountId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("distributions")
+}
+
+enum AllocationStatus {
+  PENDING       // Not yet processed
+  PROCESSING    // Payment being processed
+  COMPLETED     // Payment successful
+  FAILED        // Payment failed
+  CANCELLED     // Cancelled
+}
+
+model DistributionAllocation {
+  id                String            @id @default(uuid())
+  distributionId    String
+  distribution      Distribution      @relation(fields: [distributionId], references: [id], onDelete: Cascade)
+  investorId        String            // User ID of investor
+  investmentId      String?           // Related investment record
+  
+  // Allocation amounts by type
+  returnOfCapital   Float             @default(0)
+  preferredReturn   Float             @default(0)
+  profitSplit       Float             @default(0)
+  totalAmount       Float             // Sum of above
+  feeAmount         Float             @default(0)
+  netAmount         Float             // Amount after fees
+  
+  // Processing
+  status            AllocationStatus  @default(PENDING)
+  transactionId     String?           // Created transaction ID
+  failureReason     String?
+  processedAt       DateTime?
+  
+  // Audit
+  metadata          Json?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@index([distributionId])
+  @@index([investorId])
+  @@index([status])
+  @@map("distribution_allocations")
+}
+
+// =============================================================================
+// INVESTMENT TRACKING (for Distribution Calculations)
+// =============================================================================
+
+enum InvestmentStatus {
+  PENDING           // Payment pending
+  ACTIVE            // Funded and active
+  COMPLETED         // Fully exited
+  CANCELLED         // Cancelled
+}
+
+model Investment {
+  id                    String            @id @default(uuid())
+  investorId            String            // User ID
+  offeringId            String
+  offering              Offering          @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  
+  // Investment amounts
+  investmentAmount      Float             // Original investment
+  currentBalance        Float             // Remaining capital balance
+  returnedCapital       Float             @default(0) // Capital returned to date
+  preferredReturnRate   Float             @default(0.08) // 8% annual preferred return
+  preferredReturnOwed   Float             @default(0) // Cumulative preferred return owed
+  preferredReturnPaid   Float             @default(0) // Preferred return paid to date
+  profitsPaid           Float             @default(0) // Profits paid to date
+  
+  // Status
+  status                InvestmentStatus  @default(PENDING)
+  fundedAt              DateTime?
+  completedAt           DateTime?
+  
+  // Ownership
+  ownershipPercentage   Float?            // Percentage ownership of offering
+  equityShares          Int?              // Number of shares/units
+  
+  // Audit
+  metadata              Json?
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  @@index([investorId])
+  @@index([offeringId])
+  @@index([status])
+  @@map("investments")
+}
+
+// =============================================================================
+// COMPLIANCE & LIMITS
+// =============================================================================
+
+enum LimitType {
+  DAILY_DEPOSIT
+  MONTHLY_DEPOSIT
+  ANNUAL_INVESTMENT
+  PER_TRANSACTION
+  ACCREDITED_INVESTOR
+  NON_ACCREDITED_INVESTOR
+}
+
+model TransactionLimit {
+  id          String    @id @default(uuid())
+  limitType   LimitType
+  amount      Float     // Limit amount in dollars
+  currency    String    @default("USD")
+  description String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([limitType])
+  @@map("transaction_limits")
+}
+
+model ComplianceCheck {
+  id              String   @id @default(uuid())
+  entityType      String   // 'USER' | 'TRANSACTION' | 'INVESTMENT'
+  entityId        String
+  checkType       String   // 'OFAC' | 'KYC' | 'AML' | 'LIMIT_CHECK'
+  status          String   // 'PASSED' | 'FAILED' | 'PENDING' | 'MANUAL_REVIEW'
+  details         Json?    // Check details and results
+  performedBy     String?  // System or admin user
+  failureReason   String?
+  createdAt       DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([checkType])
+  @@index([status])
+  @@index([createdAt])
+  @@map("compliance_checks")
 }

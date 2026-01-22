@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: realco
+      POSTGRES_PASSWORD: realco_dev
+      POSTGRES_DB: realco
+    ports:
+      - "5432:5432"
+    volumes:
+      - realco_pg:/var/lib/postgresql/data
+volumes:
+  realco_pg:
+
+
+
+

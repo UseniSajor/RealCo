@@ -9,7 +9,8 @@ if (process.env.NODE_ENV !== "production") {
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
-import { registerV1Routes } from './api/v1.js';
+import multipart from '@fastify/multipart';
+import { registerMinimalV1Routes } from './api/v1.minimal.js';
 
 // Process-level error handlers
 process.on("unhandledRejection", (e) => console.error("unhandledRejection", e));
@@ -87,7 +88,13 @@ await app.register(jwt, {
   secret: process.env.JWT_SECRET || 'dev_only_change_me',
 });
 
-await app.register(registerV1Routes, { prefix: '/api/v1' });
+await app.register(multipart, {
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB max file size
+  },
+});
+
+await app.register(registerMinimalV1Routes, { prefix: '/api/v1' });
 
 // Error handler middleware at the end
 app.setErrorHandler((err, _req, reply) => {

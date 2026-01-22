@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Property {
+  id          String   @id @default(cuid())
+  ssl         String   @unique
+  premiseAdd  String?
+  ward        String?
+  nbhd        String?
+  nbhdName    String?
+  propType    String?
+  useCode     String?
+  classType   String?
+  landArea    Float?
+  assessment  Float?
+  annualTax   Float?
+  saleDate    DateTime?
+  salePrice   Float?
+
+  // Owner + mailing (from ITSPE)
+  ownerName   String?
+  careOfName  String?
+  address1    String?
+  cityStZip   String?
+
+  // Occupancy / homestead signals
+  hstdCode    String?  // homestead code from DC
+  ownOccT     Int?     // owner-occupancy indicator if present
+
+  // Derived / computed
+  absenteeLikely        Boolean @default(false)
+  mortgageUnder200Score Int     @default(0) // 0-100
+  mortgageUnder200Band  String  @default("UNKNOWN") // LIKELY/MAYBE/UNLIKELY/UNKNOWN
+
+  updatedFromItspeAt DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  leads Lead[]
+}
+
+model Lead {
+  id         String   @id @default(cuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+
+  status     String   @default("NEW") // NEW, CONTACTED, WARM, OFFER_SENT, UNDER_REVIEW, DEAD, WON
+  tags       String[] @default([])
+  notes      String?
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  outreaches Outreach[]
+  deals      Deal[]
+}
+
+model Outreach {
+  id        String   @id @default(cuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id])
+
+  channel   String   // MAIL, SMS, CALL, EMAIL
+  template  String?
+  content   String?
+  outcome   String?  // NO_ANSWER, INTERESTED, NOT_INTERESTED, CALLBACK, etc.
+
+  createdAt DateTime @default(now())
+}
+
+model Deal {
+  id        String   @id @default(cuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id])
+
+  strategy  String?  // FLIP, RENTAL, BRRRR, WHOLESALE
+  stage     String   @default("UNDERWRITE")
+
+  proForma  ProForma?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProForma {
+  id        String @id @default(cuid())
+  dealId    String @unique
+  deal      Deal   @relation(fields: [dealId], references: [id])
+
+  arv       Float?
+  rehab     Float?
+  purchase  Float?
+  holdMonths Int?
+  rate      Float?
+  down      Float?
+  rent      Float?
+
+  // Outputs
+  estProfit Float?
+  estMargin Float?
+  estDSCR   Float?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

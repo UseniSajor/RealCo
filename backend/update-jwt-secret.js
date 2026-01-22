@@ -18,3 +18,7 @@ fs.writeFileSync(envPath, envContent, 'utf-8');
 
 console.log(`✅ Generated and updated JWT_SECRET: ${secret}`);
 
+
+
+
+
