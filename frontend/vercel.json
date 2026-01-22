@@ -1,72 +1,9 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "framework": "vite",
   "rewrites": [
     {
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        }
-      ]
-    },
-    {
-      "source": "/assets/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/app",
-      "destination": "/",
-      "permanent": true
-    }
-  ],
-  "env": {
-    "VITE_API_URL": "@api-url",
-    "VITE_STRIPE_PUBLISHABLE_KEY": "@stripe-publishable-key",
-    "VITE_PLAID_ENV": "@plaid-env",
-    "VITE_SENTRY_DSN": "@sentry-dsn",
-    "VITE_GA_TRACKING_ID": "@ga-tracking-id",
-    "VITE_ENABLE_CONSTRUCTION": "true",
-    "VITE_ENABLE_ESCROW": "true"
-  },
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
-  },
-  "regions": ["iad1"],
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "nodejs20.x"
-    }
-  }
+  ]
 }
+
