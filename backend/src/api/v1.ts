@@ -10,15 +10,15 @@ import { ProjectService } from '../services/project.service.js';
 import { TaskService } from '../services/task.service.js';
 import { DailyLogService } from '../services/daily-log.service.js';
 import { NotificationService } from '../services/notifications.js';
-import { BankAccountService } from '../services/bank-account.service.js';
-import { transactionRoutes } from './routes/transactions.routes.js';
+// import { BankAccountService } from '../services/bank-account.service.js';
+// import { transactionRoutes } from './routes/transactions.routes.js';
 import { ProjectNotFoundError, ValidationError, ComplianceError } from '../services/errors.js';
 
 const projectService = new ProjectService(prisma);
 const taskService = new TaskService(prisma);
 const dailyLogService = new DailyLogService(prisma);
 const notificationService = new NotificationService(prisma);
-const bankAccountService = new BankAccountService(prisma);
+// const bankAccountService = new BankAccountService(prisma);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -771,5 +771,5 @@ export async function registerV1Routes(app: FastifyInstance) {
   // ==========================================================================
   
   // Register all transaction routes
-  await transactionRoutes(app);
+  // await transactionRoutes(app);
 }

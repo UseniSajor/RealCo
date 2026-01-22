@@ -2,7 +2,7 @@ import 'dotenv/config';
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
-import { registerV1Routes } from './api/v1';
+import { registerV1Routes } from './api/v1.js';
 
 const app = Fastify({ logger: true });
 
