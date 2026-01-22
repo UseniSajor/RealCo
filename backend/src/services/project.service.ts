@@ -86,7 +86,11 @@ export class ProjectService {
   ): Promise<Project> {
     const compliance = await runComplianceChecks({ developmentProjectId, ...data });
     if (!compliance.approved) {
-      throw new ComplianceError(compliance.reason);
+      throw new ComplianceError(
+        compliance.reason || 'Compliance check failed',
+        'PROJECT_CREATION',
+        compliance.checks
+      );
     }
 
     const devProject = await this.prisma.developmentProject.findUnique({

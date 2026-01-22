@@ -603,6 +603,9 @@ export async function registerV1Routes(app: FastifyInstance) {
     }
   });
 
+  // Photo upload endpoint - requires @fastify/multipart and sharp packages
+  // Commented out for minimal build
+  /*
   app.post('/daily-logs/:id/photos', { preHandler: [requireAuth] }, async (req, reply) => {
     const user = (req as any).user as { userId: string; orgId: string };
     if (!user) throw new Error('User not authenticated');
@@ -640,6 +643,7 @@ export async function registerV1Routes(app: FastifyInstance) {
       throw e;
     }
   });
+  */
 
   app.patch('/daily-logs/:id/work-completed', { preHandler: [requireAuth] }, async (req, reply) => {
     const user = (req as any).user as { userId: string; orgId: string };
