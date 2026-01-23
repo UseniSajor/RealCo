@@ -2,6 +2,7 @@ import { MarketingNav } from "@/components/marketing/marketing-nav"
 import { MarketingFooter } from "@/components/marketing/marketing-footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Link from "next/link"
 
 export const metadata = {
   title: "Contact Us | RealCo",
@@ -35,8 +36,9 @@ export default function ContactPage() {
                   <input
                     type="text"
                     id="name"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-border focus:border-[rgb(var(--primary))] focus:outline-none"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-slate-900"
                     placeholder="Your name"
+                    required
                   />
                 </div>
 
@@ -74,7 +76,7 @@ export default function ContactPage() {
                   <textarea
                     id="message"
                     rows={4}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-border focus:border-[rgb(var(--primary))] focus:outline-none resize-none"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 focus:border-[#56CCF2] focus:outline-none resize-none bg-white dark:bg-slate-900"
                     placeholder="Tell us about your needs..."
                   />
                 </div>
@@ -87,6 +89,15 @@ export default function ContactPage() {
               <p className="text-sm text-muted-foreground text-center mt-6">
                 We'll get back to you within 24 hours.
               </p>
+
+              <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
+                <p className="text-center text-sm text-muted-foreground">
+                  Already have an account?{" "}
+                  <Link href="/login" className="text-[#56CCF2] font-semibold hover:underline">
+                    Sign in
+                  </Link>
+                </p>
+              </div>
             </CardContent>
           </Card>
         </div>

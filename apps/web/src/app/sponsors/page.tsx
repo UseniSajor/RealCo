@@ -135,9 +135,11 @@ export default function SponsorsPage() {
 
       <CTASection
         title="See your first deal setup flow in 15 minutes."
+        subtitle="Already managing deals on RealCo? Sign in to your dashboard"
         buttons={[
           { label: "Book Demo", href: "/contact" },
           { label: "Start Trial", href: "/signup" },
+          { label: "Sign In", href: "/login", variant: "outline" },
         ]}
       />
 

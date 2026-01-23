@@ -84,9 +84,11 @@ export default function InvestorsPage() {
 
       <CTASection
         title="Ready to start investing with full transparency?"
+        subtitle="Already an investor on RealCo? Access your dashboard"
         buttons={[
           { label: "Create Free Account", href: "/signup" },
           { label: "Book Demo", href: "/contact" },
+          { label: "Sign In", href: "/login", variant: "outline" },
         ]}
       />
 
