@@ -513,9 +513,11 @@ export function ConstructionDashboard() {
                 <span className="text-sm">Daily Log</span>
               </Link>
             </Button>
-            <Button variant="outline" className="h-auto flex-col gap-2 py-4">
-              <ImageIcon className="h-6 w-6" />
-              <span className="text-sm">Upload Photos</span>
+            <Button variant="outline" className="h-auto flex-col gap-2 py-4" asChild>
+              <Link href="/dashboard/sponsor/photos">
+                <ImageIcon className="h-6 w-6" />
+                <span className="text-sm">Photo Gallery</span>
+              </Link>
             </Button>
             <Button variant="outline" className="h-auto flex-col gap-2 py-4" asChild>
               <Link href="/dashboard/sponsor/rfis">
