@@ -211,13 +211,17 @@ export default function InvestorDashboardPage() {
                   <TrendingUp className="mr-2 h-4 w-4" />
                   Browse Opportunities
                 </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <FileText className="mr-2 h-4 w-4" />
-                  View Documents
+                <Button className="w-full justify-start" variant="outline" asChild>
+                  <Link href="/dashboard/investor/documents">
+                    <FileText className="mr-2 h-4 w-4" />
+                    View Documents
+                  </Link>
                 </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <Download className="mr-2 h-4 w-4" />
-                  Download K-1s
+                <Button className="w-full justify-start" variant="outline" asChild>
+                  <Link href="/dashboard/investor/documents">
+                    <Download className="mr-2 h-4 w-4" />
+                    Download K-1s
+                  </Link>
                 </Button>
                 <Button className="w-full justify-start" variant="outline">
                   <DollarSign className="mr-2 h-4 w-4" />
