@@ -203,9 +203,11 @@ export default function ProviderDashboardPage() {
                 <CardDescription>Provider tools</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full justify-start" variant="outline">
-                  <Upload className="mr-2 h-4 w-4" />
-                  Submit Invoice
+                <Button className="w-full justify-start" variant="outline" asChild>
+                  <Link href="/dashboard/provider/submit-invoice">
+                    <Upload className="mr-2 h-4 w-4" />
+                    Submit Invoice
+                  </Link>
                 </Button>
                 <Button className="w-full justify-start" variant="outline">
                   <FileText className="mr-2 h-4 w-4" />

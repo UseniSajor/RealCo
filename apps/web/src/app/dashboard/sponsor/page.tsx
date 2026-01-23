@@ -221,9 +221,11 @@ export default function SponsorDashboardPage() {
                   <FileText className="mr-2 h-4 w-4" />
                   Upload Documents
                 </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <DollarSign className="mr-2 h-4 w-4" />
-                  Request Draw
+                <Button className="w-full justify-start" variant="outline" asChild>
+                  <Link href="/dashboard/sponsor/draw-request">
+                    <DollarSign className="mr-2 h-4 w-4" />
+                    Request Draw
+                  </Link>
                 </Button>
                 <Button className="w-full justify-start" variant="outline">
                   <TrendingUp className="mr-2 h-4 w-4" />
