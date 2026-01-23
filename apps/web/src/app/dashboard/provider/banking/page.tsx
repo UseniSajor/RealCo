@@ -3,7 +3,7 @@
 import { MarketingNav } from "@/components/marketing/marketing-nav"
 import { MarketingFooter } from "@/components/marketing/marketing-footer"
 import { BankAccountManager } from "@/components/finance/BankAccountManager"
-import Link from="next/link"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 
