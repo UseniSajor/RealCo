@@ -4,6 +4,11 @@ import { IndexPage } from "./index";
 import { LoginPage } from "./login";
 import { OfferingsPage } from "./offerings";
 
+// Import the route exports from file-based routes
+import { Route as SponsorsRoute } from "./sponsors";
+import { Route as InvestorsRoute } from "./investors";
+import { Route as ProvidersRoute } from "./providers";
+
 const IndexRoute = createRoute({
   getParentRoute: () => RootRoute,
   path: "/",
@@ -22,4 +27,11 @@ const OfferingsRoute = createRoute({
   component: OfferingsPage,
 });
 
-export const routeTree = RootRoute.addChildren([IndexRoute, LoginRoute, OfferingsRoute]);
+export const routeTree = RootRoute.addChildren([
+  IndexRoute,
+  LoginRoute,
+  OfferingsRoute,
+  SponsorsRoute,
+  InvestorsRoute,
+  ProvidersRoute,
+]);
