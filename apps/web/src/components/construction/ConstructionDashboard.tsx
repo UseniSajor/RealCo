@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -506,9 +507,11 @@ export function ConstructionDashboard() {
         <CardContent className="pt-6">
           <h3 className="font-bold text-lg mb-4">Quick Actions</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <Button variant="outline" className="h-auto flex-col gap-2 py-4">
-              <FileText className="h-6 w-6" />
-              <span className="text-sm">Daily Log</span>
+            <Button variant="outline" className="h-auto flex-col gap-2 py-4" asChild>
+              <Link href="/dashboard/sponsor/daily-logs">
+                <FileText className="h-6 w-6" />
+                <span className="text-sm">Daily Log</span>
+              </Link>
             </Button>
             <Button variant="outline" className="h-auto flex-col gap-2 py-4">
               <ImageIcon className="h-6 w-6" />
