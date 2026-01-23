@@ -49,17 +49,17 @@ export default function SignupFormPage() {
             </p>
           </div>
 
-          <Card className="border-4 border-[#E07A47]">
+          <Card className="border-4 border-[#E07A47] bg-white dark:bg-white">
             <CardHeader>
-              <CardTitle>Sign Up</CardTitle>
-              <CardDescription>
+              <CardTitle className="dark:text-slate-900">Sign Up</CardTitle>
+              <CardDescription className="dark:text-slate-600">
                 Create your account to access the platform
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-bold mb-2">
+                  <label htmlFor="name" className="block text-sm font-bold mb-2 dark:text-slate-900">
                     Full Name
                   </label>
                   <input
@@ -67,14 +67,14 @@ export default function SignupFormPage() {
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white text-sm"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white text-slate-900 text-sm"
                     placeholder="John Smith"
                     required
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-bold mb-2">
+                  <label htmlFor="email" className="block text-sm font-bold mb-2 dark:text-slate-900">
                     Email
                   </label>
                   <input
@@ -82,14 +82,14 @@ export default function SignupFormPage() {
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white text-sm"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white text-slate-900 text-sm"
                     placeholder="you@company.com"
                     required
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="password" className="block text-sm font-bold mb-2">
+                  <label htmlFor="password" className="block text-sm font-bold mb-2 dark:text-slate-900">
                     Password
                   </label>
                   <input
@@ -97,14 +97,14 @@ export default function SignupFormPage() {
                     id="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white text-sm"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white text-slate-900 text-sm"
                     placeholder="••••••••"
                     required
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-bold mb-2">
+                  <label htmlFor="confirmPassword" className="block text-sm font-bold mb-2 dark:text-slate-900">
                     Confirm Password
                   </label>
                   <input
@@ -112,7 +112,7 @@ export default function SignupFormPage() {
                     id="confirmPassword"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white text-sm"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white text-slate-900 text-sm"
                     placeholder="••••••••"
                     required
                   />
