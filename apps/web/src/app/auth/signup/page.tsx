@@ -40,11 +40,11 @@ export default function SignupFormPage() {
     <>
       <MarketingNav />
       
-      <section className="py-24 min-h-screen bg-muted/30 flex items-center justify-center">
+      <section className="py-12 min-h-screen bg-muted/30 flex items-center justify-center">
         <div className="container max-w-md px-6 mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-5xl font-black mb-4">Create Account</h1>
-            <p className="text-xl text-muted-foreground">
+          <div className="text-center mb-6">
+            <h1 className="text-4xl font-black mb-2">Create Account</h1>
+            <p className="text-base text-muted-foreground">
               Join RealCo and start your free trial
             </p>
           </div>
@@ -67,7 +67,7 @@ export default function SignupFormPage() {
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white text-sm"
                     placeholder="John Smith"
                     required
                   />
@@ -82,7 +82,7 @@ export default function SignupFormPage() {
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white text-sm"
                     placeholder="you@company.com"
                     required
                   />
@@ -97,7 +97,7 @@ export default function SignupFormPage() {
                     id="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white text-sm"
                     placeholder="••••••••"
                     required
                   />
@@ -112,7 +112,7 @@ export default function SignupFormPage() {
                     id="confirmPassword"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white"
+                    className="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white text-sm"
                     placeholder="••••••••"
                     required
                   />
