@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
@@ -12,64 +12,111 @@ import {
   CreditCard,
   Trash2,
   Star,
-  AlertCircle
+  AlertCircle,
+  Loader2
 } from 'lucide-react';
-
-// Mock data - will be replaced with real API calls
-const mockBankAccounts = [
-  {
-    id: '1',
-    bankName: 'Chase Bank',
-    accountType: 'CHECKING',
-    lastFourDigits: '4567',
-    accountHolderName: 'John Investor',
-    isVerified: true,
-    isDefault: true,
-    status: 'VERIFIED',
-    verificationMethod: 'PLAID_INSTANT',
-    createdAt: '2026-01-15T10:00:00Z',
-  },
-  {
-    id: '2',
-    bankName: 'Bank of America',
-    accountType: 'SAVINGS',
-    lastFourDigits: '8901',
-    accountHolderName: 'John Investor',
-    isVerified: true,
-    isDefault: false,
-    status: 'VERIFIED',
-    verificationMethod: 'PLAID_INSTANT',
-    createdAt: '2026-01-10T14:30:00Z',
-  },
-  {
-    id: '3',
-    bankName: 'Wells Fargo',
-    accountType: 'CHECKING',
-    lastFourDigits: '2345',
-    accountHolderName: 'John Investor',
-    isVerified: false,
-    isDefault: false,
-    status: 'PENDING_VERIFICATION',
-    verificationMethod: 'MICRO_DEPOSITS',
-    createdAt: '2026-01-20T09:15:00Z',
-  },
-];
+import { bankingAPI, type BankAccount } from '@/lib/api/banking.api';
+import { usePlaidLink } from 'react-plaid-link';
 
 export default function BankingPage() {
-  const [accounts, setAccounts] = useState(mockBankAccounts);
+  const [accounts, setAccounts] = useState<BankAccount[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showVerifyModal, setShowVerifyModal] = useState<string | null>(null);
+  const [linkToken, setLinkToken] = useState<string | null>(null);
+  const [addingAccount, setAddingAccount] = useState(false);
 
-  const handleSetDefault = (accountId: string) => {
-    setAccounts(accounts.map(acc => ({
-      ...acc,
-      isDefault: acc.id === accountId,
-    })));
+  // Load bank accounts on mount
+  useEffect(() => {
+    loadBankAccounts();
+  }, []);
+
+  const loadBankAccounts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await bankingAPI.getBankAccounts();
+      setAccounts(data);
+    } catch (err) {
+      console.error('Error loading bank accounts:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load bank accounts');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleRemove = (accountId: string) => {
-    if (confirm('Are you sure you want to remove this bank account?')) {
+  // Create Plaid Link token when user wants to add account
+  const handleAddBankAccount = async () => {
+    try {
+      setAddingAccount(true);
+      const { linkToken: token } = await bankingAPI.createPlaidLinkToken();
+      setLinkToken(token);
+    } catch (err) {
+      console.error('Error creating Plaid link token:', err);
+      setError('Failed to initialize bank connection. Please try again.');
+      setAddingAccount(false);
+    }
+  };
+
+  // Plaid Link success callback
+  const onPlaidSuccess = async (publicToken: string, metadata: any) => {
+    try {
+      const newAccount = await bankingAPI.exchangePlaidToken(publicToken, metadata);
+      setAccounts([...accounts, newAccount]);
+      setLinkToken(null);
+      setShowAddModal(false);
+    } catch (err) {
+      console.error('Error exchanging Plaid token:', err);
+      setError('Failed to add bank account. Please try again.');
+    } finally {
+      setAddingAccount(false);
+    }
+  };
+
+  // Plaid Link configuration
+  const config: Parameters<typeof usePlaidLink>[0] = {
+    token: linkToken,
+    onSuccess: onPlaidSuccess,
+    onExit: () => {
+      setLinkToken(null);
+      setAddingAccount(false);
+    },
+  };
+
+  const { open: openPlaidLink, ready: plaidReady } = usePlaidLink(config);
+
+  // Open Plaid Link when token is ready
+  useEffect(() => {
+    if (linkToken && plaidReady) {
+      openPlaidLink();
+    }
+  }, [linkToken, plaidReady, openPlaidLink]);
+
+  const handleSetDefault = async (accountId: string) => {
+    try {
+      await bankingAPI.setDefaultAccount(accountId);
+      setAccounts(accounts.map(acc => ({
+        ...acc,
+        isDefault: acc.id === accountId,
+      })));
+    } catch (err) {
+      console.error('Error setting default account:', err);
+      setError('Failed to set default account. Please try again.');
+    }
+  };
+
+  const handleRemove = async (accountId: string) => {
+    if (!confirm('Are you sure you want to remove this bank account?')) {
+      return;
+    }
+
+    try {
+      await bankingAPI.removeBankAccount(accountId);
       setAccounts(accounts.filter(acc => acc.id !== accountId));
+    } catch (err) {
+      console.error('Error removing account:', err);
+      setError('Failed to remove account. Please try again.');
     }
   };
 
@@ -94,9 +141,41 @@ export default function BankingPage() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 p-6 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-[#56CCF2] mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading bank accounts...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
+        {/* Error Alert */}
+        {error && (
+          <Card className="border-4 border-red-500 bg-red-50 dark:bg-red-900/20">
+            <div className="p-4 flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="font-semibold text-red-800 dark:text-red-200">Error</p>
+                <p className="text-sm text-red-600 dark:text-red-300">{error}</p>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setError(null)}
+                className="text-red-600 hover:text-red-800"
+              >
+                Dismiss
+              </Button>
+            </div>
+          </Card>
+        )}
+
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -108,11 +187,21 @@ export default function BankingPage() {
             </p>
           </div>
           <Button
-            onClick={() => setShowAddModal(true)}
+            onClick={handleAddBankAccount}
+            disabled={addingAccount}
             className="bg-[#E07A47] hover:bg-[#E07A47]/90 text-white"
           >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Bank Account
+            {addingAccount ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Connecting...
+              </>
+            ) : (
+              <>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Bank Account
+              </>
+            )}
           </Button>
         </div>
 
