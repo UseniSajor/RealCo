@@ -33,7 +33,7 @@ body {
 }
 
 body.dark {
-  color: #f8fafc;
+  color: #ffffff !important;
 }
 
 .dark {
@@ -42,7 +42,7 @@ body.dark {
 
 .dark body {
   background-color: #0f172a;
-  color: #f8fafc;
+  color: #ffffff !important;
 }
 
 .dark h1,
@@ -51,15 +51,34 @@ body.dark {
 .dark h4,
 .dark h5,
 .dark h6 {
-  color: #f8fafc;
+  color: #ffffff !important;
 }
 
-.dark p {
-  color: #e2e8f0;
+.dark p,
+.dark span,
+.dark div,
+.dark label {
+  color: #e5e7eb !important;
 }
 
 .dark .text-muted-foreground {
-  color: #94a3b8 !important;
+  color: #d1d5db !important;
+}
+
+/* Smoke grey card backgrounds in dark mode */
+.dark .bg-white,
+.dark [class*="bg-white"] {
+  background-color: #6b7280 !important;
+}
+
+.dark .bg-card {
+  background-color: #6b7280 !important;
+}
+
+/* Ensure text is visible on smoke grey cards */
+.dark .bg-white *,
+.dark .bg-card * {
+  color: #ffffff !important;
 }
 
 h1, h2, h3, h4, h5, h6 {

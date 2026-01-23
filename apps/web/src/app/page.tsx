@@ -95,7 +95,7 @@ export default function HomePage() {
           </div>
 
           <div className="max-w-3xl mx-auto">
-            <div className="p-8 rounded-2xl bg-white dark:bg-slate-900 border-4 border-[#E07A47] shadow-xl shadow-[#E07A47]/20">
+            <div className="p-8 rounded-2xl bg-white dark:bg-[#6b7280] border-4 border-[#E07A47] shadow-xl shadow-[#E07A47]/20">
               <p className="text-lg italic mb-4">
                 "We were using 8 different tools to manage our syndications. RealCo replaced all of them and saved us 20+ hours per week on administrative work. The compliance workflows alone are worth 10x the cost."
               </p>

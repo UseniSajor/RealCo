@@ -46,7 +46,7 @@ export default function ProvidersPage() {
               { title: "Budget vs actual tracking", desc: "See project budgets and your billings in real-time" },
               { title: "Mobile-friendly field updates", desc: "Submit progress from the job site via phone or tablet" },
             ].map((feature, i) => (
-              <div key={i} className="flex items-start gap-4 p-6 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 hover:border-[#E07A47] transition-all duration-300 hover:shadow-lg">
+              <div key={i} className="flex items-start gap-4 p-6 rounded-2xl bg-white dark:bg-[#6b7280] border-4 border-[#E07A47] dark:text-white hover:border-[#E07A47] transition-all duration-300 hover:shadow-lg">
                 <CheckCircle2 className="h-6 w-6 text-[#E07A47] flex-shrink-0 mt-1" />
                 <div>
                   <p className="text-base font-bold text-foreground mb-1">{feature.title}</p>
@@ -80,7 +80,7 @@ export default function ProvidersPage() {
               { title: "Document version control", desc: "Automatic versioning and change tracking for all legal docs" },
               { title: "Secure client communications", desc: "Encrypted messaging and file sharing with sponsors" },
             ].map((feature, i) => (
-              <div key={i} className="flex items-start gap-4 p-6 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 hover:border-[#E07A47] transition-all duration-300 hover:shadow-lg">
+              <div key={i} className="flex items-start gap-4 p-6 rounded-2xl bg-white dark:bg-[#6b7280] border-4 border-[#E07A47] dark:text-white hover:border-[#E07A47] transition-all duration-300 hover:shadow-lg">
                 <CheckCircle2 className="h-6 w-6 text-[#E07A47] flex-shrink-0 mt-1" />
                 <div>
                   <p className="text-base font-bold text-foreground mb-1">{feature.title}</p>
@@ -114,7 +114,7 @@ export default function ProvidersPage() {
               { title: "Digital co-brokerage agreements", desc: "Split commissions transparently with other brokers" },
               { title: "Compliance-ready activity logs", desc: "All communications and referrals documented for FINRA/state compliance" },
             ].map((feature, i) => (
-              <div key={i} className="flex items-start gap-4 p-6 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 hover:border-[#E07A47] transition-all duration-300 hover:shadow-lg">
+              <div key={i} className="flex items-start gap-4 p-6 rounded-2xl bg-white dark:bg-[#6b7280] border-4 border-[#E07A47] dark:text-white hover:border-[#E07A47] transition-all duration-300 hover:shadow-lg">
                 <CheckCircle2 className="h-6 w-6 text-[#E07A47] flex-shrink-0 mt-1" />
                 <div>
                   <p className="text-base font-bold text-foreground mb-1">{feature.title}</p>
@@ -140,17 +140,17 @@ export default function ProvidersPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <div className="text-center p-8 rounded-2xl bg-white dark:bg-slate-900 border-4 border-slate-200 dark:border-slate-700 hover:border-[#E07A47] transition-all">
+            <div className="text-center p-8 rounded-2xl bg-white dark:bg-[#6b7280] border-4 border-[#E07A47] dark:text-white hover:border-[#E07A47] transition-all">
               <div className="text-5xl font-black text-[#56CCF2] mb-4">500+</div>
               <p className="text-lg font-bold mb-2">Active Sponsors</p>
               <p className="text-sm text-muted-foreground">Raising capital and building projects on RealCo</p>
             </div>
-            <div className="text-center p-8 rounded-2xl bg-white dark:bg-slate-900 border-4 border-slate-200 dark:border-slate-700 hover:border-[#E07A47] transition-all">
+            <div className="text-center p-8 rounded-2xl bg-white dark:bg-[#6b7280] border-4 border-[#E07A47] dark:text-white hover:border-[#E07A47] transition-all">
               <div className="text-5xl font-black text-[#E07A47] mb-4">$2.5B+</div>
               <p className="text-lg font-bold mb-2">In Projects</p>
               <p className="text-sm text-muted-foreground">Total project value managed on the platform</p>
             </div>
-            <div className="text-center p-8 rounded-2xl bg-white dark:bg-slate-900 border-4 border-slate-200 dark:border-slate-700 hover:border-[#E07A47] transition-all">
+            <div className="text-center p-8 rounded-2xl bg-white dark:bg-[#6b7280] border-4 border-[#E07A47] dark:text-white hover:border-[#E07A47] transition-all">
               <div className="text-5xl font-black text-[#56CCF2] mb-4">15 Days</div>
               <p className="text-lg font-bold mb-2">Faster Payments</p>
               <p className="text-sm text-muted-foreground">Average time saved from invoice to payment</p>
@@ -166,7 +166,7 @@ export default function ProvidersPage() {
                 { icon: TrendingUp, title: "Performance Tracking", desc: "Ratings and reviews from past projects" },
                 { icon: CheckCircle2, title: "Integrated Payments", desc: "Faster approvals and payment cycles" },
               ].map((item, i) => (
-                <div key={i} className="flex items-start gap-4 p-6 rounded-xl bg-white dark:bg-slate-900 border-2 border-[#E07A47]">
+                <div key={i} className="flex items-start gap-4 p-6 rounded-xl bg-white dark:bg-[#6b7280] border-4 border-[#E07A47] dark:text-white">
                   <div className="w-12 h-12 rounded-lg bg-[#E07A47]/10 flex items-center justify-center flex-shrink-0">
                     <item.icon className="h-6 w-6 text-[#E07A47]" />
                   </div>
@@ -178,7 +178,7 @@ export default function ProvidersPage() {
               ))}
             </div>
 
-            <div className="text-center space-y-6 p-8 rounded-2xl bg-white dark:bg-slate-900 border-2 border-[#E07A47]">
+            <div className="text-center space-y-6 p-8 rounded-2xl bg-white dark:bg-[#6b7280] border-4 border-[#E07A47] dark:text-white">
               <h3 className="text-2xl font-black">Ready to Join Our Provider Network?</h3>
               <p className="text-muted-foreground max-w-2xl mx-auto">
                 Create your provider profile and start receiving project invitations from sponsors in your area.

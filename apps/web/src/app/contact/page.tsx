@@ -76,7 +76,7 @@ export default function ContactPage() {
                   <textarea
                     id="message"
                     rows={4}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 focus:border-[#56CCF2] focus:outline-none resize-none bg-white dark:bg-slate-900"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 focus:border-[#56CCF2] focus:outline-none resize-none bg-white dark:bg-[#6b7280] dark:text-white"
                     placeholder="Tell us about your needs..."
                   />
                 </div>
