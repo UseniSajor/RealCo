@@ -80,6 +80,54 @@ export default function FundManagerDashboard() {
       </div>
 
       <div className="container max-w-7xl px-6 py-8 mx-auto">
+        {/* NEW FEATURE Banner */}
+        <div className="mb-8 bg-gradient-to-r from-[#E07A47] to-[#56CCF2] p-8 rounded-xl text-white border-4 border-white shadow-2xl">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-4xl">🎉</span>
+                <h3 className="text-3xl font-black">Finance & Trust Module Now Live!</h3>
+              </div>
+              <p className="text-white/90 text-lg mb-6 max-w-3xl">
+                Complete payment processing, escrow management, compliance tracking, and AI-powered insights are now integrated into the platform.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <h4 className="font-bold text-lg mb-2">Payment & Banking:</h4>
+                  <div className="flex items-center gap-3">
+                    <span className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-xl">✓</span>
+                    <span>Plaid instant bank verification</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-xl">✓</span>
+                    <span>ACH payment processing (Stripe)</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-xl">✓</span>
+                    <span>Automated distribution processing</span>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="font-bold text-lg mb-2">Compliance & AI:</h4>
+                  <div className="flex items-center gap-3">
+                    <span className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-xl">✓</span>
+                    <span>KYC/AML/OFAC screening</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-xl">✓</span>
+                    <span>AI-powered fraud detection</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-xl">✓</span>
+                    <span>1099/K-1 tax document generation</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="hidden lg:block text-8xl opacity-20">💰</div>
+          </div>
+        </div>
+
         {/* Portfolio Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
           <Card className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
