@@ -116,7 +116,7 @@ export default function DispositionsPage() {
     totalDispositions: dispositions.length,
     activeListed: dispositions.filter(d => d.status === 'listed').length,
     underContract: dispositions.filter(d => d.status === 'under_contract').length,
-    totalValue: dispositions.reduce((sum, d) => sum + (d.actualSalePrice || d.projectedSalePrice), 0),
+    totalValue: dispositions.reduce((sum, d) => sum + (d.actualSalePrice || d.projectedSalePrice || 0), 0),
   }
 
   const getStatusColor = (status: string) => {

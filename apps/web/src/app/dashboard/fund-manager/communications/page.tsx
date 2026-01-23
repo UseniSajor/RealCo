@@ -15,6 +15,7 @@ import {
   MessageSquare,
   Bell,
   CheckCircle2,
+  DollarSign,
 } from "lucide-react"
 
 export default function CommunicationsPage() {
@@ -90,7 +91,7 @@ export default function CommunicationsPage() {
 
   const metrics = {
     totalSent: communications.filter(c => c.status === 'sent').length,
-    avgOpenRate: communications.filter(c => c.status === 'sent' && c.type === 'email').reduce((sum, c) => sum + c.openRate, 0) / communications.filter(c => c.status === 'sent' && c.type === 'email').length,
+    avgOpenRate: communications.filter(c => c.status === 'sent' && c.type === 'email').reduce((sum, c) => sum + (c.openRate || 0), 0) / communications.filter(c => c.status === 'sent' && c.type === 'email').length,
     upcomingEvents: communications.filter(c => c.type === 'event' && c.status === 'scheduled').length,
     totalRecipients: communications.reduce((sum, c) => sum + c.recipientCount, 0),
   }
@@ -258,17 +259,17 @@ export default function CommunicationsPage() {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
                           <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Open Rate</p>
-                          <p className="text-3xl font-black text-green-600">{comm.openRate}%</p>
+                          <p className="text-3xl font-black text-green-600">{comm.openRate || 0}%</p>
                           <p className="text-xs text-muted-foreground dark:text-white/70 mt-1">
-                            {Math.round((comm.openRate / 100) * comm.recipientCount)} opened
+                            {Math.round(((comm.openRate || 0) / 100) * comm.recipientCount)} opened
                           </p>
                         </div>
 
                         <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
                           <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Click Rate</p>
-                          <p className="text-3xl font-black text-[#56CCF2]">{comm.clickRate}%</p>
+                          <p className="text-3xl font-black text-[#56CCF2]">{comm.clickRate || 0}%</p>
                           <p className="text-xs text-muted-foreground dark:text-white/70 mt-1">
-                            {Math.round((comm.clickRate / 100) * comm.recipientCount)} clicked
+                            {Math.round(((comm.clickRate || 0) / 100) * comm.recipientCount)} clicked
                           </p>
                         </div>
 
