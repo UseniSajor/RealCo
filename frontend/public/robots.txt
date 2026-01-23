@@ -1,0 +1,17 @@
+# RealCo - Real Estate Investment Platform SEO Configuration
+
+User-agent: *
+Allow: /
+Allow: /investors
+Allow: /sponsors
+Allow: /asset-managers
+Allow: /offerings
+Disallow: /login
+Disallow: /owner/
+Disallow: /health-check
+
+# Sitemap
+Sitemap: https://real-co-qa8k.vercel.app/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1
