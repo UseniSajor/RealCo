@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { DemoProvider } from "@/lib/demo/DemoProvider";
 
 export const metadata: Metadata = {
   title: "RealCo | Real Estate Investing Made Transparent",
@@ -22,7 +23,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <DemoProvider>
+            {children}
+          </DemoProvider>
         </ThemeProvider>
       </body>
     </html>
