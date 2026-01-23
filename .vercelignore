@@ -1,0 +1,22 @@
+# Ignore Kealee/ITSPE integration folder (separate project)
+realco-investor-app/
+
+# Ignore backend
+backend/
+
+# Ignore demo folder
+demo/
+
+# Ignore frontend folder (old React app)
+frontend/
+
+# Ignore shared folder
+shared/
+
+# Ignore documentation
+docs/
+*.md
+
+# Ignore git
+.git/
+.gitignore
