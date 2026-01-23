@@ -334,12 +334,12 @@ export function DistributionPlanning() {
                           </div>
                           <div className="flex justify-between text-sm">
                             <span className="text-muted-foreground">Remaining:</span>
-                            <span className="font-bold text-[#E07A47]">{formatCurrency(tier.remaining)}</span>
+                            <span className="font-bold text-[#E07A47]">{formatCurrency(tier.remaining || 0)}</span>
                           </div>
                           <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                             <div 
                               className="h-full bg-[#56CCF2]"
-                              style={{ width: `${(tier.returned / (tier.returned + tier.remaining)) * 100}%` }}
+                              style={{ width: `${((tier.returned || 0) / ((tier.returned || 0) + (tier.remaining || 0))) * 100}%` }}
                             />
                           </div>
                         </div>
@@ -347,7 +347,7 @@ export function DistributionPlanning() {
                       {tier.target && (
                         <div className="text-sm">
                           <span className="text-muted-foreground">Target: </span>
-                          <span className="font-bold">{formatCurrency(tier.target)}</span>
+                          <span className="font-bold">{formatCurrency(tier.target || 0)}</span>
                         </div>
                       )}
                     </div>

@@ -306,11 +306,6 @@ export default function SignupPage() {
                     </p>
                   </div>
 
-                  <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-300">
-                    <p className="text-xs text-center text-slate-500 dark:text-slate-600">
-                      ✨ Temporary Auth: Use any email and password
-                    </p>
-                  </div>
                 </CardContent>
               </Card>
             </div>

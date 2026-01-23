@@ -355,7 +355,7 @@ export default function DispositionsPage() {
                             📋 Disposition Planning
                           </p>
                           <p className="text-xs text-muted-foreground dark:text-white/70">
-                            Target List Date: {new Date(disposition.targetListDate).toLocaleDateString()}
+                            Target List Date: {disposition.targetListDate ? new Date(disposition.targetListDate).toLocaleDateString() : 'TBD'}
                           </p>
                         </div>
                       )}
@@ -377,7 +377,7 @@ export default function DispositionsPage() {
                             📝 Under Contract
                           </p>
                           <p className="text-xs text-muted-foreground dark:text-white/70">
-                            Expected Close: {new Date(disposition.expectedCloseDate).toLocaleDateString()}
+                            Expected Close: {disposition.expectedCloseDate ? new Date(disposition.expectedCloseDate).toLocaleDateString() : 'TBD'}
                           </p>
                         </div>
                       )}
@@ -391,7 +391,7 @@ export default function DispositionsPage() {
                             </p>
                           </div>
                           <p className="text-xs text-muted-foreground dark:text-white/70">
-                            Closed: {new Date(disposition.closeDate).toLocaleDateString()}
+                            Closed: {disposition.closeDate ? new Date(disposition.closeDate).toLocaleDateString() : 'N/A'}
                           </p>
                         </div>
                       )}

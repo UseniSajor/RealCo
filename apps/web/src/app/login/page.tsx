@@ -113,15 +113,6 @@ export default function LoginPage() {
               </div>
 
               <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-300">
-                <p className="text-xs text-center text-slate-500 dark:text-slate-600 mb-2">
-                  ✨ Temporary Auth: Use any email and password to log in
-                </p>
-                <p className="text-xs text-center text-slate-400 dark:text-slate-500">
-                  (Production auth coming soon)
-                </p>
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-300">
                 <p className="text-xs text-center text-slate-500 dark:text-slate-600 mb-3">
                   Or continue with
                 </p>

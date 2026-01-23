@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       'sponsor@realco.com': {
         email: 'sponsor@realco.com',
         role: 'sponsor',
-        tier: 'professional',
+        tier: 'pro',
         name: 'John Sponsor',
         company: 'Apex Development',
         createdAt: '2024-01-01',
@@ -61,14 +61,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       'investor@realco.com': {
         email: 'investor@realco.com',
         role: 'investor',
-        tier: 'professional',
+        tier: 'pro',
         name: 'Sarah Investor',
         createdAt: '2024-01-01',
       },
       'provider@realco.com': {
         email: 'provider@realco.com',
         role: 'provider',
-        tier: 'professional',
+        tier: 'pro',
         name: 'Mike Provider',
         company: 'BuildRight Construction',
         createdAt: '2024-01-01',
@@ -76,7 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       'fund@realco.com': {
         email: 'fund@realco.com',
         role: 'fund-manager',
-        tier: 'professional',
+        tier: 'pro',
         name: 'Emily Manager',
         company: 'Elite Asset Management',
         createdAt: '2024-01-01',

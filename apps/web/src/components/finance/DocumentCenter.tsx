@@ -302,7 +302,7 @@ export function DocumentCenter() {
                   {projectDocs.length} document{projectDocs.length !== 1 ? 's' : ''}
                 </CardDescription>
               </div>
-              <Shield className="h-6 w-6 text-green-600" title="Secure & Encrypted" />
+              <Shield className="h-6 w-6 text-green-600" />
             </div>
           </CardHeader>
           <CardContent>
