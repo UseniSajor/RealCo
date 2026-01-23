@@ -1,0 +1,391 @@
+"use client"
+
+import { useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import Link from "next/link"
+import {
+  BarChart3,
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  Calendar,
+  ArrowLeft,
+  Download,
+  FileText,
+  AlertCircle,
+} from "lucide-react"
+
+export default function FinancialsPage() {
+  const [period, setPeriod] = useState<'monthly' | 'quarterly' | 'ytd'>('monthly')
+  const [selectedProperty, setSelectedProperty] = useState<'all' | string>('all')
+
+  // Mock operating statements
+  const statements = [
+    {
+      id: 1,
+      property: "Riverside Apartments",
+      period: "December 2023",
+      periodStart: "2023-12-01",
+      periodEnd: "2023-12-31",
+      rentalIncome: 289800,
+      otherIncome: 12400,
+      vacancyLoss: 14490,
+      effectiveGrossIncome: 287710,
+      propertyManagement: 14386,
+      utilities: 18200,
+      insurance: 8400,
+      propertyTaxes: 22100,
+      repairsMaintenance: 12600,
+      marketing: 3200,
+      administrative: 4100,
+      totalOpex: 82986,
+      noi: 204724,
+      budgetedNOI: 195000,
+      noiVariance: 9724,
+      noiVariancePct: 4.99,
+    },
+    {
+      id: 2,
+      property: "Downtown Lofts",
+      period: "December 2023",
+      periodStart: "2023-12-01",
+      periodEnd: "2023-12-31",
+      rentalIncome: 198720,
+      otherIncome: 8600,
+      vacancyLoss: 9936,
+      effectiveGrossIncome: 197384,
+      propertyManagement: 9869,
+      utilities: 14500,
+      insurance: 6200,
+      propertyTaxes: 18400,
+      repairsMaintenance: 8900,
+      marketing: 2400,
+      administrative: 3200,
+      totalOpex: 63469,
+      noi: 133915,
+      budgetedNOI: 128000,
+      noiVariance: 5915,
+      noiVariancePct: 4.62,
+    },
+    {
+      id: 3,
+      property: "Parkside Townhomes",
+      period: "December 2023",
+      periodStart: "2023-12-01",
+      periodEnd: "2023-12-31",
+      rentalIncome: 134400,
+      otherIncome: 5200,
+      vacancyLoss: 6720,
+      effectiveGrossIncome: 132880,
+      propertyManagement: 6644,
+      utilities: 9800,
+      insurance: 4600,
+      propertyTaxes: 13200,
+      repairsMaintenance: 7400,
+      marketing: 1800,
+      administrative: 2400,
+      totalOpex: 45844,
+      noi: 87036,
+      budgetedNOI: 85000,
+      noiVariance: 2036,
+      noiVariancePct: 2.40,
+    },
+  ]
+
+  const filteredStatements = selectedProperty === 'all' 
+    ? statements 
+    : statements.filter(s => s.property === selectedProperty)
+
+  const totals = filteredStatements.reduce((acc, s) => ({
+    rentalIncome: acc.rentalIncome + s.rentalIncome,
+    effectiveGrossIncome: acc.effectiveGrossIncome + s.effectiveGrossIncome,
+    totalOpex: acc.totalOpex + s.totalOpex,
+    noi: acc.noi + s.noi,
+    budgetedNOI: acc.budgetedNOI + s.budgetedNOI,
+  }), { rentalIncome: 0, effectiveGrossIncome: 0, totalOpex: 0, noi: 0, budgetedNOI: 0 })
+
+  const portfolioMetrics = {
+    noiMargin: ((totals.noi / totals.effectiveGrossIncome) * 100).toFixed(1),
+    opexRatio: ((totals.totalOpex / totals.effectiveGrossIncome) * 100).toFixed(1),
+    avgVariance: (((totals.noi - totals.budgetedNOI) / totals.budgetedNOI) * 100).toFixed(1),
+  }
+
+  return (
+    <div className="min-h-screen bg-muted/30">
+      {/* Header */}
+      <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
+        <div className="container max-w-7xl px-6 py-8 mx-auto">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <Button asChild variant="outline" size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/30">
+                <Link href="/dashboard/fund-manager">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Dashboard
+                </Link>
+              </Button>
+              <div>
+                <h1 className="text-4xl font-black">Financial Performance</h1>
+                <p className="text-white/80">Operating statements and NOI tracking</p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" className="bg-white/10 hover:bg-white/20 text-white border-white/30">
+                <Download className="h-4 w-4 mr-2" />
+                Export
+              </Button>
+              <Button className="bg-[#56CCF2] hover:bg-[#56CCF2]/90">
+                <FileText className="h-4 w-4 mr-2" />
+                Import Statement
+              </Button>
+            </div>
+          </div>
+
+          {/* Portfolio Summary */}
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-white/10 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/70 text-sm mb-1">Total NOI</p>
+                  <p className="text-3xl font-black">${(totals.noi / 1000).toFixed(0)}K</p>
+                </div>
+                <DollarSign className="h-10 w-10 text-white/50" />
+              </div>
+            </div>
+            <div className="bg-white/10 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/70 text-sm mb-1">NOI Margin</p>
+                  <p className="text-3xl font-black">{portfolioMetrics.noiMargin}%</p>
+                </div>
+                <TrendingUp className="h-10 w-10 text-green-400" />
+              </div>
+            </div>
+            <div className="bg-white/10 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/70 text-sm mb-1">OpEx Ratio</p>
+                  <p className="text-3xl font-black">{portfolioMetrics.opexRatio}%</p>
+                </div>
+                <BarChart3 className="h-10 w-10 text-yellow-400" />
+              </div>
+            </div>
+            <div className="bg-white/10 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/70 text-sm mb-1">vs Budget</p>
+                  <p className={`text-3xl font-black ${parseFloat(portfolioMetrics.avgVariance) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    {parseFloat(portfolioMetrics.avgVariance) >= 0 ? '+' : ''}{portfolioMetrics.avgVariance}%
+                  </p>
+                </div>
+                {parseFloat(portfolioMetrics.avgVariance) >= 0 ? 
+                  <TrendingUp className="h-10 w-10 text-green-400" /> :
+                  <TrendingDown className="h-10 w-10 text-red-400" />
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container max-w-7xl px-6 py-8 mx-auto">
+        {/* Filters */}
+        <div className="flex items-center gap-4 mb-6">
+          <div>
+            <p className="text-sm font-semibold mb-2">Period:</p>
+            <div className="flex gap-2">
+              {(['monthly', 'quarterly', 'ytd'] as const).map((p) => (
+                <Button
+                  key={p}
+                  variant={period === p ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setPeriod(p)}
+                  className={period === p ? "bg-[#56CCF2] hover:bg-[#56CCF2]/90" : "border-2 border-[#E07A47]"}
+                >
+                  {p === 'ytd' ? 'YTD' : p.charAt(0).toUpperCase() + p.slice(1)}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-sm font-semibold mb-2">Property:</p>
+            <select
+              value={selectedProperty}
+              onChange={(e) => setSelectedProperty(e.target.value)}
+              className="px-4 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white"
+            >
+              <option value="all">All Properties</option>
+              {statements.map(s => (
+                <option key={s.property} value={s.property}>{s.property}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Operating Statements */}
+        <div className="space-y-6">
+          {filteredStatements.map((statement) => (
+            <Card key={statement.id} className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-2xl dark:text-white">{statement.property}</CardTitle>
+                    <div className="flex items-center gap-2 mt-2">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground dark:text-white/70">{statement.period}</span>
+                      <Badge className={`ml-2 ${statement.noiVariance >= 0 ? 'bg-green-500' : 'bg-red-500'} text-white`}>
+                        {statement.noiVariance >= 0 ? '+' : ''}{statement.noiVariancePct}% vs Budget
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm text-muted-foreground dark:text-white/70 mb-1">Net Operating Income</p>
+                    <p className="text-4xl font-black text-[#56CCF2]">${(statement.noi / 1000).toFixed(1)}K</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-3 gap-6">
+                  {/* Income Section */}
+                  <div>
+                    <h4 className="font-bold text-lg mb-4 dark:text-white">Income</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground dark:text-white/70">Rental Income</span>
+                        <span className="font-bold dark:text-white">${(statement.rentalIncome / 1000).toFixed(1)}K</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground dark:text-white/70">Other Income</span>
+                        <span className="font-bold dark:text-white">${(statement.otherIncome / 1000).toFixed(1)}K</span>
+                      </div>
+                      <div className="flex justify-between text-sm text-red-600">
+                        <span>Vacancy Loss</span>
+                        <span className="font-bold">-${(statement.vacancyLoss / 1000).toFixed(1)}K</span>
+                      </div>
+                      <div className="border-t-2 border-slate-200 dark:border-slate-600 pt-2 mt-2">
+                        <div className="flex justify-between font-bold">
+                          <span className="dark:text-white">Effective Gross Income</span>
+                          <span className="text-[#56CCF2]">${(statement.effectiveGrossIncome / 1000).toFixed(1)}K</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Operating Expenses */}
+                  <div>
+                    <h4 className="font-bold text-lg mb-4 dark:text-white">Operating Expenses</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground dark:text-white/70">Property Management</span>
+                        <span className="font-bold dark:text-white">${(statement.propertyManagement / 1000).toFixed(1)}K</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground dark:text-white/70">Utilities</span>
+                        <span className="font-bold dark:text-white">${(statement.utilities / 1000).toFixed(1)}K</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground dark:text-white/70">Insurance</span>
+                        <span className="font-bold dark:text-white">${(statement.insurance / 1000).toFixed(1)}K</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground dark:text-white/70">Property Taxes</span>
+                        <span className="font-bold dark:text-white">${(statement.propertyTaxes / 1000).toFixed(1)}K</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground dark:text-white/70">Repairs & Maintenance</span>
+                        <span className="font-bold dark:text-white">${(statement.repairsMaintenance / 1000).toFixed(1)}K</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground dark:text-white/70">Marketing</span>
+                        <span className="font-bold dark:text-white">${(statement.marketing / 1000).toFixed(1)}K</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground dark:text-white/70">Administrative</span>
+                        <span className="font-bold dark:text-white">${(statement.administrative / 1000).toFixed(1)}K</span>
+                      </div>
+                      <div className="border-t-2 border-slate-200 dark:border-slate-600 pt-2 mt-2">
+                        <div className="flex justify-between font-bold">
+                          <span className="dark:text-white">Total OpEx</span>
+                          <span className="text-red-600">${(statement.totalOpex / 1000).toFixed(1)}K</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Performance Analysis */}
+                  <div>
+                    <h4 className="font-bold text-lg mb-4 dark:text-white">Performance</h4>
+                    <div className="space-y-4">
+                      <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
+                        <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Net Operating Income</p>
+                        <p className="text-3xl font-black text-[#56CCF2]">${(statement.noi / 1000).toFixed(1)}K</p>
+                      </div>
+
+                      <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
+                        <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Budgeted NOI</p>
+                        <p className="text-2xl font-black dark:text-white">${(statement.budgetedNOI / 1000).toFixed(1)}K</p>
+                      </div>
+
+                      <div className={`rounded-lg p-4 ${statement.noiVariance >= 0 ? 'bg-green-50 dark:bg-green-900/20 border-2 border-green-500' : 'bg-red-50 dark:bg-red-900/20 border-2 border-red-500'}`}>
+                        <div className="flex items-center gap-2 mb-1">
+                          {statement.noiVariance >= 0 ? 
+                            <TrendingUp className="h-4 w-4 text-green-600" /> :
+                            <TrendingDown className="h-4 w-4 text-red-600" />
+                          }
+                          <p className="text-xs font-semibold text-muted-foreground dark:text-white/70">Variance</p>
+                        </div>
+                        <p className={`text-2xl font-black ${statement.noiVariance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {statement.noiVariance >= 0 ? '+' : ''}${(statement.noiVariance / 1000).toFixed(1)}K
+                        </p>
+                        <p className="text-sm font-bold mt-1 dark:text-white">
+                          {statement.noiVariancePct >= 0 ? '+' : ''}{statement.noiVariancePct}%
+                        </p>
+                      </div>
+
+                      <Button asChild className="w-full bg-[#E07A47] hover:bg-[#E07A47]/90">
+                        <Link href={`/dashboard/fund-manager/financials/${statement.id}`}>
+                          View Full Statement
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Portfolio Summary Card */}
+        {selectedProperty === 'all' && (
+          <Card className="border-4 border-[#56CCF2] dark:bg-[#6b7280] mt-6">
+            <CardHeader>
+              <CardTitle className="text-2xl dark:text-white">Portfolio Summary - {period.toUpperCase()}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-4 gap-6">
+                <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
+                  <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">Total Rental Income</p>
+                  <p className="text-3xl font-black dark:text-white">${(totals.rentalIncome / 1000).toFixed(0)}K</p>
+                </div>
+                <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
+                  <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">Effective Gross Income</p>
+                  <p className="text-3xl font-black dark:text-white">${(totals.effectiveGrossIncome / 1000).toFixed(0)}K</p>
+                </div>
+                <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
+                  <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">Total Operating Expenses</p>
+                  <p className="text-3xl font-black text-red-600">${(totals.totalOpex / 1000).toFixed(0)}K</p>
+                </div>
+                <div className="bg-[#56CCF2]/10 dark:bg-[#56CCF2]/20 rounded-lg p-4 border-2 border-[#56CCF2]">
+                  <p className="text-sm font-bold text-[#56CCF2] mb-2">Portfolio NOI</p>
+                  <p className="text-4xl font-black text-[#56CCF2]">${(totals.noi / 1000).toFixed(0)}K</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </div>
+  )
+}
