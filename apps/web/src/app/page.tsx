@@ -55,7 +55,7 @@ export default function HomePage() {
 
       <FeatureGrid
         title="One system. Five workflows. Zero tool sprawl."
-        subtitle="Replace DocuSign, Carta, Procore, QuickBooks, and your investor portal with one integrated platform"
+        subtitle="Enhance and consolidate DocuSign, Carta, Procore, QuickBooks, and your investor portal into one integrated platform"
         items={[
           "Capital raise + investor portal + digital subscriptions → Replace Carta/AngelList",
           "Compliance workflows + audit trails (Reg D oriented) → Replace manual spreadsheets",

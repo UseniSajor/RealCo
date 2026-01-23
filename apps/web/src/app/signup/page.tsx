@@ -17,8 +17,8 @@ export default function SignupPage() {
     <>
       <MarketingNav />
       
-      <section className="py-24 min-h-screen bg-muted/30">
-        <div className="container max-w-5xl px-6">
+      <section className="py-24 min-h-screen bg-muted/30 flex items-center justify-center">
+        <div className="container max-w-6xl px-6 mx-auto">
           <div className="text-center mb-16">
             <h1 className="text-5xl font-black mb-4">Choose Your Role</h1>
             <p className="text-xl text-slate-600 dark:text-slate-400">
@@ -26,7 +26,7 @@ export default function SignupPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 max-w-5xl mx-auto">
             <Card 
               className="cursor-pointer hover:shadow-2xl transition-all hover:border-[#E07A47] border-4 group"
               onClick={() => handleRoleSignup("Sponsor")}

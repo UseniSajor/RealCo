@@ -14,8 +14,8 @@ export default function ContactPage() {
     <>
       <MarketingNav />
       
-      <section className="py-24 min-h-screen">
-        <div className="container max-w-2xl px-6">
+      <section className="py-24 min-h-screen flex items-center justify-center">
+        <div className="container max-w-2xl px-6 mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-5xl font-black mb-4">Book a Demo</h1>
             <p className="text-xl text-muted-foreground">
@@ -23,7 +23,7 @@ export default function ContactPage() {
             </p>
           </div>
 
-          <Card>
+          <Card className="border-4 border-[#E07A47]">
             <CardHeader>
               <CardTitle>Contact Form</CardTitle>
             </CardHeader>

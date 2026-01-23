@@ -29,8 +29,8 @@ const roles = [
 
 export function RoleCards() {
   return (
-    <section className="py-24 bg-muted/30">
-      <div className="container max-w-6xl px-6">
+      <section className="py-24 bg-muted/30">
+      <div className="container max-w-6xl px-6 mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -42,7 +42,7 @@ export function RoleCards() {
           <p className="text-xl text-muted-foreground">Select the path that matches your needs</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {roles.map((role, index) => {
             const Icon = role.icon
             return (

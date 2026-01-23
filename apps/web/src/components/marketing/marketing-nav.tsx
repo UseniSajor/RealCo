@@ -16,7 +16,7 @@ export function MarketingNav() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur">
-      <div className="container flex h-20 max-w-7xl items-center justify-between px-6">
+      <div className="container flex h-20 max-w-7xl items-center justify-between px-6 mx-auto">
         <Link href="/" className="flex items-center space-x-2">
           <span className="text-3xl font-black gradient-text">RealCo</span>
         </Link>
@@ -48,7 +48,7 @@ export function MarketingNav() {
           </Link>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {mounted && (
             <Button
               variant="ghost"
@@ -63,11 +63,11 @@ export function MarketingNav() {
               )}
             </Button>
           )}
-          <Button variant="outline" size="sm" asChild className="hidden md:inline-flex">
-            <Link href="/contact">Book Demo</Link>
+          <Button variant="outline" size="sm" asChild className="border-2 border-[#E07A47] text-[#E07A47] hover:bg-[#E07A47] hover:text-white font-bold">
+            <Link href="/login">Log In</Link>
           </Button>
-          <Button size="sm" asChild>
-            <Link href="/signup">Start Trial</Link>
+          <Button size="sm" asChild className="bg-[#56CCF2] hover:bg-[#3BB5E0] font-bold">
+            <Link href="/signup">Sign Up</Link>
           </Button>
         </div>
       </div>

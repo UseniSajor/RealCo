@@ -22,8 +22,8 @@ export default function LoginPage() {
     <>
       <MarketingNav />
       
-      <section className="py-24 min-h-screen bg-muted/30">
-        <div className="container max-w-md px-6">
+      <section className="py-24 min-h-screen bg-muted/30 flex items-center justify-center">
+        <div className="container max-w-md px-6 mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-5xl font-black mb-4">Welcome Back</h1>
             <p className="text-xl text-muted-foreground">
@@ -31,7 +31,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <Card>
+          <Card className="border-4 border-[#E07A47]">
             <CardHeader>
               <CardTitle>Sign In</CardTitle>
               <CardDescription>
