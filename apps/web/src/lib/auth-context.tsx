@@ -6,7 +6,7 @@ import type { TierName } from './pricing-tiers'
 
 interface User {
   email: string
-  role: 'sponsor' | 'investor' | 'provider'
+  role: 'sponsor' | 'investor' | 'provider' | 'fund-manager'
   tier: TierName
   name?: string
   company?: string
@@ -16,8 +16,8 @@ interface User {
 interface AuthContextType {
   user: User | null
   isAuthenticated: boolean
-  login: (email: string, password: string, role?: 'sponsor' | 'investor' | 'provider') => Promise<void>
-  signup: (email: string, password: string, role: 'sponsor' | 'investor' | 'provider', tier?: TierName) => Promise<void>
+  login: (email: string, password: string, role?: 'sponsor' | 'investor' | 'provider' | 'fund-manager') => Promise<void>
+  signup: (email: string, password: string, role: 'sponsor' | 'investor' | 'provider' | 'fund-manager', tier?: TierName) => Promise<void>
   logout: () => void
   updateTier: (newTier: TierName) => void
 }
@@ -89,7 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signup = async (
     email: string, 
     password: string, 
-    role: 'sponsor' | 'investor' | 'provider',
+    role: 'sponsor' | 'investor' | 'provider' | 'fund-manager',
     tier: TierName = 'free'
   ) => {
     // Create new user

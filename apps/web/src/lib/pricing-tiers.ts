@@ -17,7 +17,7 @@ export interface PricingTier {
 }
 
 export interface RolePricing {
-  role: 'sponsor' | 'investor' | 'provider'
+  role: 'sponsor' | 'investor' | 'provider' | 'fund-manager'
   tiers: PricingTier[]
 }
 
@@ -271,14 +271,105 @@ export const providerPricing: RolePricing = {
   ],
 }
 
+// FUND MANAGER PRICING
+export const fundManagerPricing: RolePricing = {
+  role: 'fund-manager',
+  tiers: [
+    {
+      name: 'free',
+      displayName: 'Starter',
+      price: 0,
+      billingPeriod: 'month',
+      description: 'Perfect for small portfolios getting started',
+      features: [
+        'Up to 3 Properties',
+        '50 Units Tracked',
+        '100 Investors',
+        'Basic Asset Dashboard',
+        'Lease Management',
+        'Maintenance Tracking',
+        'Quarterly Investor Reports',
+        'Email Support',
+      ],
+      limits: {
+        properties: 3,
+        units: 50,
+        investors: 100,
+        storageGB: 5,
+      },
+      cta: 'Start Free',
+    },
+    {
+      name: 'pro',
+      displayName: 'Professional',
+      price: 999,
+      billingPeriod: 'month',
+      description: 'For growing portfolios',
+      features: [
+        'Up to 10 Properties',
+        '500 Units Tracked',
+        '500 Investors',
+        'Advanced Asset Operations',
+        'Full Lease & Tenant Management',
+        'Capital Project Tracking',
+        'Operating Statement Import',
+        'Investor Capital Accounts',
+        'Waterfall Calculations',
+        'Monthly Investor Reports',
+        'Communication Tools (Email/SMS)',
+        'PM Software Integration (Yardi/AppFolio)',
+        'Priority Support',
+      ],
+      limits: {
+        properties: 10,
+        units: 500,
+        investors: 500,
+        storageGB: 100,
+      },
+      cta: 'Start Pro Trial',
+      popular: true,
+    },
+    {
+      name: 'enterprise',
+      displayName: 'Enterprise',
+      price: 2499,
+      billingPeriod: 'month',
+      description: 'For large portfolios and institutions',
+      features: [
+        'Up to 50 Properties',
+        'Unlimited Units',
+        'Unlimited Investors',
+        'Full Platform Access',
+        'Disposition Management',
+        'Exit Analysis & Reporting',
+        'Portfolio Analytics',
+        'Custom Integrations',
+        'API Access',
+        'Dedicated Account Manager',
+        'White-Label Options',
+        'Custom Reporting',
+        '24/7 Priority Support',
+        'Onboarding & Training',
+      ],
+      limits: {
+        properties: 50,
+        units: -1,
+        investors: -1,
+        storageGB: -1,
+      },
+      cta: 'Contact Sales',
+    },
+  ],
+}
+
 // Helper functions
-export function getTierForRole(role: 'sponsor' | 'investor' | 'provider', tierName: TierName): PricingTier | undefined {
-  const pricing = role === 'sponsor' ? sponsorPricing : role === 'investor' ? investorPricing : providerPricing
+export function getTierForRole(role: 'sponsor' | 'investor' | 'provider' | 'fund-manager', tierName: TierName): PricingTier | undefined {
+  const pricing = role === 'sponsor' ? sponsorPricing : role === 'investor' ? investorPricing : role === 'provider' ? providerPricing : fundManagerPricing
   return pricing.tiers.find(t => t.name === tierName)
 }
 
 export function canAccessFeature(
-  role: 'sponsor' | 'investor' | 'provider',
+  role: 'sponsor' | 'investor' | 'provider' | 'fund-manager',
   currentTier: TierName,
   feature: string
 ): boolean {
@@ -287,7 +378,7 @@ export function canAccessFeature(
 }
 
 export function isAtLimit(
-  role: 'sponsor' | 'investor' | 'provider',
+  role: 'sponsor' | 'investor' | 'provider' | 'fund-manager',
   currentTier: TierName,
   limitKey: string,
   currentValue: number

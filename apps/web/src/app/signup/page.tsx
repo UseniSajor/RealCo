@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { PricingCard } from "@/components/pricing/PricingCard"
 import { useAuth } from "@/lib/auth-context"
-import { sponsorPricing, investorPricing, providerPricing, type TierName } from "@/lib/pricing-tiers"
+import { sponsorPricing, investorPricing, providerPricing, fundManagerPricing, type TierName } from "@/lib/pricing-tiers"
 import Link from "next/link"
 import { ArrowLeft, Check } from "lucide-react"
 
@@ -18,7 +18,7 @@ export default function SignupPage() {
   const { signup } = useAuth()
 
   const [step, setStep] = useState<'role' | 'tier' | 'account'>('role')
-  const [selectedRole, setSelectedRole] = useState<'sponsor' | 'investor' | 'provider' | null>(null)
+  const [selectedRole, setSelectedRole] = useState<'sponsor' | 'investor' | 'provider' | 'fund-manager' | null>(null)
   const [selectedTier, setSelectedTier] = useState<TierName>('free')
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -26,7 +26,7 @@ export default function SignupPage() {
 
   // Check for pre-selected role and tier from URL
   useEffect(() => {
-    const urlRole = searchParams.get('role') as 'sponsor' | 'investor' | 'provider' | null
+    const urlRole = searchParams.get('role') as 'sponsor' | 'investor' | 'provider' | 'fund-manager' | null
     const urlTier = searchParams.get('tier') as TierName | null
 
     if (urlRole) {
@@ -42,9 +42,11 @@ export default function SignupPage() {
     ? sponsorPricing
     : selectedRole === 'investor'
     ? investorPricing
-    : providerPricing
+    : selectedRole === 'provider'
+    ? providerPricing
+    : fundManagerPricing
 
-  const handleRoleSelect = (role: 'sponsor' | 'investor' | 'provider') => {
+  const handleRoleSelect = (role: 'sponsor' | 'investor' | 'provider' | 'fund-manager') => {
     setSelectedRole(role)
     setStep('tier')
   }
@@ -121,7 +123,7 @@ export default function SignupPage() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
                 {[
                   {
                     role: 'sponsor',
@@ -140,6 +142,12 @@ export default function SignupPage() {
                     title: 'Provider',
                     description: 'Submit invoices and get paid faster',
                     features: ['Invoice Submission', 'Payment Tracking', 'Lien Waivers', 'Document Management'],
+                  },
+                  {
+                    role: 'fund-manager',
+                    title: 'Fund Manager',
+                    description: 'Operate assets and manage investor relations',
+                    features: ['Asset Operations', 'Fund Accounting', 'Investor Reporting', 'Exit Management'],
                   },
                 ].map((option) => (
                   <Card
