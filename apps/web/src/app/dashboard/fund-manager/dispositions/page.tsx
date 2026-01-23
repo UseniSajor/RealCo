@@ -298,7 +298,7 @@ export default function DispositionsPage() {
                         {disposition.status === 'sold' ? 'Realized IRR' : 'Projected IRR'}
                       </p>
                       <p className={`text-3xl font-black ${disposition.status === 'sold' ? 'text-green-600' : 'text-[#E07A47]'}`}>
-                        {(disposition.realizedIRR || disposition.projectedIRR).toFixed(1)}%
+                        {(disposition.realizedIRR || disposition.projectedIRR || 0).toFixed(1)}%
                       </p>
                     </div>
 
@@ -307,7 +307,7 @@ export default function DispositionsPage() {
                         {disposition.status === 'sold' ? 'Equity Multiple' : 'Projected Multiple'}
                       </p>
                       <p className={`text-3xl font-black ${disposition.status === 'sold' ? 'text-green-600' : 'text-[#E07A47]'}`}>
-                        {(disposition.realizedEquityMultiple || disposition.projectedEquityMultiple).toFixed(2)}x
+                        {(disposition.realizedEquityMultiple || disposition.projectedEquityMultiple || 0).toFixed(2)}x
                       </p>
                     </div>
 

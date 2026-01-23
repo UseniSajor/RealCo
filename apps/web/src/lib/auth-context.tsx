@@ -44,9 +44,54 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const login = async (email: string, password: string, role?: 'sponsor' | 'investor' | 'provider') => {
+  const login = async (email: string, password: string, role?: 'sponsor' | 'investor' | 'provider' | 'fund-manager') => {
     // Temporary: Accept ANY username and password
     // In production, this would validate against a real backend
+    
+    // Demo accounts with pre-configured roles
+    const demoAccounts: Record<string, User> = {
+      'sponsor@realco.com': {
+        email: 'sponsor@realco.com',
+        role: 'sponsor',
+        tier: 'professional',
+        name: 'John Sponsor',
+        company: 'Apex Development',
+        createdAt: '2024-01-01',
+      },
+      'investor@realco.com': {
+        email: 'investor@realco.com',
+        role: 'investor',
+        tier: 'professional',
+        name: 'Sarah Investor',
+        createdAt: '2024-01-01',
+      },
+      'provider@realco.com': {
+        email: 'provider@realco.com',
+        role: 'provider',
+        tier: 'professional',
+        name: 'Mike Provider',
+        company: 'BuildRight Construction',
+        createdAt: '2024-01-01',
+      },
+      'fund@realco.com': {
+        email: 'fund@realco.com',
+        role: 'fund-manager',
+        tier: 'professional',
+        name: 'Emily Manager',
+        company: 'Elite Asset Management',
+        createdAt: '2024-01-01',
+      },
+    }
+
+    // Check demo accounts first
+    const demoUser = demoAccounts[email.toLowerCase()]
+    if (demoUser) {
+      setUser(demoUser)
+      setIsAuthenticated(true)
+      localStorage.setItem('realco_user', JSON.stringify(demoUser))
+      router.push(`/dashboard/${demoUser.role}`)
+      return
+    }
     
     // Check if user exists in localStorage
     const existingUsers = JSON.parse(localStorage.getItem('realco_users') || '[]')
@@ -78,8 +123,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsAuthenticated(true)
       localStorage.setItem('realco_user', JSON.stringify(newUser))
       
-      // Redirect to tier selection
-      router.push(`/select-tier?role=${role}`)
+      // Redirect to dashboard
+      router.push(`/dashboard/${role}`)
     } else {
       // No role specified and user doesn't exist, need role selection
       router.push('/signup')

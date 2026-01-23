@@ -1,37 +1,87 @@
 /**
  * Bank Account Service
- * Handles bank account management with Plaid integration
+ * 
+ * Handles bank account management with Plaid integration and encryption.
+ * 
+ * Features:
+ * - Add bank account (manual or Plaid)
+ * - Micro-deposit verification
+ * - Instant verification via Plaid
+ * - Encryption of sensitive data
+ * - Audit trail
  */
 
-import { PrismaClient, BankAccountType, BankAccountStatus, VerificationMethod } from '@prisma/client';
-import { encrypt, decrypt } from './encryption';
-import { plaidClient } from './plaid';
-import { AuditService } from './audit.service';
+import type { PrismaClient, BankAccount } from '@prisma/client';
+import { encrypt, decrypt, hash, getLast4, generateMicroDepositAmounts, validateRoutingNumber, validateAccountNumber } from '../lib/encryption.js';
+import { PlaidService } from './plaid.service.js';
+import { ValidationError, NotFoundError } from './errors.js';
+import { emitEvent } from './events.js';
 
-const prisma = new PrismaClient();
-const auditService = new AuditService();
-
+/**
+ * DTO for adding bank account manually
+ */
 export interface AddBankAccountDTO {
-  userId: string;
-  accountType: BankAccountType;
-  bankName?: string;
+  accountType: 'CHECKING' | 'SAVINGS';
+  accountHolderName: string;
   accountNumber: string;
   routingNumber: string;
-  accountHolderName: string;
+  bankName?: string;
 }
 
+/**
+ * DTO for linking Plaid account
+ */
 export interface LinkPlaidAccountDTO {
-  userId: string;
   publicToken: string;
-  accountId: string;
-  metadata?: any;
+  accountId?: string; // Optional - if user selected specific account
+  metadata?: Record<string, any>;
 }
 
+/**
+ * DTO for micro-deposit verification
+ */
+export interface VerifyMicroDepositsDTO {
+  amount1: number;
+  amount2: number;
+}
+
+/**
+ * Sanitized bank account response (no sensitive data)
+ */
+export interface BankAccountResponse {
+  id: string;
+  accountType: string;
+  accountHolderName: string;
+  bankName: string | null;
+  last4: string;
+  status: string;
+  verificationMethod: string | null;
+  isDefault: boolean;
+  verifiedAt: Date | null;
+  createdAt: Date;
+}
+
+/**
+ * Bank Account Service Class
+ */
 export class BankAccountService {
+  private plaidService: PlaidService;
+  
+  constructor(private prisma: PrismaClient) {
+    this.plaidService = new PlaidService();
+  }
+  // ===========================================================================
+  // BANK ACCOUNT MANAGEMENT
+  // ===========================================================================
+
   /**
-   * Add bank account manually (will require micro-deposit verification)
+   * Add bank account manually (requires micro-deposit verification)
+   * 
+   * @param userId - User ID
+   * @param data - Bank account details
+   * @returns Created bank account (sanitized)
    */
-  async addBankAccount(data: AddBankAccountDTO) {
+  async addBankAccount(userId: string, data: AddBankAccountDTO): Promise<BankAccountResponse> {
     try {
       // Encrypt sensitive data
       const encryptedAccountNumber = encrypt(data.accountNumber);

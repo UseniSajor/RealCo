@@ -11,7 +11,10 @@ import { TaskService } from '../services/task.service.js';
 import { DailyLogService } from '../services/daily-log.service.js';
 import { NotificationService } from '../services/notifications.js';
 import { BankAccountService } from '../services/bank-account.service.js';
-// import { transactionRoutes } from './routes/transactions.routes.js';
+import { transactionRoutes } from './routes/transactions.routes.js';
+import { bankingRoutes } from './routes/banking.routes.js';
+import { escrowRoutes } from './routes/escrow.routes.js';
+import { complianceRoutes } from './routes/compliance.routes.js';
 import { ProjectNotFoundError, ValidationError, ComplianceError } from '../services/errors.js';
 
 const projectService = new ProjectService(prisma);
@@ -771,9 +774,18 @@ export async function registerV1Routes(app: FastifyInstance) {
   });
 
   // ==========================================================================
-  // TRANSACTION ROUTES
+  // FINANCE & TRUST MODULE ROUTES
   // ==========================================================================
   
   // Register all transaction routes
-  // await transactionRoutes(app);
+  await transactionRoutes(app);
+  
+  // Register banking routes
+  await bankingRoutes(app);
+  
+  // Register escrow routes
+  await escrowRoutes(app);
+  
+  // Register compliance routes
+  await complianceRoutes(app);
 }
