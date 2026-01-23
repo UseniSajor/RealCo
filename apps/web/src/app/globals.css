@@ -18,7 +18,11 @@
 }
 
 * {
-  border-color: rgb(226 232 240);
+  border-color: #E07A47;
+}
+
+.dark * {
+  border-color: #E07A47;
 }
 
 body {

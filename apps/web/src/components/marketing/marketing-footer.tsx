@@ -2,7 +2,7 @@ import Link from "next/link"
 
 export function MarketingFooter() {
   return (
-    <footer className="border-t border-slate-200 bg-[#2C3E50] text-white mt-24">
+    <footer className="border-t-4 border-[#E07A47] bg-[#2C3E50] text-white mt-24 shadow-[0_-4px_20px_rgba(224,122,71,0.2)]">
       <div className="container max-w-7xl px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div>

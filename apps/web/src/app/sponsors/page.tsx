@@ -64,7 +64,7 @@ export default function SponsorsPage() {
               </ul>
             </div>
 
-            <div className="p-8 rounded-2xl bg-white dark:bg-slate-900 border-4 border-slate-200 dark:border-slate-700 hover:border-[#E07A47] transition-all duration-300">
+            <div className="p-8 rounded-2xl bg-white dark:bg-slate-900 border-4 border-[#E07A47] hover:border-[#D96835] transition-all duration-300 hover:shadow-xl hover:shadow-[#E07A47]/20">
               <h3 className="text-2xl font-bold mb-4">Compliance Workflows (Reg D oriented)</h3>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">

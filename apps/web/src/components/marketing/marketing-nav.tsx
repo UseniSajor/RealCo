@@ -15,7 +15,7 @@ export function MarketingNav() {
   }, [])
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur">
+    <nav className="sticky top-0 z-50 w-full border-b-4 border-[#E07A47] bg-white/95 dark:bg-slate-900/95 backdrop-blur shadow-lg shadow-[#E07A47]/10">
       <div className="container flex h-20 max-w-7xl items-center justify-between px-6 mx-auto">
         <Link href="/" className="flex items-center space-x-2">
           <span className="text-3xl font-black gradient-text">RealCo</span>

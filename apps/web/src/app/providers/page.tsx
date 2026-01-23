@@ -166,7 +166,7 @@ export default function ProvidersPage() {
                 { icon: TrendingUp, title: "Performance Tracking", desc: "Ratings and reviews from past projects" },
                 { icon: CheckCircle2, title: "Integrated Payments", desc: "Faster approvals and payment cycles" },
               ].map((item, i) => (
-                <div key={i} className="flex items-start gap-4 p-6 rounded-xl bg-white dark:bg-slate-900">
+                <div key={i} className="flex items-start gap-4 p-6 rounded-xl bg-white dark:bg-slate-900 border-2 border-[#E07A47]">
                   <div className="w-12 h-12 rounded-lg bg-[#E07A47]/10 flex items-center justify-center flex-shrink-0">
                     <item.icon className="h-6 w-6 text-[#E07A47]" />
                   </div>

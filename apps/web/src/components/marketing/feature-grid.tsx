@@ -35,7 +35,7 @@ export function FeatureGrid({ title, subtitle, items, columns = 2 }: FeatureGrid
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.05, duration: 0.4 }}
-              className="flex items-start gap-4 p-6 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 hover:border-[#E07A47] transition-all duration-300 hover:shadow-lg"
+              className="flex items-start gap-4 p-6 rounded-2xl bg-white dark:bg-slate-900 border-4 border-[#E07A47] hover:border-[#D96835] transition-all duration-300 hover:shadow-xl hover:shadow-[#E07A47]/20"
             >
               <CheckCircle2 className="h-6 w-6 text-[#E07A47] flex-shrink-0 mt-1" />
               <p className="text-base font-medium text-foreground leading-relaxed">{item}</p>

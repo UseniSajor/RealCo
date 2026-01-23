@@ -87,7 +87,7 @@ export default function HomePage() {
               { metric: "5,000+", label: "Investors" },
               { metric: "98%", label: "On-Time Distributions" },
             ].map((stat, i) => (
-              <div key={i} className="text-center p-8 rounded-2xl bg-white dark:bg-slate-900">
+              <div key={i} className="text-center p-8 rounded-2xl bg-white dark:bg-slate-900 border-4 border-[#E07A47] hover:border-[#D96835] transition-all duration-300">
                 <div className="text-5xl font-black gradient-text mb-2">{stat.metric}</div>
                 <div className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{stat.label}</div>
               </div>
@@ -95,7 +95,7 @@ export default function HomePage() {
           </div>
 
           <div className="max-w-3xl mx-auto">
-            <div className="p-8 rounded-2xl bg-white dark:bg-slate-900 border-2 border-[#E07A47]">
+            <div className="p-8 rounded-2xl bg-white dark:bg-slate-900 border-4 border-[#E07A47] shadow-xl shadow-[#E07A47]/20">
               <p className="text-lg italic mb-4">
                 "We were using 8 different tools to manage our syndications. RealCo replaced all of them and saved us 20+ hours per week on administrative work. The compliance workflows alone are worth 10x the cost."
               </p>
