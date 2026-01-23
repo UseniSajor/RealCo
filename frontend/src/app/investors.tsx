@@ -24,40 +24,36 @@ function InvestorsPage() {
       />
 
       <FeatureGrid
-        title="What you get as an investor"
+        title="What you get"
         items={[
-          "Deal transparency: Full access to offering documents, financial projections, and sponsor track records before you invest",
-          "Secure onboarding: Digital subscription process with identity verification and accreditation status management",
-          "Ongoing visibility: Real-time construction updates, photo documentation, and project milestone tracking throughout the investment lifecycle",
-          "Distributions & tax docs: Automated distribution processing with instant notifications and downloadable K-1s at tax time"
+          "Deal transparency",
+          "Secure onboarding",
+          "Ongoing visibility",
+          "Distributions & tax docs"
         ]}
         columns={2}
       />
 
       <ReturnsEducation
-        title="Understanding typical return targets (educational ranges)"
-        subtitle="What different asset classes typically target—for educational purposes only"
+        title="What investors typically target (educational ranges)."
         ranges={[
           {
             assetClass: "Value-Add Multifamily",
             targetIRR: "~15–20%",
             equityMultiple: "~1.6x–2.0x",
-            holdPeriod: "3–5 years",
-            description: "Renovate existing properties to increase rental income and property value"
+            holdPeriod: "3–5 yrs"
           },
           {
             assetClass: "Ground-Up Development",
             targetIRR: "~18–25%",
             equityMultiple: "~1.8x–2.5x",
-            holdPeriod: "2–4 years",
-            description: "Build new properties with higher return potential and higher risk profile"
+            holdPeriod: "2–4 yrs"
           },
           {
             assetClass: "Core / Core-Plus",
             targetIRR: "~10–15%",
             equityMultiple: "~1.4x–1.7x",
-            holdPeriod: "5–10 years",
-            description: "Invest in stabilized properties with predictable cash flows and lower risk"
+            holdPeriod: "5–10 yrs"
           }
         ]}
       />
@@ -66,44 +62,31 @@ function InvestorsPage() {
         <div className="container">
           <div className="section-header">
             <h2>How It Works</h2>
-            <p>From account creation to receiving distributions—streamlined for investors</p>
           </div>
           
           <div className="steps">
             <div className="step">
               <div className="step-number">1</div>
               <h3>Create account</h3>
-              <p>
-                Sign up in minutes. Complete your investor profile and verify your identity. 
-                Accreditation status verified if applicable.
-              </p>
+              <p>Sign up and verify identity</p>
             </div>
             <div className="step-connector"></div>
             <div className="step">
               <div className="step-number">2</div>
-              <h3>Review opportunities</h3>
-              <p>
-                Browse available offerings. Access detailed financial projections, property information, 
-                and sponsor track records. Ask questions directly through the platform.
-              </p>
+              <h3>Review</h3>
+              <p>Browse opportunities</p>
             </div>
             <div className="step-connector"></div>
             <div className="step">
               <div className="step-number">3</div>
               <h3>Subscribe + fund</h3>
-              <p>
-                Sign subscription documents digitally. Fund your investment via ACH, wire, or check. 
-                Track your subscription status in real-time.
-              </p>
+              <p>Sign docs and fund</p>
             </div>
             <div className="step-connector"></div>
             <div className="step">
               <div className="step-number">4</div>
-              <h3>Monitor & receive</h3>
-              <p>
-                Get regular project updates with photos and progress reports. Receive automated 
-                distribution notifications. Download tax documents instantly.
-              </p>
+              <h3>Monitor</h3>
+              <p>Track and receive</p>
             </div>
           </div>
         </div>

@@ -1,9 +1,9 @@
 import React from "react";
-import { MainLandingPage } from "./index-main";
+import { HomePageV2 } from "./index-v2";
 
-// Main Landing Page - Role Selection
+// Main Landing Page - Exact Prompt Specifications
 export function IndexPage() {
-  return <MainLandingPage />;
+  return <HomePageV2 />;
 }
 
 // Original landing page content (now split into investor/sponsor versions)

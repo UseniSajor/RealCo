@@ -5,7 +5,7 @@ interface DisclaimerProps {
 }
 
 export function Disclaimer({ text }: DisclaimerProps) {
-  const defaultText = "RealCo provides software and workflows for real estate syndication, compliance management, and investor relations. We do not provide legal, tax, or investment advice. All users should consult with qualified professionals regarding their specific situations. Investments in real estate involve risk, including possible loss of principal. Past performance does not guarantee future results.";
+  const defaultText = "RealCo provides software and workflows, not legal/tax/investment advice.";
 
   return (
     <section style={{

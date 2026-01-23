@@ -45,51 +45,48 @@ export function HomePageV2() {
       <FeatureGrid
         title="One system. Five workflows. Zero tool sprawl."
         items={[
-          "Capital raise + investor portal with subscription management and automated onboarding",
-          "Compliance workflows + audit trails (Reg D oriented) with immutable activity logs",
-          "Construction tracking with real-time progress monitoring and photo documentation",
-          "Escrow-style milestone releases tied to project phases and approvals",
-          "Automated reporting + distributions + tax center with K-1 generation"
+          "Capital raise + investor portal",
+          "Compliance workflows + audit trails (Reg D oriented)",
+          "Construction tracking",
+          "Escrow-style milestone releases",
+          "Automated reporting + distributions + tax center"
         ]}
-        columns={2}
+        columns={1}
       />
 
       <FeatureGrid
         title="Compliance-forward by design."
-        subtitle="Structured for private offerings and audit-ready workflows"
         items={[
-          "Structured workflows for private offerings (Reg D oriented) with guided compliance steps",
-          "Investor verification workflows with accreditation status tracking",
-          "Deadline tracking and automated reminders for regulatory filings",
-          "Immutable activity logs and audit trails for complete transparency"
+          "Structured workflows for private offerings (Reg D oriented)",
+          "Verification workflows",
+          "Deadline tracking",
+          "Immutable activity logs"
         ]}
-        columns={2}
+        columns={1}
       />
+      
+      <Disclaimer />
 
       <ReturnsEducation
-        title="What investors typically target (educational ranges)"
-        subtitle="Understanding typical return expectations across asset classes"
+        title="What investors typically target (educational ranges)."
         ranges={[
           {
             assetClass: "Value-Add Multifamily",
             targetIRR: "~15–20%",
             equityMultiple: "~1.6x–2.0x",
-            holdPeriod: "3–5 years",
-            description: "Renovate and reposition existing properties to increase NOI and value"
+            holdPeriod: "3–5 yrs"
           },
           {
             assetClass: "Ground-Up Development",
             targetIRR: "~18–25%",
             equityMultiple: "~1.8x–2.5x",
-            holdPeriod: "2–4 years",
-            description: "Build new properties from the ground up with higher risk and return potential"
+            holdPeriod: "2–4 yrs"
           },
           {
             assetClass: "Core / Core-Plus",
             targetIRR: "~10–15%",
             equityMultiple: "~1.4x–1.7x",
-            holdPeriod: "5–10 years",
-            description: "Stabilized properties with predictable cash flows and lower risk profiles"
+            holdPeriod: "5–10 yrs"
           }
         ]}
       />
@@ -102,8 +99,6 @@ export function HomePageV2() {
           { text: "Contact Sales", href: "/offerings" }
         ]}
       />
-
-      <Disclaimer />
 
       <MarketingFooter />
     </>

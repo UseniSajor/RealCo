@@ -5,7 +5,6 @@ interface ReturnRange {
   targetIRR: string;
   equityMultiple: string;
   holdPeriod: string;
-  description?: string;
 }
 
 interface ReturnsEducationProps {
@@ -28,34 +27,20 @@ export function ReturnsEducation({ title, subtitle, ranges }: ReturnsEducationPr
             <div key={index} className="benefit-card">
               <div className="benefit-icon">📊</div>
               <h3>{range.assetClass}</h3>
-              {range.description && (
-                <p style={{ marginBottom: '1rem', fontSize: '0.9rem' }}>
-                  {range.description}
-                </p>
-              )}
               <div style={{
                 background: 'var(--bg-light)',
                 padding: '1rem',
                 borderRadius: '8px',
                 marginTop: '1rem'
               }}>
-                <div style={{ marginBottom: '0.75rem' }}>
-                  <strong style={{ color: 'var(--text-primary)' }}>Target IRR:</strong>
-                  <span style={{ color: 'var(--secondary)', fontWeight: '700', marginLeft: '0.5rem' }}>
-                    {range.targetIRR}
-                  </span>
+                <div style={{ marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+                  <strong>Target IRR</strong> {range.targetIRR}
                 </div>
-                <div style={{ marginBottom: '0.75rem' }}>
-                  <strong style={{ color: 'var(--text-primary)' }}>Equity Multiple:</strong>
-                  <span style={{ color: 'var(--primary)', fontWeight: '700', marginLeft: '0.5rem' }}>
-                    {range.equityMultiple}
-                  </span>
+                <div style={{ marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+                  <strong>Equity multiple</strong> {range.equityMultiple}
                 </div>
-                <div>
-                  <strong style={{ color: 'var(--text-primary)' }}>Hold Period:</strong>
-                  <span style={{ color: 'var(--text-secondary)', fontWeight: '600', marginLeft: '0.5rem' }}>
-                    {range.holdPeriod}
-                  </span>
+                <div style={{ fontSize: '0.875rem' }}>
+                  <strong>Hold</strong> {range.holdPeriod}
                 </div>
               </div>
             </div>
@@ -78,7 +63,7 @@ export function ReturnsEducation({ title, subtitle, ranges }: ReturnsEducationPr
             margin: 0,
             fontWeight: '600'
           }}>
-            <strong>Educational Ranges Only:</strong> The figures shown represent typical target returns for these asset classes and are for educational purposes only. They are not guarantees, projections, or promises of future performance. Actual returns vary widely based on market conditions, execution, and numerous other factors. All real estate investments involve substantial risk, including possible loss of principal. Past performance of any investment does not guarantee future results. Consult with qualified financial, legal, and tax advisors before making investment decisions.
+            <strong>Required disclosure:</strong> Past performance is not a guarantee of future results. All investments involve risk, including possible loss of principal. Returns vary widely based on market conditions and execution.
           </p>
         </div>
       </div>
