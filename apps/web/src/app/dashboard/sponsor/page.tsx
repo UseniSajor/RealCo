@@ -213,6 +213,12 @@ export default function SponsorDashboardPage() {
                   <Building2 className="mr-2 h-4 w-4" />
                   Create New Deal
                 </Button>
+                <Button className="w-full justify-start" variant="outline" asChild>
+                  <Link href="/dashboard/sponsor/capital-raised">
+                    <TrendingUp className="mr-2 h-4 w-4" />
+                    Capital Raised
+                  </Link>
+                </Button>
                 <Button className="w-full justify-start" variant="outline">
                   <Users className="mr-2 h-4 w-4" />
                   Invite Investors
