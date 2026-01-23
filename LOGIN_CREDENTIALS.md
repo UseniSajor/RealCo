@@ -18,7 +18,7 @@
 ### **Admin Account**
 ```
 Email:    admin@realco.com
-Password: admin123
+Password: [Contact admin for password]
 Role:     Platform Administrator
 ```
 **Access:**
@@ -33,7 +33,7 @@ Role:     Platform Administrator
 ### **Investor Account**
 ```
 Email:    investor@realco.com
-Password: investor123
+Password: [Contact admin for password]
 Role:     Active Investor
 ```
 **Access:**
@@ -57,7 +57,7 @@ Role:     Active Investor
 ### **Demo Account**
 ```
 Email:    demo@realco.com
-Password: demo123
+Password: [Contact admin for password]
 Role:     Demo User
 ```
 **Access:**
