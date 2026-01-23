@@ -16,7 +16,10 @@ import {
   TrendingUp,
   Hammer,
   AlertTriangle,
-  CreditCard
+  CreditCard,
+  BarChart3,
+  Calculator,
+  Target
 } from "lucide-react"
 
 export default function SponsorDashboardPage() {
@@ -209,9 +212,23 @@ export default function SponsorDashboardPage() {
                 <CardDescription>Sponsor tools</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full justify-start" variant="outline">
-                  <Building2 className="mr-2 h-4 w-4" />
-                  Create New Deal
+                <Button className="w-full justify-start bg-[#56CCF2] hover:bg-[#56CCF2]/90 text-white" asChild>
+                  <Link href="/dashboard/sponsor/analytics">
+                    <BarChart3 className="mr-2 h-4 w-4" />
+                    Executive Analytics
+                  </Link>
+                </Button>
+                <Button className="w-full justify-start" variant="outline" asChild>
+                  <Link href="/dashboard/sponsor/deal-pipeline">
+                    <Target className="mr-2 h-4 w-4" />
+                    Deal Pipeline
+                  </Link>
+                </Button>
+                <Button className="w-full justify-start" variant="outline" asChild>
+                  <Link href="/dashboard/sponsor/underwriting">
+                    <Calculator className="mr-2 h-4 w-4" />
+                    Underwriting
+                  </Link>
                 </Button>
                 <Button className="w-full justify-start" variant="outline" asChild>
                   <Link href="/dashboard/sponsor/capital-raised">
@@ -225,29 +242,21 @@ export default function SponsorDashboardPage() {
                     Distributions
                   </Link>
                 </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <Users className="mr-2 h-4 w-4" />
-                  Invite Investors
-                </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <FileText className="mr-2 h-4 w-4" />
-                  Upload Documents
-                </Button>
                 <Button className="w-full justify-start" variant="outline" asChild>
                   <Link href="/dashboard/sponsor/draw-request">
                     <DollarSign className="mr-2 h-4 w-4" />
                     Request Draw
                   </Link>
                 </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <TrendingUp className="mr-2 h-4 w-4" />
-                  Send Update
-                </Button>
                 <Button className="w-full justify-start" variant="outline" asChild>
                   <Link href="/dashboard/sponsor/construction">
                     <Hammer className="mr-2 h-4 w-4" />
                     Construction Dashboard
                   </Link>
+                </Button>
+                <Button className="w-full justify-start" variant="outline">
+                  <Users className="mr-2 h-4 w-4" />
+                  Invite Investors
                 </Button>
               </CardContent>
             </Card>

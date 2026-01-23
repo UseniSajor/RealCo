@@ -472,7 +472,13 @@ export default function FundManagerDashboard() {
             <CardTitle className="text-2xl dark:text-white">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <Button asChild className="bg-green-600 hover:bg-green-700">
+                <Link href="/dashboard/fund-manager/analytics">
+                  <BarChart3 className="mr-2 h-4 w-4" />
+                  Analytics
+                </Link>
+              </Button>
               <Button asChild className="bg-[#56CCF2] hover:bg-[#56CCF2]/90">
                 <Link href="/dashboard/fund-manager/properties/new">Add Property</Link>
               </Button>
