@@ -435,7 +435,7 @@ export default function PropertySearchPage() {
                           </div>
                           <div>
                             <p className="text-xs text-muted-foreground mb-1">Days on Market</p>
-                            <p className="font-bold text-sm">{property.daysInPipeline} days</p>
+                            <p className="font-bold text-sm">{property.daysOnMarket} days</p>
                           </div>
                         </div>
 
