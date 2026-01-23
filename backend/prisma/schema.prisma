@@ -36,6 +36,9 @@ model User {
   bankAccounts     BankAccount[]
   transactionsFrom Transaction[] @relation("TransactionsFrom")
   transactionsTo   Transaction[] @relation("TransactionsTo")
+  complianceChecks ComplianceCheck[]
+  investments      Investment[]
+  taxDocuments     TaxDocument[]
 
   @@index([orgId])
 }
@@ -54,6 +57,7 @@ model Offering {
   escrowAccount  EscrowAccount?
   distributions  Distribution[]
   investments    Investment[]
+  taxDocuments   TaxDocument[]
 
   @@index([orgId])
 }
@@ -841,4 +845,499 @@ model ComplianceCheck {
   @@index([status])
   @@index([createdAt])
   @@map("compliance_checks")
+}
+
+// =============================================================================
+// FINANCE & TRUST MODULE (Kealee m-finance-trust - 100% Migration)
+// =============================================================================
+
+enum BankAccountType {
+  CHECKING
+  SAVINGS
+  MONEY_MARKET
+  BUSINESS_CHECKING
+  BUSINESS_SAVINGS
+}
+
+enum BankAccountStatus {
+  PENDING_VERIFICATION
+  VERIFIED
+  VERIFICATION_FAILED
+  SUSPENDED
+  CLOSED
+}
+
+enum VerificationMethod {
+  PLAID_INSTANT
+  MICRO_DEPOSITS
+  MANUAL_REVIEW
+}
+
+model BankAccount {
+  id                 String              @id @default(uuid())
+  userId             String
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountType        BankAccountType
+  bankName           String?
+  accountNumber      String              @db.Text // Encrypted
+  routingNumber      String              @db.Text // Encrypted
+  accountHolderName  String
+  isVerified         Boolean             @default(false)
+  status             BankAccountStatus   @default(PENDING_VERIFICATION)
+  verificationMethod VerificationMethod?
+  plaidItemId        String?             @unique
+  plaidAccessToken   String?             @db.Text // Encrypted
+  plaidAccountId     String?
+  isDefault          Boolean             @default(false)
+  lastFourDigits     String?             // For display only
+  verifiedAt         DateTime?
+  suspendedAt        DateTime?
+  suspensionReason   String?
+  metadata           Json?               // Additional bank info
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  transactions       Transaction[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([plaidItemId])
+  @@map("bank_accounts")
+}
+
+enum TransactionType {
+  INVESTMENT            // Investor capital contribution
+  DISTRIBUTION          // Investor distribution payout
+  REFUND                // Refund to investor
+  FEE                   // Platform or management fee
+  DRAW_REQUEST          // Construction draw payment
+  PROVIDER_PAYMENT      // Payment to contractor/provider
+  TRANSFER              // Internal transfer
+  DEPOSIT               // General deposit
+  WITHDRAWAL            // General withdrawal
+}
+
+enum TransactionStatus {
+  PENDING               // Initiated, not yet processed
+  PROCESSING            // Payment processing
+  COMPLETED             // Successfully completed
+  FAILED                // Payment failed
+  CANCELLED             // Cancelled by user/admin
+  REFUNDED              // Refunded
+  ON_HOLD               // Compliance hold
+  REQUIRES_APPROVAL     // Needs manual approval
+}
+
+enum PaymentMethod {
+  ACH                   // Bank transfer via ACH
+  WIRE                  // Wire transfer
+  CHECK                 // Paper check
+  CARD                  // Credit/debit card
+  INTERNAL              // Internal platform transfer
+}
+
+model Transaction {
+  id                String            @id @default(uuid())
+  offeringId        String?
+  offering          Offering?         @relation(fields: [offeringId], references: [id], onDelete: SetNull)
+  fromUserId        String?
+  fromUser          User?             @relation("TransactionsFrom", fields: [fromUserId], references: [id], onDelete: SetNull)
+  toUserId          String?
+  toUser            User?             @relation("TransactionsTo", fields: [toUserId], references: [id], onDelete: SetNull)
+  bankAccountId     String?
+  bankAccount       BankAccount?      @relation(fields: [bankAccountId], references: [id], onDelete: SetNull)
+  escrowAccountId   String?
+  escrowAccount     EscrowAccount?    @relation(fields: [escrowAccountId], references: [id], onDelete: SetNull)
+  
+  transactionType   TransactionType
+  amount            Float             @db.Decimal(15, 2)
+  currency          String            @default("USD")
+  status            TransactionStatus @default(PENDING)
+  paymentMethod     PaymentMethod
+  
+  // External payment processor IDs
+  stripePaymentId   String?           @unique
+  plaidTransferId   String?           @unique
+  
+  description       String
+  notes             String?
+  metadata          Json?             // Additional transaction details
+  
+  // Fees
+  feeAmount         Float?            @db.Decimal(15, 2)
+  netAmount         Float             @db.Decimal(15, 2) // amount - feeAmount
+  
+  // Timestamps
+  initiatedAt       DateTime          @default(now())
+  processedAt       DateTime?
+  completedAt       DateTime?
+  failedAt          DateTime?
+  cancelledAt       DateTime?
+  
+  // Error handling
+  errorMessage      String?
+  retryCount        Int               @default(0)
+  maxRetries        Int               @default(3)
+  
+  // Compliance
+  complianceStatus  String?           // PASSED | FAILED | PENDING
+  complianceCheckedAt DateTime?
+  
+  // Audit
+  createdBy         String?           // User ID who initiated
+  approvedBy        String?           // Admin who approved (if needed)
+  
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@index([offeringId])
+  @@index([fromUserId])
+  @@index([toUserId])
+  @@index([status])
+  @@index([transactionType])
+  @@index([initiatedAt])
+  @@index([stripePaymentId])
+  @@index([plaidTransferId])
+  @@map("transactions")
+}
+
+enum EscrowStatus {
+  ACTIVE
+  SUSPENDED
+  CLOSED
+  UNDER_REVIEW
+}
+
+model EscrowAccount {
+  id                String         @id @default(uuid())
+  offeringId        String         @unique
+  offering          Offering       @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  accountNumber     String         @unique // External escrow account number
+  accountName       String
+  balance           Float          @db.Decimal(15, 2) @default(0)
+  reservedAmount    Float          @db.Decimal(15, 2) @default(0) // Funds held for pending distributions
+  availableBalance  Float          @db.Decimal(15, 2) @default(0) // balance - reservedAmount
+  status            EscrowStatus   @default(ACTIVE)
+  
+  // External integration
+  stripeAccountId   String?        @unique
+  bankAccountNumber String?
+  bankRoutingNumber String?
+  
+  // Reconciliation
+  lastReconciledAt  DateTime?
+  lastReconciledBalance Float?     @db.Decimal(15, 2)
+  
+  // Audit
+  openedAt          DateTime       @default(now())
+  closedAt          DateTime?
+  closedReason      String?
+  
+  metadata          Json?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  
+  transactions      Transaction[]
+  distributions     Distribution[]
+
+  @@index([offeringId])
+  @@index([status])
+  @@map("escrow_accounts")
+}
+
+enum DistributionType {
+  RETURN_OF_CAPITAL     // Return investor principal
+  PREFERRED_RETURN      // Preferred return payment (e.g., 8% annually)
+  PROFIT_SPLIT          // GP/LP profit split
+  SPECIAL_DISTRIBUTION  // One-time special distribution
+  EXIT_PROCEEDS         // Final distribution from property sale
+}
+
+enum DistributionStatus {
+  DRAFT                 // Being calculated
+  PENDING_APPROVAL      // Awaiting sponsor approval
+  APPROVED              // Approved, ready to process
+  PROCESSING            // Payments being sent
+  COMPLETED             // All payments sent
+  PARTIALLY_COMPLETED   // Some payments sent
+  FAILED                // Payment processing failed
+  CANCELLED             // Distribution cancelled
+}
+
+model Distribution {
+  id                String             @id @default(uuid())
+  offeringId        String
+  offering          Offering           @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  escrowAccountId   String?
+  escrowAccount     EscrowAccount?     @relation(fields: [escrowAccountId], references: [id], onDelete: SetNull)
+  
+  distributionType  DistributionType
+  distributionDate  DateTime           // Date payments will be sent
+  periodStart       DateTime?          // For periodic distributions (quarterly, etc.)
+  periodEnd         DateTime?
+  
+  totalAmount       Float              @db.Decimal(15, 2)
+  status            DistributionStatus @default(DRAFT)
+  
+  // Waterfall calculations (stored as JSON for flexibility)
+  calculations      Json               // Detailed waterfall breakdown per investor
+  // Example: [
+  //   {
+  //     investorId: "uuid",
+  //     capitalAccount: 100000,
+  //     returnOfCapital: 5000,
+  //     preferredReturn: 2000,
+  //     profitSplit: 1500,
+  //     totalDistribution: 8500,
+  //     paymentStatus: "completed"
+  //   }
+  // ]
+  
+  // Approval workflow
+  createdBy         String?            // Sponsor who created
+  approvedBy        String?            // Fund Manager who approved
+  approvedAt        DateTime?
+  
+  // Processing
+  processedAt       DateTime?
+  completedAt       DateTime?
+  failedAt          DateTime?
+  errorMessage      String?
+  
+  // Investor communication
+  notificationSent  Boolean            @default(false)
+  notificationSentAt DateTime?
+  
+  metadata          Json?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([offeringId])
+  @@index([status])
+  @@index([distributionDate])
+  @@map("distributions")
+}
+
+enum ComplianceCheckType {
+  KYC                   // Know Your Customer
+  AML                   // Anti-Money Laundering
+  OFAC                  // Office of Foreign Assets Control (sanctions)
+  ACCREDITATION         // Investor accreditation verification
+  IDENTITY              // Identity verification
+  ADDRESS               // Address verification
+  BANK_ACCOUNT          // Bank account ownership verification
+}
+
+enum CheckStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+  MANUAL_REVIEW_REQUIRED
+}
+
+model ComplianceCheck {
+  id                String             @id @default(uuid())
+  userId            String
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  checkType         ComplianceCheckType
+  status            CheckStatus        @default(PENDING)
+  
+  // Check results
+  result            Json?              // Detailed results from compliance service
+  score             Float?             // Risk score if applicable
+  flags             String[]           @default([]) // Any red flags identified
+  
+  // Documents
+  documentUrls      String[]           @default([]) // S3 URLs of uploaded documents
+  
+  // External service integration
+  externalServiceId String?            // ID from third-party compliance service
+  externalService   String?            // Name of service (e.g., "Plaid Identity", "Persona")
+  
+  performedAt       DateTime           @default(now())
+  expiresAt         DateTime?          // Some checks expire (e.g., annual re-verification)
+  reviewedBy        String?            // Admin user who reviewed (if manual)
+  reviewedAt        DateTime?
+  notes             String?
+  rejectionReason   String?
+  
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([userId])
+  @@index([checkType])
+  @@index([status])
+  @@index([performedAt])
+  @@index([expiresAt])
+  @@map("compliance_checks_detailed")
+}
+
+enum TaxDocumentType {
+  FORM_1099           // 1099 tax form
+  FORM_K1             // K-1 partnership tax form
+  TAX_SUMMARY         // Annual tax summary
+  COST_BASIS          // Cost basis statement
+  DISTRIBUTION_SUMMARY // Distribution summary for tax purposes
+}
+
+enum TaxDocumentStatus {
+  GENERATING
+  READY
+  SENT
+  FAILED
+}
+
+model TaxDocument {
+  id                String             @id @default(uuid())
+  userId            String
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  offeringId        String?
+  offering          Offering?          @relation(fields: [offeringId], references: [id], onDelete: SetNull)
+  
+  documentType      TaxDocumentType
+  taxYear           Int                // e.g., 2026
+  status            TaxDocumentStatus  @default(GENERATING)
+  
+  // Document storage
+  documentUrl       String?            // S3 URL of generated PDF
+  documentHash      String?            // File hash for verification
+  
+  // Financial data (stored as JSON for flexibility)
+  taxData           Json               // Detailed tax information
+  // Example for 1099:
+  // {
+  //   totalDistributions: 15000,
+  //   taxableIncome: 12000,
+  //   qualifiedDividends: 5000,
+  //   ordinaryDividends: 7000,
+  //   capitalGains: 3000
+  // }
+  
+  // Generation & delivery
+  generatedAt       DateTime?
+  sentAt            DateTime?
+  sentVia           String?            // EMAIL | MAIL | BOTH
+  downloadedAt      DateTime?
+  downloadCount     Int                @default(0)
+  
+  // IRS filing
+  filedWithIRS      Boolean            @default(false)
+  filedAt           DateTime?
+  filingConfirmation String?
+  
+  metadata          Json?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([userId])
+  @@index([offeringId])
+  @@index([taxYear])
+  @@index([documentType])
+  @@index([status])
+  @@map("tax_documents")
+}
+
+// Note: Investment model already exists earlier in the schema (line ~769)
+
+// =============================================================================
+// AI & ANALYTICS LAYER
+// =============================================================================
+
+enum AITaskType {
+  DOCUMENT_ANALYSIS       // Analyze investment documents
+  RISK_ASSESSMENT         // Assess investment risk
+  FRAUD_DETECTION         // Detect potential fraud
+  RECOMMENDATION          // Generate investment recommendations
+  CHAT_RESPONSE           // AI chatbot response
+  DATA_EXTRACTION         // Extract data from documents
+  COMPLIANCE_CHECK        // AI-powered compliance verification
+  FINANCIAL_FORECAST      // Predict financial outcomes
+  MARKET_ANALYSIS         // Analyze market trends
+}
+
+enum AITaskStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model AITask {
+  id                String       @id @default(uuid())
+  taskType          AITaskType
+  status            AITaskStatus @default(QUEUED)
+  
+  // Input
+  inputData         Json         // Input parameters for AI task
+  userId            String?      // User who requested (if applicable)
+  relatedEntityType String?      // OFFERING | TRANSACTION | DOCUMENT | USER
+  relatedEntityId   String?
+  
+  // Output
+  result            Json?        // AI task result
+  confidence        Float?       // Confidence score (0-1)
+  insights          Json?        // Additional insights/recommendations
+  
+  // Processing
+  model             String?      // AI model used (e.g., "gpt-4", "claude-3")
+  promptTokens      Int?
+  completionTokens  Int?
+  totalTokens       Int?
+  cost              Float?       @db.Decimal(10, 4)
+  
+  processingTime    Int?         // milliseconds
+  startedAt         DateTime?
+  completedAt       DateTime?
+  failedAt          DateTime?
+  errorMessage      String?
+  
+  metadata          Json?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  @@index([taskType])
+  @@index([status])
+  @@index([userId])
+  @@index([relatedEntityType, relatedEntityId])
+  @@index([createdAt])
+  @@map("ai_tasks")
+}
+
+model AIInsight {
+  id                String   @id @default(uuid())
+  insightType       String   // RISK | OPPORTUNITY | WARNING | RECOMMENDATION
+  entityType        String   // OFFERING | USER | TRANSACTION | PORTFOLIO
+  entityId          String
+  
+  title             String
+  description       String
+  severity          String   // LOW | MEDIUM | HIGH | CRITICAL
+  confidence        Float    @db.Decimal(3, 2) // 0.00 to 1.00
+  
+  // Data supporting the insight
+  data              Json
+  recommendations   Json?    // Suggested actions
+  
+  // User interaction
+  viewed            Boolean  @default(false)
+  viewedAt          DateTime?
+  dismissed         Boolean  @default(false)
+  dismissedAt       DateTime?
+  actionTaken       String?
+  actionTakenAt     DateTime?
+  
+  // AI metadata
+  generatedBy       String   // AI model/service
+  aiTaskId          String?  // Reference to AITask that generated this
+  
+  validUntil        DateTime? // Some insights expire
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([entityType, entityId])
+  @@index([insightType])
+  @@index([severity])
+  @@index([viewed])
+  @@index([createdAt])
+  @@map("ai_insights")
 }
