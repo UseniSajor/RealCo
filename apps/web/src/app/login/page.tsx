@@ -85,13 +85,31 @@ export default function LoginPage() {
                 </Button>
               </form>
 
-              <div className="mt-6 text-center">
-                <p className="text-sm text-muted-foreground">
-                  Don't have an account?{" "}
-                  <Link href="/signup" className="text-[#56CCF2] font-semibold hover:underline">
-                    Sign up
-                  </Link>
-                </p>
+              <div className="mt-6 space-y-4">
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground">
+                    Don't have an account?{" "}
+                    <Link href="/signup" className="text-[#56CCF2] font-semibold hover:underline">
+                      Sign up
+                    </Link>
+                  </p>
+                </div>
+                
+                {/* Skip to Demo */}
+                <div className="pt-4 border-t border-slate-200 dark:border-[#E07A47]">
+                  <Button 
+                    variant="outline" 
+                    className="w-full border-2 border-[#56CCF2] text-[#56CCF2] hover:bg-[#56CCF2] hover:text-white"
+                    asChild
+                  >
+                    <Link href="/dashboard">
+                      Skip to Demo Dashboard →
+                    </Link>
+                  </Button>
+                  <p className="text-xs text-center text-muted-foreground mt-2">
+                    Explore the platform without signing in
+                  </p>
+                </div>
               </div>
 
               <div className="mt-8 pt-6 border-t border-slate-200 dark:border-[#E07A47]">

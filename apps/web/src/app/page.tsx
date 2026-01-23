@@ -46,6 +46,7 @@ export default function HomePage() {
         subheadline="RealCo unifies capital raising, Reg D compliance, construction payments, and investor reporting into one powerful system. Stop juggling 12 tools—run your entire syndication on RealCo."
         primaryCta={{ label: "Book a Demo", href: "/contact" }}
         secondaryCta={{ label: "Start Free Trial", href: "/signup" }}
+        tertiaryCta={{ label: "View Demo Dashboard", href: "/dashboard" }}
         trustLine="Trusted by 500+ sponsors managing $2.5B+ in projects. SOC 2 Type II compliant. Bank-grade security."
       />
 

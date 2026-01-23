@@ -46,6 +46,12 @@ export function MarketingNav() {
           >
             Providers
           </Link>
+          <Link 
+            href="/dashboard" 
+            className="text-base font-semibold text-[#56CCF2] hover:text-[#3BB5E0] transition-colors"
+          >
+            Demo
+          </Link>
         </div>
 
         <div className="flex items-center gap-3">
