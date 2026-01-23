@@ -72,7 +72,7 @@ export function TransactionHistoryAPI() {
   }
 
   const getTransactionIcon = (type: string) => {
-    if (type === "INVESTMENT") return <Arrow DownRight className="h-5 w-5 text-green-600" />
+    if (type === "INVESTMENT") return <ArrowDownRight className="h-5 w-5 text-green-600" />
     if (type === "DISTRIBUTION") return <ArrowUpRight className="h-5 w-5 text-[#56CCF2]" />
     return <ArrowUpRight className="h-5 w-5 text-[#E07A47]" />
   }
