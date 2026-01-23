@@ -219,6 +219,12 @@ export default function SponsorDashboardPage() {
                     Capital Raised
                   </Link>
                 </Button>
+                <Button className="w-full justify-start" variant="outline" asChild>
+                  <Link href="/dashboard/sponsor/distributions">
+                    <DollarSign className="mr-2 h-4 w-4" />
+                    Distributions
+                  </Link>
+                </Button>
                 <Button className="w-full justify-start" variant="outline">
                   <Users className="mr-2 h-4 w-4" />
                   Invite Investors
