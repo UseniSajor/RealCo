@@ -13,7 +13,8 @@ import {
   Clock,
   AlertCircle,
   Hammer,
-  Upload
+  Upload,
+  CreditCard
 } from "lucide-react"
 
 export default function ProviderDashboardPage() {

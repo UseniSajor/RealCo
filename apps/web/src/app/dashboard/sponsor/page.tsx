@@ -15,7 +15,8 @@ import {
   AlertCircle,
   TrendingUp,
   Hammer,
-  AlertTriangle
+  AlertTriangle,
+  CreditCard
 } from "lucide-react"
 
 export default function SponsorDashboardPage() {

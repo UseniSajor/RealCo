@@ -13,7 +13,8 @@ import {
   Clock,
   AlertCircle,
   PieChart,
-  Download
+  Download,
+  CreditCard
 } from "lucide-react"
 
 export default function InvestorDashboardPage() {
