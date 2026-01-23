@@ -5,18 +5,20 @@ import { MarketingNav } from "@/components/marketing/marketing-nav"
 import { MarketingFooter } from "@/components/marketing/marketing-footer"
 import { PricingCard } from "@/components/pricing/PricingCard"
 import { Button } from "@/components/ui/button"
-import { sponsorPricing, investorPricing, providerPricing } from "@/lib/pricing-tiers"
+import { sponsorPricing, investorPricing, providerPricing, fundManagerPricing } from "@/lib/pricing-tiers"
 import { useRouter } from "next/navigation"
 
 export default function PricingPage() {
-  const [selectedRole, setSelectedRole] = useState<'sponsor' | 'investor' | 'provider'>('sponsor')
+  const [selectedRole, setSelectedRole] = useState<'sponsor' | 'investor' | 'provider' | 'fund-manager'>('sponsor')
   const router = useRouter()
 
   const pricing = selectedRole === 'sponsor' 
     ? sponsorPricing 
     : selectedRole === 'investor' 
     ? investorPricing 
-    : providerPricing
+    : selectedRole === 'provider'
+    ? providerPricing
+    : fundManagerPricing
 
   const handleSelectTier = (tierName: string) => {
     // Navigate to signup with pre-selected role and tier
@@ -40,11 +42,12 @@ export default function PricingPage() {
             </p>
 
             {/* Role Selector */}
-            <div className="flex justify-center gap-3">
+            <div className="flex justify-center gap-3 flex-wrap">
               {[
                 { key: 'sponsor', label: 'For Sponsors' },
                 { key: 'investor', label: 'For Investors' },
                 { key: 'provider', label: 'For Providers' },
+                { key: 'fund-manager', label: 'For Fund Managers' },
               ].map((role) => (
                 <Button
                   key={role.key}
