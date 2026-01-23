@@ -19,7 +19,10 @@ import {
   CreditCard,
   BarChart3,
   Calculator,
-  Target
+  Target,
+  Search,
+  UserPlus,
+  MapPin
 } from "lucide-react"
 
 export default function SponsorDashboardPage() {
@@ -209,27 +212,51 @@ export default function SponsorDashboardPage() {
             <Card className="border-4 border-[#E07A47]">
               <CardHeader>
                 <CardTitle>Quick Actions</CardTitle>
-                <CardDescription>Sponsor tools</CardDescription>
+                <CardDescription>Deal sourcing & management tools</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full justify-start bg-[#56CCF2] hover:bg-[#56CCF2]/90 text-white" asChild>
-                  <Link href="/dashboard/sponsor/analytics">
-                    <BarChart3 className="mr-2 h-4 w-4" />
-                    Executive Analytics
-                  </Link>
-                </Button>
-                <Button className="w-full justify-start" variant="outline" asChild>
-                  <Link href="/dashboard/sponsor/deal-pipeline">
-                    <Target className="mr-2 h-4 w-4" />
-                    Deal Pipeline
-                  </Link>
-                </Button>
-                <Button className="w-full justify-start" variant="outline" asChild>
-                  <Link href="/dashboard/sponsor/underwriting">
-                    <Calculator className="mr-2 h-4 w-4" />
-                    Underwriting
-                  </Link>
-                </Button>
+                <div className="space-y-2">
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Deal Sourcing</p>
+                  <Button className="w-full justify-start bg-[#56CCF2] hover:bg-[#56CCF2]/90 text-white" asChild>
+                    <Link href="/dashboard/sponsor/property-search">
+                      <Search className="mr-2 h-4 w-4" />
+                      Property Search
+                    </Link>
+                  </Button>
+                  <Button className="w-full justify-start" variant="outline" asChild>
+                    <Link href="/dashboard/sponsor/leads">
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      Lead Management
+                    </Link>
+                  </Button>
+                  <Button className="w-full justify-start" variant="outline" asChild>
+                    <Link href="/dashboard/sponsor/market-research">
+                      <MapPin className="mr-2 h-4 w-4" />
+                      Market Research
+                    </Link>
+                  </Button>
+                </div>
+                <div className="border-t pt-3 space-y-2">
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Deal Management</p>
+                  <Button className="w-full justify-start" variant="outline" asChild>
+                    <Link href="/dashboard/sponsor/deal-pipeline">
+                      <Target className="mr-2 h-4 w-4" />
+                      Deal Pipeline
+                    </Link>
+                  </Button>
+                  <Button className="w-full justify-start" variant="outline" asChild>
+                    <Link href="/dashboard/sponsor/underwriting">
+                      <Calculator className="mr-2 h-4 w-4" />
+                      Underwriting
+                    </Link>
+                  </Button>
+                  <Button className="w-full justify-start" variant="outline" asChild>
+                    <Link href="/dashboard/sponsor/analytics">
+                      <BarChart3 className="mr-2 h-4 w-4" />
+                      Analytics
+                    </Link>
+                  </Button>
+                </div>
                 <Button className="w-full justify-start" variant="outline" asChild>
                   <Link href="/dashboard/sponsor/capital-raised">
                     <TrendingUp className="mr-2 h-4 w-4" />
