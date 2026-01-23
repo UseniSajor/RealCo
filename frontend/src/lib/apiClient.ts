@@ -18,7 +18,7 @@ if (import.meta.env.PROD && !rawApiUrl) {
 // Fallback to localhost for development
 const apiUrl = rawApiUrl || 'http://localhost:5001';
 const normalizedApiUrl = apiUrl.replace(/\/+$/, '');
-const API_BASE_URL = `${normalizedApiUrl}/api/v1`;
+const API_BASE_URL = `${normalizedApiUrl}/v1`;
 
 class ApiClient {
   private client: AxiosInstance;

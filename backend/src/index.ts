@@ -28,7 +28,7 @@ app.setErrorHandler((err, _req, reply) => {
   });
 });
 
-await app.register(registerV1Routes, { prefix: '/api/v1' });
+await app.register(registerV1Routes, { prefix: '/v1' });
 
 const port = Number(process.env.PORT || 5001);
 await app.listen({ port, host: '0.0.0.0' });
