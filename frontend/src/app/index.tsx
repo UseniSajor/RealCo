@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "@tanstack/react-router";
 import { HomePageV2 } from "./index-v2";
 
 // Main Landing Page with Detailed Content
