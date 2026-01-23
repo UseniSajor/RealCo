@@ -9,8 +9,8 @@ import { Building2, TrendingUp, Wrench, ArrowRight } from "lucide-react"
 
 export default function SignupPage() {
   const handleRoleSignup = (role: string) => {
-    // TODO: Connect to backend API
-    alert(`Sign up as ${role} - Will connect to backend API`)
+    // Redirect to signup form first
+    window.location.href = '/auth/signup'
   }
 
   return (

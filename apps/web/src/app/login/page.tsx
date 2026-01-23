@@ -13,9 +13,16 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Connect to backend API
-    console.log("Login attempt:", { email, password })
-    alert("Login functionality will be connected to backend API")
+    // Demo mode: Accept any credentials
+    if (email && password) {
+      // Save login state
+      localStorage.setItem('isLoggedIn', 'true')
+      localStorage.setItem('userEmail', email)
+      // Redirect to role selection
+      window.location.href = '/auth/role-select'
+    } else {
+      alert("Please enter both email and password")
+    }
   }
 
   return (
