@@ -3,6 +3,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer"
 import { Hero } from "@/components/marketing/hero"
 import { FeatureGrid } from "@/components/marketing/feature-grid"
 import { CTASection } from "@/components/marketing/cta-section"
+import { RoleTabs } from "@/components/marketing/role-tabs"
 
 export const metadata = {
   title: "For Sponsors | RealCo",
@@ -21,6 +22,9 @@ export default function SponsorsPage() {
         secondaryCta={{ label: "Start Sponsor Trial", href: "/signup" }}
         tertiaryCta={{ label: "Download Sponsor Overview", href: "#download" }}
       />
+
+      {/* Role Navigation Tabs */}
+      <RoleTabs currentRole="sponsors" />
 
       <FeatureGrid
         title="Top outcomes"

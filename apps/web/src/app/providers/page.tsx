@@ -24,6 +24,9 @@ export default function ProvidersPage() {
         tertiaryCta={{ label: "Book Walkthrough", href: "/contact" }}
       />
 
+      {/* Role Navigation Tabs */}
+      <RoleTabs currentRole="providers" />
+
       {/* Contractors Section */}
       <section className="py-24">
         <div className="container max-w-6xl px-6">

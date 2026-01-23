@@ -4,26 +4,44 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Building2, TrendingUp, Wrench } from "lucide-react"
+import { Building2, TrendingUp, Wrench, ArrowRight } from "lucide-react"
 
 const roles = [
   {
     icon: Building2,
-    title: "Sponsors",
-    description: "Raise faster. Run projects. Report automatically.",
+    title: "Sponsors / Developers",
+    description: "Raise capital and manage projects end-to-end",
     href: "/sponsors",
+    features: [
+      "Capital raise + investor portal",
+      "Compliance workflows (Reg D)",
+      "Construction tracking + payments",
+      "Automated investor reporting"
+    ]
   },
   {
     icon: TrendingUp,
     title: "Investors",
-    description: "Transparency, documents, updates, distributions.",
+    description: "Invest in opportunities with full transparency",
     href: "/investors",
+    features: [
+      "Deal transparency + documents",
+      "Secure digital onboarding",
+      "Real-time project updates",
+      "Automated distributions + K-1s"
+    ]
   },
   {
     icon: Wrench,
-    title: "Providers",
-    description: "Faster approvals, cleaner paperwork, predictable pay.",
+    title: "Service Providers",
+    description: "Partner with sponsors on deals",
     href: "/providers",
+    features: [
+      "Faster approvals + payments",
+      "Digital workflows + lien waivers",
+      "Payment tracking + billing",
+      "Direct sponsor connections"
+    ]
   },
 ]
 
@@ -54,17 +72,23 @@ export function RoleCards() {
                 transition={{ delay: index * 0.1, duration: 0.5 }}
               >
                 <Link href={role.href}>
-                  <Card className="h-full cursor-pointer group">
+                  <Card className="h-full cursor-pointer hover:shadow-2xl transition-all hover:border-[#E07A47] border-4 group">
                     <CardHeader className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-4 rounded-2xl gradient-primary flex items-center justify-center">
+                      <div className="w-16 h-16 mx-auto mb-4 rounded-2xl gradient-primary flex items-center justify-center transform group-hover:scale-110 transition-transform">
                         <Icon className="h-8 w-8 text-white" />
                       </div>
                       <CardTitle className="text-2xl">{role.title}</CardTitle>
                       <CardDescription className="text-base">{role.description}</CardDescription>
                     </CardHeader>
-                    <CardContent className="text-center">
-                      <Button variant="link" className="group-hover:translate-x-2 transition-transform">
-                        Learn More →
+                    <CardContent className="space-y-6">
+                      <div className="text-left space-y-2">
+                        {role.features.map((feature, i) => (
+                          <p key={i} className="text-sm text-muted-foreground">✓ {feature}</p>
+                        ))}
+                      </div>
+                      <Button className="w-full group-hover:scale-105 transition-transform" size="lg">
+                        Learn More
+                        <ArrowRight className="ml-2 h-5 w-5" />
                       </Button>
                     </CardContent>
                   </Card>

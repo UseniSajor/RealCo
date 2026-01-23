@@ -24,6 +24,9 @@ export default function InvestorsPage() {
         tertiaryCta={{ label: "How It Works", href: "#how" }}
       />
 
+      {/* Role Navigation Tabs */}
+      <RoleTabs currentRole="investors" />
+
       <FeatureGrid
         title="What you get"
         items={[
