@@ -1,26 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* RealCo Brand Colors */
+  --color-primary: #56CCF2;           /* Sky Blue */
+  --color-primary-dark: #3BB5E0;      /* Darker Sky Blue */
+  --color-secondary: #E07A47;          /* Rustic Orange */
+  --color-secondary-dark: #D96835;     /* Darker Orange */
+  
+  /* Text Colors */
+  --color-text-primary: #2C3E50;       /* Dark Grey */
+  --color-text-secondary: #5A6C7D;     /* Medium Grey */
+  --color-text-light: #7F8C9A;         /* Light Grey */
+  
+  /* Spacing */
+  --font-family-base: 'Nunito', ui-sans-serif, system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: rgb(226 232 240);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-family-base);
+  font-feature-settings: "rlig" 1, "calt" 1;
+  line-height: 1.7;
+  font-weight: 500;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* Pulsating Border Animation */
+@keyframes pulsate-border {
+  0%, 100% {
+    border-color: #E07A47;
+    box-shadow: 0 0 0 0 rgba(224, 122, 71, 0.7);
+  }
+  50% {
+    border-color: #D96835;
+    box-shadow: 0 0 0 8px rgba(224, 122, 71, 0);
+  }
+}
+
+.pulsate-border {
+  animation: pulsate-border 2s ease-in-out infinite;
+}
+
+/* Custom Utilities */
+.gradient-text {
+  background: linear-gradient(135deg, #56CCF2 0%, #E07A47 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-primary {
+  background: linear-gradient(135deg, #56CCF2 0%, #3BB5E0 100%);
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, #E07A47 0%, #D96835 100%);
+}
+
+.gradient-hero {
+  background: linear-gradient(135deg, #56CCF2 0%, #59B9E0 50%, #E07A47 100%);
+}
+
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
 }
