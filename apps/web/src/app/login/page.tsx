@@ -6,22 +6,29 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import Link from "next/link"
 import { useState } from "react"
+import { useAuth } from "@/lib/auth-context"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
+  const { login } = useAuth()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Demo mode: Accept any credentials
-    if (email && password) {
-      // Save login state
-      localStorage.setItem('isLoggedIn', 'true')
-      localStorage.setItem('userEmail', email)
-      // Redirect to role selection
-      window.location.href = '/auth/role-select'
-    } else {
+    if (!email || !password) {
       alert("Please enter both email and password")
+      return
+    }
+
+    setLoading(true)
+    try {
+      await login(email, password)
+    } catch (error) {
+      console.error('Login error:', error)
+      alert("Login failed. Please try again.")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -87,32 +94,30 @@ export default function LoginPage() {
                   </Link>
                 </div>
 
-                <Button type="submit" className="w-full">
-                  Sign In
+                <Button 
+                  type="submit" 
+                  className="w-full bg-[#56CCF2] hover:bg-[#56CCF2]/90"
+                  disabled={loading}
+                >
+                  {loading ? 'Signing in...' : 'Sign In'}
                 </Button>
               </form>
 
               <div className="mt-4 text-center">
                 <p className="text-sm text-slate-600 dark:text-slate-600">
                   Don't have an account?{" "}
-                  <Link href="/auth/signup" className="text-[#56CCF2] font-semibold hover:underline">
-                    Sign up
+                  <Link href="/signup" className="text-[#56CCF2] font-semibold hover:underline">
+                    Sign up for free
                   </Link>
                 </p>
               </div>
 
               <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-300">
-                <Button 
-                  variant="outline" 
-                  className="w-full border-2 border-[#56CCF2] text-[#56CCF2] hover:bg-[#56CCF2] hover:text-white dark:border-[#56CCF2]"
-                  asChild
-                >
-                  <Link href="/dashboard">
-                    Skip to Demo Dashboard →
-                  </Link>
-                </Button>
-                <p className="text-xs text-center text-slate-500 dark:text-slate-600 mt-2">
-                  Explore the platform without signing in
+                <p className="text-xs text-center text-slate-500 dark:text-slate-600 mb-2">
+                  ✨ Temporary Auth: Use any email and password to log in
+                </p>
+                <p className="text-xs text-center text-slate-400 dark:text-slate-500">
+                  (Production auth coming soon)
                 </p>
               </div>
 

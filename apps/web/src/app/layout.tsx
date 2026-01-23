@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { DemoProvider } from "@/lib/demo/DemoProvider";
+import { AuthProvider } from "@/lib/auth-context";
 
 export const metadata: Metadata = {
   title: "RealCo | Real Estate Investing Made Transparent",
@@ -23,9 +23,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <DemoProvider>
+          <AuthProvider>
             {children}
-          </DemoProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

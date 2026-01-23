@@ -35,7 +35,7 @@ export function MarketingNav() {
             <Link href="/providers">Providers</Link>
           </Button>
           <Button variant="ghost" size="sm" asChild className="bg-[#56CCF2]/20 hover:bg-[#56CCF2]/30 text-[#56CCF2] font-semibold rounded-full px-4 border border-[#56CCF2]">
-            <Link href="/dashboard">Demo</Link>
+            <Link href="/pricing">Pricing</Link>
           </Button>
         </div>
 
