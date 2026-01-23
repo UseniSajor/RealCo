@@ -15,6 +15,7 @@ import { transactionRoutes } from './routes/transactions.routes.js';
 import { bankingRoutes } from './routes/banking.routes.js';
 import { escrowRoutes } from './routes/escrow.routes.js';
 import { complianceRoutes } from './routes/compliance.routes.js';
+import { authRoutes } from './routes/auth.routes.js';
 import { ProjectNotFoundError, ValidationError, ComplianceError } from '../services/errors.js';
 
 const projectService = new ProjectService(prisma);
@@ -772,6 +773,13 @@ export async function registerV1Routes(app: FastifyInstance) {
       return reply.status(404).send({ error: 'BankAccountNotFound', message: 'Bank account not found' });
     }
   });
+
+  // ==========================================================================
+  // AUTHENTICATION ROUTES
+  // ==========================================================================
+  
+  // Register authentication routes (register, login, password reset, etc.)
+  await authRoutes(app);
 
   // ==========================================================================
   // FINANCE & TRUST MODULE ROUTES
