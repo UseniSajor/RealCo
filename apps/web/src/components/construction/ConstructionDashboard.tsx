@@ -15,7 +15,9 @@ import {
   Users,
   FileText,
   Image as ImageIcon,
-  AlertCircle
+  AlertCircle,
+  DollarSign,
+  List
 } from "lucide-react"
 
 export function ConstructionDashboard() {
@@ -505,29 +507,51 @@ export function ConstructionDashboard() {
       {/* Quick Actions */}
       <Card className="border-2 border-[#56CCF2] bg-[#56CCF2]/5">
         <CardContent className="pt-6">
-          <h3 className="font-bold text-lg mb-4">Quick Actions</h3>
+          <h3 className="font-bold text-lg mb-4">Project Management Tools</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <Button variant="outline" className="h-auto flex-col gap-2 py-4" asChild>
               <Link href="/dashboard/sponsor/daily-logs">
                 <FileText className="h-6 w-6" />
-                <span className="text-sm">Daily Log</span>
+                <span className="text-sm">Daily Logs</span>
               </Link>
             </Button>
             <Button variant="outline" className="h-auto flex-col gap-2 py-4" asChild>
               <Link href="/dashboard/sponsor/photos">
                 <ImageIcon className="h-6 w-6" />
-                <span className="text-sm">Photo Gallery</span>
+                <span className="text-sm">Photos</span>
               </Link>
             </Button>
             <Button variant="outline" className="h-auto flex-col gap-2 py-4" asChild>
               <Link href="/dashboard/sponsor/rfis">
                 <AlertCircle className="h-6 w-6" />
-                <span className="text-sm">RFI Tracker</span>
+                <span className="text-sm">RFIs</span>
+              </Link>
+            </Button>
+            <Button variant="outline" className="h-auto flex-col gap-2 py-4" asChild>
+              <Link href="/dashboard/sponsor/submittals">
+                <FileText className="h-6 w-6" />
+                <span className="text-sm">Submittals</span>
+              </Link>
+            </Button>
+            <Button variant="outline" className="h-auto flex-col gap-2 py-4" asChild>
+              <Link href="/dashboard/sponsor/change-orders">
+                <DollarSign className="h-6 w-6" />
+                <span className="text-sm">Change Orders</span>
+              </Link>
+            </Button>
+            <Button variant="outline" className="h-auto flex-col gap-2 py-4" asChild>
+              <Link href="/dashboard/sponsor/punch-list">
+                <List className="h-6 w-6" />
+                <span className="text-sm">Punch List</span>
               </Link>
             </Button>
             <Button variant="outline" className="h-auto flex-col gap-2 py-4">
               <Users className="h-6 w-6" />
-              <span className="text-sm">Team Chat</span>
+              <span className="text-sm">Team</span>
+            </Button>
+            <Button variant="outline" className="h-auto flex-col gap-2 py-4">
+              <AlertTriangle className="h-6 w-6" />
+              <span className="text-sm">Issues</span>
             </Button>
           </div>
         </CardContent>
