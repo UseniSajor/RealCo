@@ -1,20 +1,7 @@
 import React from "react";
-import { InvestorLandingPage } from "./index-investor";
-// import { SponsorLandingPage } from "./index-sponsor";
-
-// Toggle between investor and sponsor landing pages
-// Uncomment the one you want to use:
+import { Link } from "@tanstack/react-router";
 
 export function IndexPage() {
-  // INVESTOR-FOCUSED LANDING PAGE (Current)
-  return <InvestorLandingPage />;
-  
-  // SPONSOR-FOCUSED LANDING PAGE (Uncomment to use)
-  // return <SponsorLandingPage />;
-}
-
-// Original landing page content (now split into investor/sponsor versions)
-export function OriginalIndexPage() {
   return (
     <>
       {/* Hero Section */}
