@@ -5,6 +5,7 @@ import { FeatureGrid } from "@/components/marketing/feature-grid"
 import { ReturnsEducation } from "@/components/marketing/returns-education"
 import { ComplianceBlock } from "@/components/marketing/compliance-block"
 import { CTASection } from "@/components/marketing/cta-section"
+import { RoleTabs } from "@/components/marketing/role-tabs"
 
 export const metadata = {
   title: "For Investors | RealCo",

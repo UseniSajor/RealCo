@@ -2,6 +2,7 @@ import { MarketingNav } from "@/components/marketing/marketing-nav"
 import { MarketingFooter } from "@/components/marketing/marketing-footer"
 import { Hero } from "@/components/marketing/hero"
 import { CTASection } from "@/components/marketing/cta-section"
+import { RoleTabs } from "@/components/marketing/role-tabs"
 import { CheckCircle2, Handshake, TrendingUp, Shield, Clock } from "lucide-react"
 import Link from "next/link"
 
