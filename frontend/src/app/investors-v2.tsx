@@ -7,11 +7,11 @@ import { ReturnsEducation } from "../components/marketing/ReturnsEducation";
 import { Disclaimer } from "../components/marketing/Disclaimer";
 import { MarketingFooter } from "../components/marketing/MarketingFooter";
 
-export const Route = createFileRoute("/investors")({
-  component: InvestorsPage,
+export const Route = createFileRoute("/investors-v2")({
+  component: InvestorsPageV2,
 });
 
-function InvestorsPage() {
+function InvestorsPageV2() {
   return (
     <>
       <Hero

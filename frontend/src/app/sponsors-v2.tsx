@@ -6,11 +6,11 @@ import { CTASection } from "../components/marketing/CTASection";
 import { Disclaimer } from "../components/marketing/Disclaimer";
 import { MarketingFooter } from "../components/marketing/MarketingFooter";
 
-export const Route = createFileRoute("/sponsors")({
-  component: SponsorsPage,
+export const Route = createFileRoute("/sponsors-v2")({
+  component: SponsorsPageV2,
 });
 
-function SponsorsPage() {
+function SponsorsPageV2() {
   return (
     <>
       <Hero
