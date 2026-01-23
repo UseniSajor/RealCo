@@ -24,34 +24,23 @@ function RootComponent() {
   }
 
   return (
-    <div style={{ fontFamily: 'system-ui', padding: 16 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <h1 style={{ margin: 0 }}>RealCo Platform</h1>
-        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+    <div>
+      <nav className="nav-bar">
+        <div className="nav-logo">RealCo Platform</div>
+        <div className="nav-links">
           {isAuthenticated ? (
             <>
-              <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>Home</Link>
-              <Link to="/offerings" style={{ textDecoration: 'none', color: 'inherit' }}>Offerings</Link>
-              <button
-                onClick={handleLogout}
-                style={{
-                  padding: '6px 12px',
-                  fontSize: 14,
-                  backgroundColor: '#dc3545',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: 4,
-                  cursor: 'pointer',
-                }}
-              >
+              <Link to="/" className="nav-link">Home</Link>
+              <Link to="/offerings" className="nav-link">Offerings</Link>
+              <button onClick={handleLogout} className="btn btn-danger">
                 Logout
               </button>
             </>
           ) : (
-            <Link to="/login" style={{ textDecoration: 'none', color: 'inherit' }}>Login</Link>
+            <Link to="/login" className="btn btn-primary">Login</Link>
           )}
         </div>
-      </div>
+      </nav>
       <Outlet />
     </div>
   );
