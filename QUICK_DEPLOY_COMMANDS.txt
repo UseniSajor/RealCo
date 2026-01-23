@@ -1,0 +1,56 @@
+# Quick Deploy Commands for Demo Site
+
+# Step 1: Login to Vercel
+vercel login
+
+# Step 2: Navigate to frontend
+cd "c:\RealCo Platfrom\apps\web"
+
+# Step 3: Deploy demo site
+vercel --prod
+
+# When prompted:
+# - Set up and deploy? → Yes
+# - Which scope? → Select your account
+# - Link to existing project? → No
+# - Project name? → realco-demo
+# - Directory? → ./ (press Enter)
+# - Modify settings? → No
+
+# Done! Your demo URL will be displayed.
+
+# ==========================================
+# Alternative: Deploy to Existing Project
+# ==========================================
+
+# If you want to add to existing Vercel project:
+cd "c:\RealCo Platfrom\apps\web"
+vercel --prod
+
+# When prompted:
+# - Link to existing project? → Yes
+# - Select your existing RealCo project
+# - Deploy starts immediately
+
+# ==========================================
+# Verify Deployment
+# ==========================================
+
+# After deployment, test:
+# 1. Login: sponsor@realco.com / Demo123!
+# 2. Visit: /dashboard/sponsor/property-search
+# 3. Visit: /dashboard/sponsor/leads
+# 4. Visit: /dashboard/sponsor/market-research
+
+# ==========================================
+# Share with Sales Team
+# ==========================================
+
+# Demo URL: https://realco-demo.vercel.app
+# OR: https://realco-git-demo-version-username.vercel.app
+
+# Demo Accounts:
+# - sponsor@realco.com / Demo123!
+# - investor@realco.com / Demo123!
+# - fundmanager@realco.com / Demo123!
+# - provider@realco.com / Demo123!
