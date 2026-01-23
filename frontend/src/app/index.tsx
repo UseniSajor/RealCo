@@ -1,10 +1,9 @@
 import React from "react";
-import { Link } from "@tanstack/react-router";
-import { HomePageV2 } from "./index-v2";
+import { MainLandingPage } from "./index-main";
 
-// Main Landing Page with Detailed Content
+// Main Landing Page - Role Selection
 export function IndexPage() {
-  return <HomePageV2 />;
+  return <MainLandingPage />;
 }
 
 // Original landing page content (now split into investor/sponsor versions)
