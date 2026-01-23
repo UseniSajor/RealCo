@@ -545,13 +545,17 @@ export function ConstructionDashboard() {
                 <span className="text-sm">Punch List</span>
               </Link>
             </Button>
-            <Button variant="outline" className="h-auto flex-col gap-2 py-4">
-              <Users className="h-6 w-6" />
-              <span className="text-sm">Team</span>
+            <Button variant="outline" className="h-auto flex-col gap-2 py-4" asChild>
+              <Link href="/dashboard/sponsor/team">
+                <Users className="h-6 w-6" />
+                <span className="text-sm">Team</span>
+              </Link>
             </Button>
-            <Button variant="outline" className="h-auto flex-col gap-2 py-4">
-              <AlertTriangle className="h-6 w-6" />
-              <span className="text-sm">Issues</span>
+            <Button variant="outline" className="h-auto flex-col gap-2 py-4" asChild>
+              <Link href="/dashboard/sponsor/issues">
+                <AlertTriangle className="h-6 w-6" />
+                <span className="text-sm">Issues</span>
+              </Link>
             </Button>
           </div>
         </CardContent>
