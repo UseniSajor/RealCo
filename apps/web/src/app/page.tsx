@@ -87,7 +87,7 @@ export default function HomePage() {
               { metric: "5,000+", label: "Investors" },
               { metric: "98%", label: "On-Time Distributions" },
             ].map((stat, i) => (
-              <div key={i} className="text-center p-8 rounded-2xl bg-white dark:bg-slate-900 border-4 border-[#E07A47] hover:border-[#D96835] transition-all duration-300">
+              <div key={i} className="text-center p-8 rounded-2xl bg-white dark:bg-[#6b7280] border-4 border-[#E07A47] hover:border-[#D96835] transition-all duration-300">
                 <div className="text-5xl font-black gradient-text mb-2">{stat.metric}</div>
                 <div className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{stat.label}</div>
               </div>

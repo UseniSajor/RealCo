@@ -49,7 +49,7 @@ export default function LoginPage() {
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 focus:border-[#56CCF2] focus:outline-none"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white"
                     placeholder="you@company.com"
                     required
                   />
@@ -94,7 +94,7 @@ export default function LoginPage() {
                 </p>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
+              <div className="mt-8 pt-6 border-t border-slate-200 dark:border-[#E07A47]">
                 <p className="text-xs text-center text-muted-foreground mb-4">
                   Or continue with
                 </p>

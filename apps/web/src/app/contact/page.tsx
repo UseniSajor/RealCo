@@ -36,7 +36,7 @@ export default function ContactPage() {
                   <input
                     type="text"
                     id="name"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-slate-900"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white"
                     placeholder="Your name"
                     required
                   />
@@ -49,8 +49,9 @@ export default function ContactPage() {
                   <input
                     type="email"
                     id="email"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-border focus:border-[rgb(var(--primary))] focus:outline-none"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white"
                     placeholder="you@company.com"
+                    required
                   />
                 </div>
 
@@ -60,11 +61,16 @@ export default function ContactPage() {
                   </label>
                   <select
                     id="role"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-border focus:border-[rgb(var(--primary))] focus:outline-none"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white"
+                    required
                   >
                     <option>Sponsor / Developer</option>
                     <option>Investor</option>
                     <option>Service Provider</option>
+                    <option>Contractor</option>
+                    <option>Attorney</option>
+                    <option>Broker</option>
+                    <option>Fund Administrator</option>
                     <option>Other</option>
                   </select>
                 </div>
@@ -90,7 +96,7 @@ export default function ContactPage() {
                 We'll get back to you within 24 hours.
               </p>
 
-              <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
+              <div className="mt-6 pt-6 border-t border-slate-200 dark:border-[#E07A47]">
                 <p className="text-center text-sm text-muted-foreground">
                   Already have an account?{" "}
                   <Link href="/login" className="text-[#56CCF2] font-semibold hover:underline">
