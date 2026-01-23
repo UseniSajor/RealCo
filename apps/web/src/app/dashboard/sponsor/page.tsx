@@ -243,9 +243,11 @@ export default function SponsorDashboardPage() {
                   <TrendingUp className="mr-2 h-4 w-4" />
                   Send Update
                 </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <Hammer className="mr-2 h-4 w-4" />
-                  Construction Log
+                <Button className="w-full justify-start" variant="outline" asChild>
+                  <Link href="/dashboard/sponsor/construction">
+                    <Hammer className="mr-2 h-4 w-4" />
+                    Construction Dashboard
+                  </Link>
                 </Button>
               </CardContent>
             </Card>
