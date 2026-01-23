@@ -517,9 +517,11 @@ export function ConstructionDashboard() {
               <ImageIcon className="h-6 w-6" />
               <span className="text-sm">Upload Photos</span>
             </Button>
-            <Button variant="outline" className="h-auto flex-col gap-2 py-4">
-              <AlertCircle className="h-6 w-6" />
-              <span className="text-sm">Report Issue</span>
+            <Button variant="outline" className="h-auto flex-col gap-2 py-4" asChild>
+              <Link href="/dashboard/sponsor/rfis">
+                <AlertCircle className="h-6 w-6" />
+                <span className="text-sm">RFI Tracker</span>
+              </Link>
             </Button>
             <Button variant="outline" className="h-auto flex-col gap-2 py-4">
               <Users className="h-6 w-6" />
