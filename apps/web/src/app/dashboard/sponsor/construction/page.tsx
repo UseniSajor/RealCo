@@ -53,10 +53,10 @@ export default function SponsorConstructionPage() {
   return (
     <div className="flex min-h-screen bg-white">
       {/* Page-Specific Sidebar */}
-      <aside className="fixed left-0 top-0 h-screen w-64 bg-slate-900 border-r border-slate-700 flex flex-col overflow-y-auto">
+      <aside className="fixed left-0 top-0 h-screen w-64 bg-[#56CCF2] border-r border-[#56CCF2] flex flex-col overflow-y-auto">
         {/* Header with Return to Dashboard */}
-        <div className="p-6 border-b border-slate-700">
-          <Button variant="ghost" asChild className="w-full mb-4 text-white hover:bg-slate-800">
+        <div className="p-6 border-b border-white/20">
+          <Button asChild className="w-full mb-4 bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-full">
             <Link href="/dashboard/sponsor">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Return to Dashboard
@@ -68,7 +68,7 @@ export default function SponsorConstructionPage() {
             </div>
             <div>
               <h2 className="font-black text-white text-lg">Construction</h2>
-              <p className="text-xs text-slate-400">Sunset Apartments</p>
+              <p className="text-xs text-white/70">Sunset Apartments</p>
             </div>
           </div>
         </div>
@@ -81,7 +81,7 @@ export default function SponsorConstructionPage() {
               <a key={item.href} href={item.href} className="block">
                 <Button
                   variant="ghost"
-                  className="w-full justify-start gap-3 h-12 text-slate-300 hover:bg-slate-800 hover:text-white"
+                  className="w-full justify-start gap-3 h-12 text-white hover:bg-white/20 hover:text-white"
                 >
                   <Icon className="h-5 w-5" />
                   <span className="flex-1 text-left">{item.title}</span>
@@ -92,10 +92,10 @@ export default function SponsorConstructionPage() {
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-slate-700">
+        <div className="p-4 border-t border-white/20">
           <Button
             variant="ghost"
-            className="w-full text-slate-400 hover:text-white"
+            className="w-full text-white hover:bg-white/20 hover:text-white"
             size="sm"
             onClick={logout}
           >

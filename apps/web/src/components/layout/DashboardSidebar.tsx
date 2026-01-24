@@ -25,16 +25,16 @@ export function DashboardSidebar({ items, role, roleIcon: RoleIcon, userName, on
   const pathname = usePathname()
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-slate-900 border-r border-slate-700 flex flex-col overflow-y-auto">
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-[#56CCF2] border-r border-[#56CCF2] flex flex-col overflow-y-auto">
       {/* Header */}
-      <div className="p-6 border-b border-slate-700">
+      <div className="p-6 border-b border-white/20">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#56CCF2] to-[#E07A47] flex items-center justify-center">
             <RoleIcon className="h-6 w-6 text-white" />
           </div>
           <div>
             <h2 className="font-black text-white text-lg">{role}</h2>
-            <p className="text-xs text-slate-400">{userName}</p>
+            <p className="text-xs text-white/70">{userName}</p>
           </div>
         </div>
       </div>
@@ -53,7 +53,7 @@ export function DashboardSidebar({ items, role, roleIcon: RoleIcon, userName, on
                   "w-full justify-start gap-3 h-12",
                   isActive
                     ? "bg-[#E07A47] text-white hover:bg-[#E07A47]/90"
-                    : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                    : "text-white hover:bg-white/20 hover:text-white"
                 )}
               >
                 <Icon className="h-5 w-5" />
@@ -70,16 +70,16 @@ export function DashboardSidebar({ items, role, roleIcon: RoleIcon, userName, on
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-slate-700 space-y-2">
+      <div className="p-4 border-t border-white/20 space-y-2">
         <Link href="/dashboard">
-          <Button variant="outline" className="w-full" size="sm">
+          <Button variant="outline" className="w-full text-white border-white hover:bg-white/20" size="sm">
             Switch Role
           </Button>
         </Link>
         {onLogout && (
-          <Button 
-            variant="ghost" 
-            className="w-full text-slate-400 hover:text-white" 
+          <Button
+            variant="ghost"
+            className="w-full text-white hover:bg-white/20 hover:text-white"
             size="sm"
             onClick={onLogout}
           >
