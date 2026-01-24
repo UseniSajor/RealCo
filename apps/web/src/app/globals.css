@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ========================================================================= */
+/* REALCO PRODUCTION THEME - White Background with Dark Mode (Smoke Gray)   */
+/* ========================================================================= */
+
+:root {
+  /* Light Mode - White Background */
+  --background: 255 255 255;
+  --foreground: 15 23 42;
+}
+
+.dark {
+  /* Dark Mode - Smoke Gray Background */
+  --background: 107 114 128;
+  --foreground: 248 250 252;
+}
+
 /* RealCo Custom Shapes */
 .shape-circle {
   border-radius: 9999px;

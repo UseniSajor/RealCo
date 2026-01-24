@@ -3,6 +3,8 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import type { TierName } from './pricing-tiers'
+import { config } from './config'
+import { authProductionClient } from './api/auth-production'
 
 interface User {
   email: string
@@ -45,9 +47,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = async (email: string, password: string, role?: 'sponsor' | 'investor' | 'provider' | 'fund-manager') => {
-    // Temporary: Accept ANY username and password
-    // In production, this would validate against a real backend
-    
+    // Check if we're in production mode
+    if (config.authMode === 'production' && !config.isDemoMode) {
+      try {
+        const response = await authProductionClient.login(email, password)
+        // Normalize role (backend uses underscore, frontend uses hyphen)
+        const normalizedRole = response.user.role.replace('_', '-') as 'sponsor' | 'investor' | 'provider' | 'fund-manager'
+        const prodUser: User = {
+          email: response.user.email,
+          role: normalizedRole,
+          tier: 'pro',
+          name: response.user.name,
+          company: response.user.company,
+          createdAt: new Date().toISOString(),
+        }
+        setUser(prodUser)
+        setIsAuthenticated(true)
+        localStorage.setItem('realco_user', JSON.stringify(prodUser))
+        router.push(`/dashboard/${normalizedRole}`)
+        return
+      } catch (error) {
+        console.error('Production login failed:', error)
+        throw error
+      }
+    }
+
+    // DEMO MODE: Accept ANY username and password
     // Demo accounts with pre-configured roles
     const demoAccounts: Record<string, User> = {
       'sponsor@realco.com': {
@@ -159,7 +184,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push(`/dashboard/${role}`)
   }
 
-  const logout = () => {
+  const logout = async () => {
+    // Production logout
+    if (config.authMode === 'production' && !config.isDemoMode) {
+      try {
+        await authProductionClient.logout()
+      } catch (error) {
+        console.error('Production logout failed:', error)
+      }
+    }
+    
+    // Clear local state
     setUser(null)
     setIsAuthenticated(false)
     localStorage.removeItem('realco_user')

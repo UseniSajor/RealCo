@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { LucideIcon } from "lucide-react"
+import { DarkModeToggle } from "./DarkModeToggle"
 
 interface SidebarItem {
   title: string
@@ -75,7 +76,12 @@ export function DashboardSidebar({ items, role, roleIcon: RoleIcon, userName, on
       </nav>
 
       {/* Footer with oval buttons */}
-      <div className="p-4 border-t border-white/20 space-y-2">
+      <div className="p-4 border-t border-white/20 space-y-3">
+        {/* Dark Mode Toggle */}
+        <div className="flex justify-center">
+          <DarkModeToggle />
+        </div>
+        
         <Link href="/dashboard">
           <Button 
             variant="outline" 
