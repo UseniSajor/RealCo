@@ -203,7 +203,7 @@ export default function MarketResearchPage() {
   const assetData = selectedAssetType !== 'all' ? getAssetData() : null
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 p-6">
+    <div className="min-h-screen bg-white p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">

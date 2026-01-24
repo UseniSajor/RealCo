@@ -160,7 +160,7 @@ export default function FundManagerDashboardPage() {
                     { name: "Harbor Plaza", location: "San Diego, CA", noi: "$3.2M", appreciation: "+22%", occupancy: "96%" },
                     { name: "Tech Hub Offices", location: "Austin, TX", noi: "$4.5M", appreciation: "+25%", occupancy: "100%" },
                   ].map((property, i) => (
-                    <div key={i} className="p-5 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-2 border-slate-200 dark:border-purple-500 hover:shadow-xl transition-all">
+                    <div key={i} className="p-5 rounded-xl bg-white border-2 border-slate-200 hover:shadow-xl transition-all">
                       <div className="flex items-start justify-between mb-3">
                         <div>
                           <h4 className="font-black text-lg">{property.name}</h4>

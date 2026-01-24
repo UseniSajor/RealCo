@@ -78,40 +78,40 @@ export default function PricingPage() {
               Frequently Asked Questions
             </h2>
             <div className="space-y-6">
-              <div className="p-6 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700">
-                <h3 className="font-bold text-lg mb-2">Can I switch plans at any time?</h3>
-                <p className="text-muted-foreground">
+              <div className="p-6 rounded-lg bg-[#56CCF2] border-2 border-[#56CCF2]">
+                <h3 className="font-bold text-lg mb-2 text-white">Can I switch plans at any time?</h3>
+                <p className="text-white">
                   Yes! You can upgrade or downgrade your plan at any time. Changes take effect immediately,
                   and we'll prorate any billing differences.
                 </p>
               </div>
 
-              <div className="p-6 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700">
-                <h3 className="font-bold text-lg mb-2">What happens if I hit my limits on the Free plan?</h3>
-                <p className="text-muted-foreground">
+              <div className="p-6 rounded-lg bg-[#56CCF2] border-2 border-[#56CCF2]">
+                <h3 className="font-bold text-lg mb-2 text-white">What happens if I hit my limits on the Free plan?</h3>
+                <p className="text-white">
                   We'll notify you when you're approaching your limits and give you the option to upgrade.
                   You won't lose any data, but you may need to upgrade to continue using certain features.
                 </p>
               </div>
 
-              <div className="p-6 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700">
-                <h3 className="font-bold text-lg mb-2">Do you offer discounts for annual billing?</h3>
-                <p className="text-muted-foreground">
+              <div className="p-6 rounded-lg bg-[#56CCF2] border-2 border-[#56CCF2]">
+                <h3 className="font-bold text-lg mb-2 text-white">Do you offer discounts for annual billing?</h3>
+                <p className="text-white">
                   Yes! Save 20% when you pay annually. Contact us for enterprise pricing and custom plans.
                 </p>
               </div>
 
-              <div className="p-6 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700">
-                <h3 className="font-bold text-lg mb-2">What payment methods do you accept?</h3>
-                <p className="text-muted-foreground">
+              <div className="p-6 rounded-lg bg-[#56CCF2] border-2 border-[#56CCF2]">
+                <h3 className="font-bold text-lg mb-2 text-white">What payment methods do you accept?</h3>
+                <p className="text-white">
                   We accept all major credit cards (Visa, Mastercard, Amex), ACH transfers, and wire transfers
                   for Enterprise plans.
                 </p>
               </div>
 
-              <div className="p-6 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700">
-                <h3 className="font-bold text-lg mb-2">Is there a setup fee?</h3>
-                <p className="text-muted-foreground">
+              <div className="p-6 rounded-lg bg-[#56CCF2] border-2 border-[#56CCF2]">
+                <h3 className="font-bold text-lg mb-2 text-white">Is there a setup fee?</h3>
+                <p className="text-white">
                   No setup fees for Free and Pro plans. Enterprise plans include complimentary onboarding
                   and training as part of your subscription.
                 </p>

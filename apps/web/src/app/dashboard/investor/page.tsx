@@ -206,7 +206,7 @@ export default function InvestorDashboardPage() {
                     { name: "Riverside Condos", location: "Portland, OR", invested: "$300K", value: "$378K", gain: "+26%", gainColor: "text-green-600", status: "Active" },
                     { name: "Tech Campus", location: "Seattle, WA", invested: "$400K", value: "$485K", gain: "+21%", gainColor: "text-green-600", status: "Active" },
                   ].map((investment, i) => (
-                    <div key={i} className="p-5 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-2 border-slate-200 dark:border-[#56CCF2] hover:shadow-xl transition-all cursor-pointer">
+                    <div key={i} className="p-5 rounded-xl bg-white border-2 border-slate-200 hover:shadow-xl transition-all cursor-pointer">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
                           <h4 className="font-black text-lg mb-1">{investment.name}</h4>

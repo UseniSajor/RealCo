@@ -158,7 +158,7 @@ export default function ProviderDashboardPage() {
                     { project: "Office Tower", invoice: "#INV-2398", amount: "$125,000", status: "Approved", statusColor: "bg-green-100 dark:bg-green-900/20 text-green-600", date: "Jan 18" },
                     { project: "Riverside Condos", invoice: "#INV-2395", amount: "$73,800", status: "Paid", statusColor: "bg-blue-100 dark:bg-blue-900/20 text-blue-600", date: "Jan 15" },
                   ].map((invoice, i) => (
-                    <div key={i} className="p-5 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-2 border-slate-200 dark:border-[#56CCF2] hover:shadow-xl transition-all">
+                    <div key={i} className="p-5 rounded-xl bg-white border-2 border-slate-200 hover:shadow-xl transition-all">
                       <div className="flex items-start justify-between mb-3">
                         <div>
                           <h4 className="font-black text-lg">{invoice.project}</h4>

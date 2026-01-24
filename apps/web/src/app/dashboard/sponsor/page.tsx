@@ -94,16 +94,14 @@ export default function SponsorDashboardPage() {
             </div>
           </div>
 
-          {/* Platform Intro Video - Compact */}
-          <div className="mb-8 max-w-2xl">
-            <div className="h-48">
-              <MediaViewer
-                type="video"
-                src="/demo-video.mp4"
-                title="🎬 Welcome to Your Sponsor Portal"
-                description="Watch this 2-minute overview"
-              />
-            </div>
+          {/* Platform Intro Video - Full Width but Compact Height */}
+          <div className="mb-8">
+            <MediaViewer
+              type="video"
+              src="/demo-video.mp4"
+              title="🎬 Welcome to Your Sponsor Portal"
+              description="Watch this 2-minute overview"
+            />
           </div>
 
           {/* Stats Grid */}
@@ -271,7 +269,7 @@ export default function SponsorDashboardPage() {
                       updated: "5 hours ago"
                     },
                   ].map((deal, i) => (
-                    <div key={i} className="p-5 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-2 border-slate-200 dark:border-[#E07A47] hover:shadow-xl transition-all group cursor-pointer">
+                    <div key={i} className="p-5 rounded-xl bg-white border-2 border-slate-200 hover:shadow-xl transition-all group cursor-pointer">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
