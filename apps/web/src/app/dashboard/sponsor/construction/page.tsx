@@ -26,6 +26,9 @@ import { useEffect, useState } from "react"
 import { TaskModal } from "@/components/construction/TaskModal"
 import { DailyLogModal } from "@/components/construction/DailyLogModal"
 import { RFIModal } from "@/components/construction/RFIModal"
+import { SubmittalModal } from "@/components/construction/SubmittalModal"
+import { InspectionModal } from "@/components/construction/InspectionModal"
+import { SafetyIncidentModal } from "@/components/construction/SafetyIncidentModal"
 
 export default function SponsorConstructionPage() {
   const { logout } = useAuth()
@@ -38,6 +41,9 @@ export default function SponsorConstructionPage() {
   const [taskModalOpen, setTaskModalOpen] = useState(false)
   const [dailyLogModalOpen, setDailyLogModalOpen] = useState(false)
   const [rfiModalOpen, setRFIModalOpen] = useState(false)
+  const [submittalModalOpen, setSubmittalModalOpen] = useState(false)
+  const [inspectionModalOpen, setInspectionModalOpen] = useState(false)
+  const [safetyIncidentModalOpen, setSafetyIncidentModalOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
 
   // Fetch project data
@@ -101,6 +107,7 @@ export default function SponsorConstructionPage() {
     { title: "Tasks", href: "#tasks", icon: List },
     { title: "Documents", href: "#documents", icon: FileText },
     { title: "Photos", href: "#photos", icon: ImageIcon },
+    { title: "Inspections", href: "#inspections", icon: CheckCircle },
     { title: "Issues", href: "#issues", icon: AlertTriangle },
     { title: "Team", href: "#team", icon: Users },
   ]
@@ -530,17 +537,31 @@ export default function SponsorConstructionPage() {
             </Card>
           </div>
 
-          {/* Documents & Photos placeholder sections */}
+          {/* Documents & Submittals Section */}
           <div id="documents" className="mb-12">
-            <h2 className="text-2xl font-black mb-6">Documents</h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-black">Documents & Submittals</h2>
+              <Badge className="bg-[#56CCF2]">
+                {project._count?.submittals || 0} Submittals
+              </Badge>
+            </div>
             <Card className="border-4 border-[#56CCF2] bg-slate-50">
               <CardContent className="p-12 text-center">
                 <FileText className="h-16 w-16 text-slate-300 mx-auto mb-4" />
-                <p className="text-muted-foreground mb-4">Project documents and drawings</p>
-                <Button variant="outline">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Upload Document
-                </Button>
+                <p className="text-muted-foreground mb-4">Shop drawings, specs, and submittal packages</p>
+                <div className="flex gap-3 justify-center">
+                  <Button
+                    className="bg-[#E07A47] hover:bg-[#D96835]"
+                    onClick={() => setSubmittalModalOpen(true)}
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Submittal
+                  </Button>
+                  <Button variant="outline">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Upload Document
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -567,25 +588,62 @@ export default function SponsorConstructionPage() {
             </Card>
           </div>
 
-          {/* Issues Section */}
+          {/* Inspections Section */}
+          <div id="inspections" className="mb-12">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-black">Inspections</h2>
+              <Badge className="bg-green-500">
+                {project._count?.inspections || 0} Scheduled
+              </Badge>
+            </div>
+            <Card className="border-4 border-green-500 bg-slate-50">
+              <CardContent className="p-12 text-center">
+                <CheckCircle className="h-16 w-16 text-slate-300 mx-auto mb-4" />
+                <p className="text-muted-foreground mb-4">Schedule and track building inspections</p>
+                <Button
+                  className="bg-green-600 hover:bg-green-700"
+                  onClick={() => setInspectionModalOpen(true)}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Schedule Inspection
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Issues & Safety Section */}
           <div id="issues" className="mb-12">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-black">Issues & RFIs</h2>
-              <Badge className="bg-red-500">
-                {project._count?.rfis || 0} Open
-              </Badge>
+              <h2 className="text-2xl font-black">Issues & Safety</h2>
+              <div className="flex gap-2">
+                <Badge className="bg-yellow-500">
+                  {project._count?.rfis || 0} RFIs
+                </Badge>
+                <Badge className="bg-red-500">
+                  {project._count?.safetyIncidents || 0} Safety Reports
+                </Badge>
+              </div>
             </div>
             <Card className="border-4 border-red-500 bg-slate-50">
               <CardContent className="p-12 text-center">
                 <AlertTriangle className="h-16 w-16 text-slate-300 mx-auto mb-4" />
-                <p className="text-muted-foreground mb-4">Track RFIs, issues, and change orders</p>
-                <Button
-                  variant="outline"
-                  onClick={() => setRFIModalOpen(true)}
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create RFI
-                </Button>
+                <p className="text-muted-foreground mb-4">Track RFIs, safety incidents, and issues</p>
+                <div className="flex gap-3 justify-center">
+                  <Button
+                    variant="outline"
+                    onClick={() => setRFIModalOpen(true)}
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create RFI
+                  </Button>
+                  <Button
+                    className="bg-red-600 hover:bg-red-700"
+                    onClick={() => setSafetyIncidentModalOpen(true)}
+                  >
+                    <AlertTriangle className="mr-2 h-4 w-4" />
+                    Report Safety Incident
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -614,6 +672,27 @@ export default function SponsorConstructionPage() {
             projectId={project.id}
             open={rfiModalOpen}
             onOpenChange={setRFIModalOpen}
+            onSuccess={handleModalSuccess}
+          />
+
+          <SubmittalModal
+            projectId={project.id}
+            open={submittalModalOpen}
+            onOpenChange={setSubmittalModalOpen}
+            onSuccess={handleModalSuccess}
+          />
+
+          <InspectionModal
+            projectId={project.id}
+            open={inspectionModalOpen}
+            onOpenChange={setInspectionModalOpen}
+            onSuccess={handleModalSuccess}
+          />
+
+          <SafetyIncidentModal
+            projectId={project.id}
+            open={safetyIncidentModalOpen}
+            onOpenChange={setSafetyIncidentModalOpen}
             onSuccess={handleModalSuccess}
           />
         </>
