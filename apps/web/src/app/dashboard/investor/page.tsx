@@ -314,7 +314,7 @@ export default function InvestorDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-4 border-[#E07A47]">
+            <Card className="border-4 border-[#E07A47] bg-slate-50">
               <CardHeader>
                 <CardTitle className="text-lg">Cash on Cash</CardTitle>
                 <CardDescription>Annual return</CardDescription>

@@ -212,6 +212,165 @@ export default function FundManagerDashboardPage() {
               </Card>
             </div>
           </div>
+
+          {/* Portfolio Analytics */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-black mb-6">Portfolio Performance Analytics</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="border-4 border-[#56CCF2] bg-slate-50">
+                <CardHeader>
+                  <CardTitle className="text-lg">NOI Growth</CardTitle>
+                  <CardDescription>Year-over-year</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-5xl font-black text-[#56CCF2] mb-2">+18.2%</div>
+                  <p className="text-sm text-muted-foreground mb-4">Portfolio-wide increase</p>
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span className="text-green-600 font-semibold">Exceeding targets</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-4 border-[#E07A47] bg-slate-50">
+                <CardHeader>
+                  <CardTitle className="text-lg">Occupancy Rate</CardTitle>
+                  <CardDescription>Across all properties</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-5xl font-black text-[#E07A47] mb-2">96.8%</div>
+                  <p className="text-sm text-muted-foreground mb-4">24 properties</p>
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span className="text-green-600 font-semibold">Above market average</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-4 border-green-500 bg-slate-50">
+                <CardHeader>
+                  <CardTitle className="text-lg">Equity Multiple</CardTitle>
+                  <CardDescription>Realized + unrealized</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-5xl font-black text-green-600 mb-2">2.4x</div>
+                  <p className="text-sm text-muted-foreground mb-4">Average across funds</p>
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span className="text-green-600 font-semibold">Strong returns</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Investor Relations */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <Card className="border-4 border-purple-500 bg-slate-50">
+              <CardHeader>
+                <CardTitle>Investor Communications</CardTitle>
+                <CardDescription>Recent updates and engagement</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {[
+                    { type: "Quarterly Report", recipients: "1,247 investors", date: "Jan 20", status: "Sent" },
+                    { type: "Tax Document (K-1s)", recipients: "1,189 investors", date: "Jan 18", status: "Sent" },
+                    { type: "Distribution Notice", recipients: "245 investors", date: "Jan 15", status: "Sent" },
+                    { type: "Portfolio Update", recipients: "1,247 investors", date: "Jan 10", status: "Sent" },
+                  ].map((comm, i) => (
+                    <div key={i} className="p-4 rounded-xl bg-white border-2 border-slate-200">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h4 className="font-bold text-sm mb-1">{comm.type}</h4>
+                          <p className="text-xs text-muted-foreground">{comm.recipients}</p>
+                        </div>
+                        <span className="px-2 py-1 rounded-full text-xs font-bold bg-green-100 text-green-600">
+                          {comm.status}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">{comm.date}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-4 border-[#E07A47] bg-slate-50">
+              <CardHeader>
+                <CardTitle>Active Acquisitions</CardTitle>
+                <CardDescription>Properties in due diligence</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {[
+                    { property: "Marina View Apartments", location: "San Francisco, CA", price: "$42.5M", status: "Under LOI", daysRemaining: 45 },
+                    { property: "Innovation Office Park", location: "Austin, TX", price: "$28.3M", status: "Due Diligence", daysRemaining: 18 },
+                    { property: "Lakeside Retail Center", location: "Denver, CO", price: "$15.8M", status: "Inspection Period", daysRemaining: 8 },
+                  ].map((acq, i) => (
+                    <div key={i} className="p-4 rounded-xl bg-white border-2 border-slate-200 hover:shadow-lg transition-all">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h4 className="font-bold mb-1">{acq.property}</h4>
+                          <p className="text-xs text-muted-foreground">{acq.location}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-black text-[#E07A47]">{acq.price}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                        <span className="text-xs font-semibold text-blue-600">{acq.status}</span>
+                        <span className="text-xs text-muted-foreground">{acq.daysRemaining} days remaining</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Fund Performance Summary */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <Card className="border-4 border-[#56CCF2] bg-slate-50">
+              <CardHeader>
+                <CardTitle className="text-sm">Distributions Paid</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-black mb-1">$8.2M</div>
+                <p className="text-xs text-muted-foreground">Last 12 months</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-4 border-green-500 bg-slate-50">
+              <CardHeader>
+                <CardTitle className="text-sm">Capital Raised YTD</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-black mb-1">$52M</div>
+                <p className="text-xs text-green-600 font-semibold">+35% vs last year</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-4 border-[#E07A47] bg-slate-50">
+              <CardHeader>
+                <CardTitle className="text-sm">Active Funds</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-black mb-1">5</div>
+                <p className="text-xs text-muted-foreground">3 funds, 2 SPVs</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-4 border-purple-500 bg-slate-50">
+              <CardHeader>
+                <CardTitle className="text-sm">Investor Satisfaction</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-black mb-1">4.8/5</div>
+                <p className="text-xs text-green-600 font-semibold">Based on surveys</p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
     </div>

@@ -223,6 +223,129 @@ export default function ProviderDashboardPage() {
               </Card>
             </div>
           </div>
+
+          {/* Active Work Orders */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-black mb-6">Active Work Orders</h2>
+            <Card className="border-4 border-[#56CCF2] bg-slate-50">
+              <CardHeader>
+                <CardTitle>Current Projects & Tasks</CardTitle>
+                <CardDescription>Track work completion and submit for payment</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {[
+                    { project: "Sunset Apartments", task: "3rd Floor Framing", dueDate: "Jan 28", completion: 75, budget: "$45,000", status: "In Progress" },
+                    { project: "Office Tower", task: "HVAC Installation", dueDate: "Feb 5", completion: 40, budget: "$125,000", status: "In Progress" },
+                    { project: "Riverside Condos", task: "Electrical Rough-In", dueDate: "Jan 30", completion: 90, budget: "$38,500", status: "Ready to Invoice" },
+                    { project: "Tech Campus", task: "Foundation Pour", dueDate: "Feb 10", completion: 20, budget: "$95,000", status: "Scheduled" },
+                  ].map((order, i) => (
+                    <div key={i} className="p-5 rounded-xl bg-white border-2 border-slate-200 hover:shadow-xl transition-all">
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h4 className="font-black text-lg mb-1">{order.task}</h4>
+                          <p className="text-sm text-muted-foreground">{order.project}</p>
+                        </div>
+                        <span className={`px-3 py-1.5 rounded-full text-xs font-bold ${
+                          order.status === 'Ready to Invoice' ? 'bg-green-100 text-green-600' :
+                          order.status === 'In Progress' ? 'bg-blue-100 text-blue-600' :
+                          'bg-slate-100 text-slate-600'
+                        }`}>
+                          {order.status}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-4 mb-4">
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-1">Budget</p>
+                          <p className="font-bold">{order.budget}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-1">Due Date</p>
+                          <p className="font-bold">{order.dueDate}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-1">Completion</p>
+                          <p className="font-bold">{order.completion}%</p>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="font-semibold">Progress</span>
+                          <span className="text-muted-foreground">{order.completion}% Complete</span>
+                        </div>
+                        <div className="h-3 bg-slate-200 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-[#56CCF2] to-[#E07A47]"
+                            style={{ width: `${order.completion}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Payment Insights */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="border-4 border-green-500 bg-slate-50">
+              <CardHeader>
+                <CardTitle className="text-lg">Payment Performance</CardTitle>
+                <CardDescription>Track your payment history</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Average Payment Time</p>
+                    <p className="text-4xl font-black text-green-600">7 days</p>
+                    <p className="text-xs text-green-600 font-semibold mt-1">Faster than industry average (15 days)</p>
+                  </div>
+                  <div className="pt-4 border-t border-slate-200">
+                    <p className="text-xs text-muted-foreground mb-1">On-Time Payment Rate</p>
+                    <p className="text-2xl font-black">98.5%</p>
+                  </div>
+                  <div className="pt-4 border-t border-slate-200">
+                    <p className="text-xs text-muted-foreground mb-1">Total Paid YTD</p>
+                    <p className="text-2xl font-black text-[#56CCF2]">$1.2M</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-4 border-[#E07A47] bg-slate-50">
+              <CardHeader>
+                <CardTitle className="text-lg">Upcoming Opportunities</CardTitle>
+                <CardDescription>New projects available for bidding</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {[
+                    { project: "Harbor Plaza Renovation", value: "$185K", deadline: "Feb 1", type: "Plumbing" },
+                    { project: "University Housing", value: "$320K", deadline: "Feb 8", type: "Framing" },
+                    { project: "Medical Center Expansion", value: "$275K", deadline: "Feb 12", type: "HVAC" },
+                  ].map((opp, i) => (
+                    <div key={i} className="p-4 rounded-xl bg-white border-2 border-slate-200 hover:shadow-lg transition-all cursor-pointer">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <h4 className="font-bold text-sm mb-1">{opp.project}</h4>
+                          <p className="text-xs text-muted-foreground">{opp.type}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-black text-[#E07A47]">{opp.value}</p>
+                          <p className="text-xs text-muted-foreground">Budget</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                        <span className="text-xs text-muted-foreground">Bid deadline: {opp.deadline}</span>
+                        <Button size="sm" variant="outline">Submit Bid</Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
     </div>
