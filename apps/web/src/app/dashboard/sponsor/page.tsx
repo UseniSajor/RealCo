@@ -50,7 +50,7 @@ export default function SponsorDashboardPage() {
   ]
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-white">
       {/* Sidebar */}
       <DashboardSidebar
         items={sidebarItems}
@@ -61,7 +61,7 @@ export default function SponsorDashboardPage() {
       />
 
       {/* Main Content */}
-      <main className="flex-1 ml-64">
+      <main className="flex-1 ml-64 bg-white">
         <div className="container max-w-7xl px-8 py-8 mx-auto">
           {/* Header */}
           <div className="mb-8">
@@ -94,14 +94,16 @@ export default function SponsorDashboardPage() {
             </div>
           </div>
 
-          {/* Platform Intro Video */}
-          <div className="mb-8">
-            <MediaViewer
-              type="video"
-              src="/demo-video.mp4"
-              title="🎬 Welcome to Your Sponsor Portal"
-              description="Watch this 2-minute overview to see how you can raise capital, manage deals, and track construction progress all in one platform"
-            />
+          {/* Platform Intro Video - Compact */}
+          <div className="mb-8 max-w-2xl">
+            <div className="h-48">
+              <MediaViewer
+                type="video"
+                src="/demo-video.mp4"
+                title="🎬 Welcome to Your Sponsor Portal"
+                description="Watch this 2-minute overview"
+              />
+            </div>
           </div>
 
           {/* Stats Grid */}
