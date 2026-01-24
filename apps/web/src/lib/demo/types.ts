@@ -40,6 +40,11 @@ export interface DemoOffering {
   status: 'ACTIVE' | 'FUNDED' | 'CLOSED'
   targetReturn: string
   holdPeriod: string
+  assetType?: string
+  units?: number
+  squareFeet?: number
+  occupancyRate?: string
+  description?: string
 }
 
 export interface DemoInvestment {
@@ -49,6 +54,10 @@ export interface DemoInvestment {
   date: Date
   status: 'ACTIVE' | 'EXITED'
   returnToDate: number
+  currentValue?: number
+  distributionsReceived?: number
+  lastDistributionDate?: Date
+  annualizedReturn?: number
 }
 
 export interface DemoDrawRequest {
@@ -56,9 +65,14 @@ export interface DemoDrawRequest {
   projectName: string
   amount: number
   category: string
-  status: 'PENDING' | 'APPROVED' | 'PAID' | 'REJECTED'
+  status: 'PENDING' | 'APPROVED' | 'PAID' | 'REJECTED' | 'UNDER_REVIEW'
   date: Date
   description: string
+  inspectionDate?: Date
+  inspector?: string
+  requestedBy?: string
+  paidDate?: Date
+  checkNumber?: string
 }
 
 export interface DemoInvoice {
@@ -69,6 +83,13 @@ export interface DemoInvoice {
   status: 'DRAFT' | 'SUBMITTED' | 'UNDER_REVIEW' | 'APPROVED' | 'PAID' | 'REJECTED'
   date: Date
   description: string
+  vendorName?: string
+  vendorContact?: string
+  approvedDate?: Date
+  paidDate?: Date
+  paymentMethod?: 'ACH' | 'CHECK' | 'WIRE'
+  checkNumber?: string
+  dueDate?: Date
 }
 
 export interface DemoProject {
@@ -79,6 +100,25 @@ export interface DemoProject {
   status: 'PLANNING' | 'IN_PROGRESS' | 'COMPLETED'
   startDate: Date
   expectedCompletion: Date
+  completionPercentage?: number
+  address?: string
+  developer?: string
+  generalContractor?: string
+  architect?: string
+  units?: number
+  totalSquareFeet?: number
+  budgetCategories?: Array<{
+    name: string
+    budgeted: number
+    spent: number
+    percentage: number
+  }>
+  milestones?: Array<{
+    name: string
+    targetDate: Date
+    actualDate: Date | null
+    status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'
+  }>
 }
 
 export interface DemoState {
