@@ -36,7 +36,7 @@ export default function ProviderDashboardPage() {
   ]
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-white">
       <DashboardSidebar
         items={sidebarItems}
         role="Service Provider"
@@ -45,7 +45,7 @@ export default function ProviderDashboardPage() {
         onLogout={logout}
       />
 
-      <main className="flex-1 ml-64">
+      <main className="flex-1 ml-64 bg-white">
         <div className="container max-w-7xl px-8 py-8 mx-auto">
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
@@ -84,7 +84,7 @@ export default function ProviderDashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card className="border-4 border-[#56CCF2] hover:shadow-xl transition-all">
+            <Card className="border-4 border-[#56CCF2] hover:shadow-xl transition-all bg-slate-50">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold text-muted-foreground">Active Projects</CardTitle>
@@ -99,7 +99,7 @@ export default function ProviderDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-4 border-orange-500 hover:shadow-xl transition-all">
+            <Card className="border-4 border-orange-500 hover:shadow-xl transition-all bg-slate-50">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold text-muted-foreground">Pending Invoices</CardTitle>
@@ -114,7 +114,7 @@ export default function ProviderDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-4 border-green-500 hover:shadow-xl transition-all">
+            <Card className="border-4 border-green-500 hover:shadow-xl transition-all bg-slate-50">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold text-muted-foreground">Approved This Month</CardTitle>
@@ -129,7 +129,7 @@ export default function ProviderDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-4 border-[#E07A47] hover:shadow-xl transition-all">
+            <Card className="border-4 border-[#E07A47] hover:shadow-xl transition-all bg-slate-50">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold text-muted-foreground">Awaiting Review</CardTitle>
@@ -146,7 +146,7 @@ export default function ProviderDashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <Card className="lg:col-span-2 border-4 border-[#56CCF2]">
+            <Card className="lg:col-span-2 border-4 border-[#56CCF2] bg-slate-50">
               <CardHeader>
                 <CardTitle>Recent Invoices</CardTitle>
                 <CardDescription>Your submission history</CardDescription>
@@ -179,7 +179,7 @@ export default function ProviderDashboardPage() {
             </Card>
 
             <div className="space-y-6">
-              <Card className="border-4 border-[#E07A47]">
+              <Card className="border-4 border-[#E07A47] bg-slate-50">
                 <CardHeader>
                   <CardTitle className="text-lg">Quick Actions</CardTitle>
                 </CardHeader>
@@ -205,7 +205,7 @@ export default function ProviderDashboardPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-4 border-[#56CCF2]">
+              <Card className="border-4 border-[#56CCF2] bg-slate-50">
                 <CardHeader>
                   <CardTitle className="text-lg">Payment Stats</CardTitle>
                   <CardDescription>30-day average</CardDescription>

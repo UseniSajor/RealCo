@@ -39,7 +39,7 @@ export default function InvestorDashboardPage() {
   ]
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-white">
       {/* Sidebar */}
       <DashboardSidebar
         items={sidebarItems}
@@ -50,7 +50,7 @@ export default function InvestorDashboardPage() {
       />
 
       {/* Main Content */}
-      <main className="flex-1 ml-64">
+      <main className="flex-1 ml-64 bg-white">
         <div className="container max-w-7xl px-8 py-8 mx-auto">
           {/* Header */}
           <div className="mb-8">
@@ -93,7 +93,7 @@ export default function InvestorDashboardPage() {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card className="border-4 border-[#56CCF2] hover:shadow-xl transition-all">
+            <Card className="border-4 border-[#56CCF2] hover:shadow-xl transition-all bg-slate-50">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold text-muted-foreground">
@@ -115,7 +115,7 @@ export default function InvestorDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-4 border-green-500 hover:shadow-xl transition-all">
+            <Card className="border-4 border-green-500 hover:shadow-xl transition-all bg-slate-50">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold text-muted-foreground">
@@ -137,7 +137,7 @@ export default function InvestorDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-4 border-[#E07A47] hover:shadow-xl transition-all">
+            <Card className="border-4 border-[#E07A47] hover:shadow-xl transition-all bg-slate-50">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold text-muted-foreground">
@@ -184,7 +184,7 @@ export default function InvestorDashboardPage() {
 
           {/* Portfolio Overview */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <Card className="lg:col-span-2 border-4 border-[#56CCF2]">
+            <Card className="lg:col-span-2 border-4 border-[#56CCF2] bg-slate-50">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
@@ -238,7 +238,7 @@ export default function InvestorDashboardPage() {
 
             <div className="space-y-6">
               {/* Recent Distributions */}
-              <Card className="border-4 border-[#E07A47]">
+              <Card className="border-4 border-[#E07A47] bg-slate-50">
                 <CardHeader>
                   <CardTitle className="text-lg">Recent Distributions</CardTitle>
                   <CardDescription>Last 3 months</CardDescription>
@@ -269,7 +269,7 @@ export default function InvestorDashboardPage() {
               </Card>
 
               {/* Quick Actions */}
-              <Card className="border-4 border-[#56CCF2]">
+              <Card className="border-4 border-[#56CCF2] bg-slate-50">
                 <CardHeader>
                   <CardTitle className="text-lg">Quick Actions</CardTitle>
                 </CardHeader>
@@ -299,7 +299,7 @@ export default function InvestorDashboardPage() {
 
           {/* Performance Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="border-4 border-[#56CCF2]">
+            <Card className="border-4 border-[#56CCF2] bg-slate-50">
               <CardHeader>
                 <CardTitle className="text-lg">Portfolio IRR</CardTitle>
                 <CardDescription>Internal rate of return</CardDescription>
@@ -329,7 +329,7 @@ export default function InvestorDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-4 border-[#56CCF2]">
+            <Card className="border-4 border-[#56CCF2] bg-slate-50">
               <CardHeader>
                 <CardTitle className="text-lg">Total Returns</CardTitle>
                 <CardDescription>Appreciation + distributions</CardDescription>

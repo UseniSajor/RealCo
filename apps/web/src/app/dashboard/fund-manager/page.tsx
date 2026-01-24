@@ -38,7 +38,7 @@ export default function FundManagerDashboardPage() {
   ]
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-white">
       <DashboardSidebar
         items={sidebarItems}
         role="Fund Manager"
@@ -47,7 +47,7 @@ export default function FundManagerDashboardPage() {
         onLogout={logout}
       />
 
-      <main className="flex-1 ml-64">
+      <main className="flex-1 ml-64 bg-white">
         <div className="container max-w-7xl px-8 py-8 mx-auto">
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
@@ -86,7 +86,7 @@ export default function FundManagerDashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card className="border-4 border-purple-500 hover:shadow-xl transition-all">
+            <Card className="border-4 border-purple-500 hover:shadow-xl transition-all bg-slate-50">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold text-muted-foreground">Properties</CardTitle>
@@ -101,7 +101,7 @@ export default function FundManagerDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-4 border-[#E07A47] hover:shadow-xl transition-all">
+            <Card className="border-4 border-[#E07A47] hover:shadow-xl transition-all bg-slate-50">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold text-muted-foreground">Assets Under Mgmt</CardTitle>
@@ -116,7 +116,7 @@ export default function FundManagerDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-4 border-[#56CCF2] hover:shadow-xl transition-all">
+            <Card className="border-4 border-[#56CCF2] hover:shadow-xl transition-all bg-slate-50">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold text-muted-foreground">Total Investors</CardTitle>
@@ -131,7 +131,7 @@ export default function FundManagerDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-4 border-green-500 hover:shadow-xl transition-all">
+            <Card className="border-4 border-green-500 hover:shadow-xl transition-all bg-slate-50">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold text-muted-foreground">Portfolio IRR</CardTitle>
@@ -148,7 +148,7 @@ export default function FundManagerDashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <Card className="lg:col-span-2 border-4 border-purple-500">
+            <Card className="lg:col-span-2 border-4 border-purple-500 bg-slate-50">
               <CardHeader>
                 <CardTitle>Top Performing Properties</CardTitle>
                 <CardDescription>Based on NOI and appreciation</CardDescription>
@@ -187,7 +187,7 @@ export default function FundManagerDashboardPage() {
             </Card>
 
             <div className="space-y-6">
-              <Card className="border-4 border-[#E07A47]">
+              <Card className="border-4 border-[#E07A47] bg-slate-50">
                 <CardHeader>
                   <CardTitle className="text-lg">Upcoming Distributions</CardTitle>
                 </CardHeader>
