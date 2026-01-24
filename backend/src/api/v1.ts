@@ -16,6 +16,7 @@ import { bankingRoutes } from './routes/banking.routes.js';
 import { escrowRoutes } from './routes/escrow.routes.js';
 import { complianceRoutes } from './routes/compliance.routes.js';
 import { authRoutes } from './routes/auth.routes.js';
+import { constructionRoutes } from './routes/construction.routes.js';
 import { ProjectNotFoundError, ValidationError, ComplianceError } from '../services/errors.js';
 
 const projectService = new ProjectService(prisma);
@@ -784,16 +785,23 @@ export async function registerV1Routes(app: FastifyInstance) {
   // ==========================================================================
   // FINANCE & TRUST MODULE ROUTES
   // ==========================================================================
-  
+
   // Register all transaction routes
   await transactionRoutes(app);
-  
+
   // Register banking routes
   await bankingRoutes(app);
-  
+
   // Register escrow routes
   await escrowRoutes(app);
-  
+
   // Register compliance routes
   await complianceRoutes(app);
+
+  // ==========================================================================
+  // CONSTRUCTION PROJECT MANAGEMENT (OS-PM MODULE)
+  // ==========================================================================
+
+  // Register construction management routes (projects, tasks, daily logs, RFIs, etc.)
+  await constructionRoutes(app);
 }
