@@ -30,13 +30,13 @@ export default function InvestorsPage() {
 
       <FeatureGrid
         title="What you get"
+        subtitle="Everything you need in one place"
         items={[
           "Deal transparency",
           "Secure onboarding",
           "Ongoing visibility",
           "Distributions & tax docs",
         ]}
-        columns={2}
       />
 
       <ReturnsEducation />

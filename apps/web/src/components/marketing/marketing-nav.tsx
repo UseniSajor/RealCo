@@ -2,67 +2,83 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import * as React from "react"
+import { Building2 } from "lucide-react"
+import { DarkModeToggle } from "@/components/layout/DarkModeToggle"
 
 export function MarketingNav() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
-
   return (
-    <nav className="sticky top-0 z-50 w-full border-b-4 border-[#E07A47] bg-[#1e40af]/95 backdrop-blur shadow-lg shadow-[#E07A47]/10">
-      <div className="container flex h-20 max-w-7xl items-center justify-between px-6 mx-auto">
-        <Link href="/" className="flex items-center space-x-2">
-          <span className="text-3xl font-black text-white">RealCo</span>
-        </Link>
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-realco-gray/90 backdrop-blur-lg border-b-2 border-gray-200 dark:border-white/10">
+      <div className="container max-w-7xl mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-12 h-12 shape-circle bg-gradient-realco flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <Building2 className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <span className="text-2xl font-black text-realco-navy dark:text-white">RealCo</span>
+              <p className="text-xs text-muted-foreground">Real Estate Syndication Platform</p>
+            </div>
+          </Link>
 
-        <div className="hidden md:flex items-center space-x-3">
-          <Button variant="ghost" size="sm" asChild className="bg-white/10 hover:bg-white/20 text-white font-semibold rounded-full px-4">
-            <Link href="/">Home</Link>
-          </Button>
-          <Button variant="ghost" size="sm" asChild className="bg-white/10 hover:bg-white/20 text-white font-semibold rounded-full px-4">
-            <Link href="/sponsors">Sponsors</Link>
-          </Button>
-          <Button variant="ghost" size="sm" asChild className="bg-white/10 hover:bg-white/20 text-white font-semibold rounded-full px-4">
-            <Link href="/investors">Investors</Link>
-          </Button>
-          <Button variant="ghost" size="sm" asChild className="bg-white/10 hover:bg-white/20 text-white font-semibold rounded-full px-4">
-            <Link href="/providers">Providers</Link>
-          </Button>
-          <Button variant="ghost" size="sm" asChild className="bg-white/10 hover:bg-white/20 text-white font-semibold rounded-full px-4">
-            <Link href="/fund-managers">Fund Managers</Link>
-          </Button>
-          <Button variant="ghost" size="sm" asChild className="bg-[#56CCF2]/20 hover:bg-[#56CCF2]/30 text-[#56CCF2] font-semibold rounded-full px-4 border border-[#56CCF2]">
-            <Link href="/pricing">Pricing</Link>
-          </Button>
-        </div>
-
-        <div className="flex items-center gap-3">
-          {mounted && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="rounded-full text-white hover:bg-white/20"
+          {/* Navigation Links */}
+          <div className="hidden md:flex items-center gap-4">
+            <Link
+              href="/sponsors"
+              className="px-4 py-2 shape-oval text-sm font-semibold text-realco-navy dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-all"
             >
-              {theme === "dark" ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
-          )}
-          <Button variant="outline" size="sm" asChild className="border-2 border-white text-white hover:bg-white hover:text-[#1e40af] font-bold rounded-full">
-            <Link href="/login">Log In</Link>
-          </Button>
-          <Button size="sm" asChild className="bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-full">
-            <Link href="/signup">Sign Up</Link>
-          </Button>
+              Sponsors
+            </Link>
+            <Link
+              href="/investors"
+              className="px-4 py-2 shape-oval text-sm font-semibold text-realco-navy dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-all"
+            >
+              Investors
+            </Link>
+            <Link
+              href="/fund-managers"
+              className="px-4 py-2 shape-oval text-sm font-semibold text-realco-navy dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-all"
+            >
+              Fund Managers
+            </Link>
+            <Link
+              href="/providers"
+              className="px-4 py-2 shape-oval text-sm font-semibold text-realco-navy dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-all"
+            >
+              Service Providers
+            </Link>
+            <Link
+              href="/pricing"
+              className="px-4 py-2 shape-oval text-sm font-semibold text-realco-navy dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-all"
+            >
+              Pricing
+            </Link>
+          </div>
+
+          {/* Right Actions */}
+          <div className="flex items-center gap-3">
+            {/* Dark Mode Toggle */}
+            <div className="hidden md:block">
+              <DarkModeToggle />
+            </div>
+
+            {/* Login Button */}
+            <Link href="/login">
+              <Button
+                variant="outline"
+                className="shape-oval border-2 border-realco-blue text-realco-blue hover:bg-realco-blue hover:text-white font-semibold transition-all"
+              >
+                Log In
+              </Button>
+            </Link>
+
+            {/* Sign Up Button */}
+            <Link href="/signup">
+              <Button className="shape-oval bg-realco-orange hover:bg-realco-orange/90 text-white font-bold shadow-lg hover:shadow-xl transition-all">
+                Sign Up
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </nav>

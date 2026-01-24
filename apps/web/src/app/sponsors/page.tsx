@@ -35,7 +35,6 @@ export default function SponsorsPage() {
           "Control construction spend",
           "Automate reporting",
         ]}
-        columns={2}
       />
 
       <section className="py-24 bg-muted/30">
