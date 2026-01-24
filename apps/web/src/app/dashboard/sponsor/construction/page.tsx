@@ -23,6 +23,9 @@ import {
 import { useAuth } from "@/lib/auth-context"
 import { constructionAPI, type ConstructionProject, type Task } from "@/lib/api/construction.api"
 import { useEffect, useState } from "react"
+import { TaskModal } from "@/components/construction/TaskModal"
+import { DailyLogModal } from "@/components/construction/DailyLogModal"
+import { RFIModal } from "@/components/construction/RFIModal"
 
 export default function SponsorConstructionPage() {
   const { logout } = useAuth()
@@ -31,40 +34,64 @@ export default function SponsorConstructionPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Fetch project data on mount
-  useEffect(() => {
-    async function fetchProjectData() {
-      try {
-        setLoading(true)
-        setError(null)
+  // Modal states
+  const [taskModalOpen, setTaskModalOpen] = useState(false)
+  const [dailyLogModalOpen, setDailyLogModalOpen] = useState(false)
+  const [rfiModalOpen, setRFIModalOpen] = useState(false)
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
 
-        // Get all projects for the organization
-        const { projects } = await constructionAPI.getProjects()
+  // Fetch project data
+  const fetchProjectData = async () => {
+    try {
+      setLoading(true)
+      setError(null)
 
-        if (projects.length === 0) {
-          // No projects yet - show empty state
-          setLoading(false)
-          return
-        }
+      // Get all projects for the organization
+      const { projects } = await constructionAPI.getProjects()
 
-        // Use the first project (or we could add project selection later)
-        const firstProject = projects[0]
-        setProject(firstProject)
-
-        // Fetch tasks for this project
-        const { tasks: projectTasks } = await constructionAPI.getTasks(firstProject.id)
-        setTasks(projectTasks)
-
+      if (projects.length === 0) {
+        // No projects yet - show empty state
         setLoading(false)
-      } catch (err) {
-        console.error('Failed to fetch construction data:', err)
-        setError(err instanceof Error ? err.message : 'Failed to load construction data')
-        setLoading(false)
+        return
       }
-    }
 
+      // Use the first project (or we could add project selection later)
+      const firstProject = projects[0]
+      setProject(firstProject)
+
+      // Fetch tasks for this project
+      const { tasks: projectTasks } = await constructionAPI.getTasks(firstProject.id)
+      setTasks(projectTasks)
+
+      setLoading(false)
+    } catch (err) {
+      console.error('Failed to fetch construction data:', err)
+      setError(err instanceof Error ? err.message : 'Failed to load construction data')
+      setLoading(false)
+    }
+  }
+
+  // Fetch on mount
+  useEffect(() => {
     fetchProjectData()
   }, [])
+
+  // Handler for modal success - refresh data
+  const handleModalSuccess = () => {
+    fetchProjectData()
+  }
+
+  // Handler for task edit
+  const handleTaskEdit = (task: Task) => {
+    setSelectedTask(task)
+    setTaskModalOpen(true)
+  }
+
+  // Handler for new task
+  const handleNewTask = () => {
+    setSelectedTask(null)
+    setTaskModalOpen(true)
+  }
 
   // Page-specific sidebar for construction tools
   const constructionSidebarItems = [
@@ -404,7 +431,10 @@ export default function SponsorConstructionPage() {
           <div id="tasks" className="mb-12">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-black">Active Tasks</h2>
-              <Button className="bg-[#E07A47] hover:bg-[#D96835]">
+              <Button
+                className="bg-[#E07A47] hover:bg-[#D96835]"
+                onClick={handleNewTask}
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Task
               </Button>
@@ -419,7 +449,11 @@ export default function SponsorConstructionPage() {
                 ) : (
                   <div className="space-y-3">
                     {tasks.slice(0, 10).map((task) => (
-                      <div key={task.id} className="flex items-center gap-4 p-4 rounded-xl bg-white border-2 border-slate-200 hover:shadow-md transition-all">
+                      <div
+                        key={task.id}
+                        className="flex items-center gap-4 p-4 rounded-xl bg-white border-2 border-slate-200 hover:shadow-md transition-all cursor-pointer"
+                        onClick={() => handleTaskEdit(task)}
+                      >
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                           task.status === 'COMPLETED' ? 'bg-green-100' :
                           task.status === 'IN_PROGRESS' ? 'bg-blue-100' :
@@ -522,7 +556,10 @@ export default function SponsorConstructionPage() {
               <CardContent className="p-12 text-center">
                 <ImageIcon className="h-16 w-16 text-slate-300 mx-auto mb-4" />
                 <p className="text-muted-foreground mb-4">Site photos and visual progress tracking</p>
-                <Button className="bg-[#E07A47] hover:bg-[#D96835]">
+                <Button
+                  className="bg-[#E07A47] hover:bg-[#D96835]"
+                  onClick={() => setDailyLogModalOpen(true)}
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   Create Daily Log
                 </Button>
@@ -542,7 +579,10 @@ export default function SponsorConstructionPage() {
               <CardContent className="p-12 text-center">
                 <AlertTriangle className="h-16 w-16 text-slate-300 mx-auto mb-4" />
                 <p className="text-muted-foreground mb-4">Track RFIs, issues, and change orders</p>
-                <Button variant="outline">
+                <Button
+                  variant="outline"
+                  onClick={() => setRFIModalOpen(true)}
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   Create RFI
                 </Button>
@@ -551,6 +591,33 @@ export default function SponsorConstructionPage() {
           </div>
         </div>
       </main>
+
+      {/* Modals */}
+      {project && (
+        <>
+          <TaskModal
+            projectId={project.id}
+            task={selectedTask}
+            open={taskModalOpen}
+            onOpenChange={setTaskModalOpen}
+            onSuccess={handleModalSuccess}
+          />
+
+          <DailyLogModal
+            projectId={project.id}
+            open={dailyLogModalOpen}
+            onOpenChange={setDailyLogModalOpen}
+            onSuccess={handleModalSuccess}
+          />
+
+          <RFIModal
+            projectId={project.id}
+            open={rfiModalOpen}
+            onOpenChange={setRFIModalOpen}
+            onSuccess={handleModalSuccess}
+          />
+        </>
+      )}
     </div>
   )
 }
