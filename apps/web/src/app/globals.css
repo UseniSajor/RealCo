@@ -1,131 +1,111 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap');
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme {
-  /* RealCo Brand Colors */
-  --color-primary: #56CCF2;           /* Sky Blue */
-  --color-primary-dark: #3BB5E0;      /* Darker Sky Blue */
-  --color-secondary: #E07A47;          /* Rustic Orange */
-  --color-secondary-dark: #D96835;     /* Darker Orange */
-  
-  /* Text Colors */
-  --color-text-primary: #2C3E50;       /* Dark Grey */
-  --color-text-secondary: #5A6C7D;     /* Medium Grey */
-  --color-text-light: #7F8C9A;         /* Light Grey */
-  
-  /* Spacing */
-  --font-family-base: 'Nunito', ui-sans-serif, system-ui, sans-serif;
+/* RealCo Custom Shapes */
+.shape-circle {
+  border-radius: 9999px;
 }
 
-* {
+.shape-oval {
+  border-radius: 1.5rem;
+}
+
+.shape-oval-lg {
+  border-radius: 2rem;
+}
+
+/* RealCo Brand Colors - Backgrounds */
+.bg-realco-orange {
+  background-color: #E07A47;
+}
+
+.bg-realco-blue {
+  background-color: #56CCF2;
+}
+
+.bg-realco-navy {
+  background-color: #1E3A8A;
+}
+
+.bg-realco-gray {
+  background-color: #6B7280;
+}
+
+.bg-realco-gray-dark {
+  background-color: #1F2937;
+}
+
+/* RealCo Brand Colors - Text */
+.text-realco-orange {
+  color: #E07A47;
+}
+
+.text-realco-blue {
+  color: #56CCF2;
+}
+
+.text-realco-navy {
+  color: #1E3A8A;
+}
+
+/* RealCo Brand Colors - Borders */
+.border-realco-orange {
   border-color: #E07A47;
 }
 
-.dark * {
-  border-color: #E07A47;
+.border-realco-blue {
+  border-color: #56CCF2;
 }
 
-body {
-  font-family: var(--font-family-base);
-  font-feature-settings: "rlig" 1, "calt" 1;
-  line-height: 1.7;
+/* Gradients */
+.gradient-realco {
+  background: linear-gradient(135deg, #56CCF2 0%, #E07A47 100%);
+}
+
+.gradient-realco-reverse {
+  background: linear-gradient(135deg, #E07A47 0%, #56CCF2 100%);
+}
+
+/* Text Contrast for Dark Backgrounds */
+.text-contrast {
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   font-weight: 500;
 }
 
-body.dark {
-  color: #ffffff !important;
+/* Hover scale effects */
+.scale-102 {
+  transform: scale(1.02);
 }
 
-.dark {
-  color-scheme: dark;
+.hover\:scale-102:hover {
+  transform: scale(1.02);
 }
 
-.dark body {
-  background-color: #6b7280;
-  color: #ffffff !important;
+/* Custom scrollbar for RealCo */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-.dark h1,
-.dark h2,
-.dark h3,
-.dark h4,
-.dark h5,
-.dark h6 {
-  color: #ffffff !important;
+::-webkit-scrollbar-track {
+  background: #E5E7EB;
 }
 
-.dark p,
-.dark span,
-.dark div,
-.dark label {
-  color: #e5e7eb !important;
+::-webkit-scrollbar-thumb {
+  background: #56CCF2;
+  border-radius: 4px;
 }
 
-.dark .text-muted-foreground {
-  color: #d1d5db !important;
+::-webkit-scrollbar-thumb:hover {
+  background: #E07A47;
 }
 
-/* Smoke grey card backgrounds in dark mode */
-.dark .bg-white,
-.dark [class*="bg-white"] {
-  background-color: #6b7280 !important;
+.dark ::-webkit-scrollbar-track {
+  background: #6B7280;
 }
 
-.dark .bg-card {
-  background-color: #6b7280 !important;
-}
-
-/* Ensure text is visible on smoke grey cards */
-.dark .bg-white *,
-.dark .bg-card * {
-  color: #ffffff !important;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-}
-
-/* Pulsating Border Animation */
-@keyframes pulsate-border {
-  0%, 100% {
-    border-color: #E07A47;
-    box-shadow: 0 0 0 0 rgba(224, 122, 71, 0.7);
-  }
-  50% {
-    border-color: #D96835;
-    box-shadow: 0 0 0 8px rgba(224, 122, 71, 0);
-  }
-}
-
-.pulsate-border {
-  animation: pulsate-border 2s ease-in-out infinite;
-}
-
-/* Custom Utilities */
-.gradient-text {
-  background: linear-gradient(135deg, #56CCF2 0%, #E07A47 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.gradient-primary {
-  background: linear-gradient(135deg, #56CCF2 0%, #3BB5E0 100%);
-}
-
-.gradient-secondary {
-  background: linear-gradient(135deg, #E07A47 0%, #D96835 100%);
-}
-
-.gradient-hero {
-  background: linear-gradient(135deg, #56CCF2 0%, #59B9E0 50%, #E07A47 100%);
-}
-
-.bg-grid-pattern {
-  background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-  background-size: 50px 50px;
+.dark ::-webkit-scrollbar-thumb {
+  background: #56CCF2;
 }
