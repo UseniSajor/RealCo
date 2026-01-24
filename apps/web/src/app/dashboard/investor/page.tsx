@@ -1,7 +1,7 @@
 "use client"
 
-import { MarketingNav } from "@/components/marketing/marketing-nav"
-import { MarketingFooter } from "@/components/marketing/marketing-footer"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
+import { MediaViewer } from "@/components/media/MediaViewer"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -9,189 +9,225 @@ import {
   TrendingUp, 
   DollarSign, 
   FileText, 
-  CheckCircle2,
-  Clock,
-  AlertCircle,
   PieChart,
+  CreditCard,
   Download,
-  CreditCard
+  Home,
+  Calendar,
+  Receipt,
+  Settings,
+  Bell,
+  Building2,
+  CheckCircle2
 } from "lucide-react"
+import { useAuth } from "@/lib/auth-context"
 
 export default function InvestorDashboardPage() {
+  const { user, logout } = useAuth()
+
+  const sidebarItems = [
+    { title: "Dashboard", href: "/dashboard/investor", icon: Home },
+    { title: "Portfolio Analytics", href: "/dashboard/investor/portfolio-analytics", icon: PieChart },
+    { title: "New Investments", href: "/dashboard/investor/invest", icon: TrendingUp },
+    { title: "Transactions", href: "/dashboard/investor/transactions", icon: Receipt },
+    { title: "Banking", href: "/dashboard/investor/banking", icon: CreditCard },
+    { title: "Tax Center", href: "/dashboard/investor/tax-center", icon: FileText, badge: "K-1" },
+    { title: "Documents", href: "/dashboard/investor/documents", icon: Download },
+    { title: "Events", href: "/dashboard/investor/events", icon: Calendar },
+    { title: "Notifications", href: "/dashboard/investor", icon: Bell, badge: "4" },
+    { title: "Settings", href: "/dashboard/investor", icon: Settings },
+  ]
+
   return (
-    <>
-      <MarketingNav />
-      
-      <section className="py-12 min-h-screen bg-muted/30">
-        <div className="container max-w-7xl px-6 mx-auto">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+      {/* Sidebar */}
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Investor Portal"
+        roleIcon={TrendingUp}
+        userName={user?.name || "John Smith"}
+        onLogout={logout}
+      />
+
+      {/* Main Content */}
+      <main className="flex-1 ml-64">
+        <div className="container max-w-7xl px-8 py-8 mx-auto">
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <TrendingUp className="h-8 w-8 text-[#56CCF2]" />
-                  <h1 className="text-4xl font-black">Investor Portal</h1>
-                </div>
+                <h1 className="text-4xl font-black mb-2">Your Investment Portfolio</h1>
                 <p className="text-lg text-muted-foreground">
-                  Demo Portal - John Smith
+                  Track performance and manage your real estate investments
                 </p>
               </div>
-              <div className="flex gap-3">
-                <Button variant="outline" asChild>
-                  <Link href="/dashboard">Switch Role</Link>
-                </Button>
-                <Button asChild>
-                  <Link href="/signup">Start Trial</Link>
-                </Button>
-              </div>
+              <Button asChild>
+                <Link href="/dashboard/investor/invest">
+                  <TrendingUp className="mr-2 h-4 w-4" />
+                  New Investment
+                </Link>
+              </Button>
             </div>
             
             {/* Demo Notice */}
-            <div className="bg-[#56CCF2]/10 border-2 border-[#56CCF2] rounded-xl p-4 flex items-start gap-3">
+            <div className="bg-gradient-to-r from-[#56CCF2]/10 to-[#E07A47]/10 border-2 border-[#56CCF2] rounded-xl p-4 flex items-start gap-3">
               <TrendingUp className="h-5 w-5 text-[#56CCF2] mt-0.5" />
               <div>
-                <p className="font-bold text-[#56CCF2]">Investor Demo Portal</p>
+                <p className="font-bold text-[#56CCF2]">📈 Investor Demo Portal</p>
                 <p className="text-sm text-muted-foreground">
-                  This is how RealCo looks for investors tracking their investments.
+                  Experience how RealCo helps investors track portfolio performance, access documents, and manage investments. All data is sample demo data.
                 </p>
               </div>
             </div>
           </div>
 
+          {/* Platform Intro Video */}
+          <div className="mb-8">
+            <MediaViewer
+              type="video"
+              src="/investor-demo.mp4"
+              title="🎬 Your Investment Dashboard Overview"
+              description="See how to track your portfolio, view distributions, and access tax documents in real-time"
+            />
+          </div>
+
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card className="border-4 border-[#E07A47]">
+            <Card className="border-4 border-[#56CCF2] hover:shadow-xl transition-all">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold text-muted-foreground">
                     Total Invested
                   </CardTitle>
-                  <DollarSign className="h-5 w-5 text-[#56CCF2]" />
+                  <div className="w-12 h-12 rounded-xl bg-[#56CCF2]/10 flex items-center justify-center">
+                    <DollarSign className="h-6 w-6 text-[#56CCF2]" />
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-black">$2.5M</div>
-                <p className="text-xs text-muted-foreground mt-1">Across 12 deals</p>
+                <div className="text-4xl font-black mb-1">$2.5M</div>
+                <p className="text-xs text-muted-foreground">Across 12 deals</p>
+                <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                  <div className="text-xs text-muted-foreground">
+                    First investment: Jan 2021
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
-            <Card className="border-4 border-[#E07A47]">
+            <Card className="border-4 border-green-500 hover:shadow-xl transition-all">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold text-muted-foreground">
                     Current Value
                   </CardTitle>
-                  <TrendingUp className="h-5 w-5 text-green-500" />
+                  <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                    <TrendingUp className="h-6 w-6 text-green-600" />
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-black">$3.2M</div>
-                <p className="text-xs text-green-600 mt-1">+28% unrealized gain</p>
+                <div className="text-4xl font-black mb-1">$3.2M</div>
+                <p className="text-xs text-green-600 dark:text-green-400 font-semibold">+28% unrealized gain</p>
+                <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                  <div className="text-xs text-green-600 dark:text-green-400 font-bold">
+                    +$700K total gain
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
-            <Card className="border-4 border-[#E07A47]">
+            <Card className="border-4 border-[#E07A47] hover:shadow-xl transition-all">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold text-muted-foreground">
-                    Distributions (YTD)
+                    Distributions YTD
                   </CardTitle>
-                  <DollarSign className="h-5 w-5 text-[#56CCF2]" />
+                  <div className="w-12 h-12 rounded-xl bg-[#E07A47]/10 flex items-center justify-center">
+                    <DollarSign className="h-6 w-6 text-[#E07A47]" />
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-black">$187K</div>
-                <p className="text-xs text-muted-foreground mt-1">7.5% cash yield</p>
+                <div className="text-4xl font-black mb-1">$245K</div>
+                <p className="text-xs text-muted-foreground">Q4 2025</p>
+                <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                  <div className="text-xs text-[#E07A47] font-semibold">
+                    9.8% yield
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
-            <Card className="border-4 border-[#E07A47]">
+            <Card className="border-4 border-[#56CCF2] hover:shadow-xl transition-all">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold text-muted-foreground">
-                    Active Deals
+                    Active Investments
                   </CardTitle>
-                  <PieChart className="h-5 w-5 text-[#E07A47]" />
+                  <div className="w-12 h-12 rounded-xl bg-[#56CCF2]/10 flex items-center justify-center">
+                    <Building2 className="h-6 w-6 text-[#56CCF2]" />
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-black">12</div>
-                <p className="text-xs text-muted-foreground mt-1">3 pending funding</p>
+                <div className="text-4xl font-black mb-1">12</div>
+                <p className="text-xs text-muted-foreground">8 properties, 4 funds</p>
+                <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                  <Button size="sm" variant="outline" className="w-full">
+                    View Portfolio
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Main Content Grid */}
+          {/* Portfolio Overview */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            {/* Investment Portfolio */}
-            <Card className="lg:col-span-2 border-4 border-[#E07A47]">
+            <Card className="lg:col-span-2 border-4 border-[#56CCF2]">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <PieChart className="h-5 w-5" />
-                  Your Investment Portfolio
-                </CardTitle>
-                <CardDescription>Real estate investments and performance</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Investment Portfolio</CardTitle>
+                    <CardDescription>Your active real estate investments</CardDescription>
+                  </div>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href="/dashboard/investor/portfolio-analytics">
+                      View Analytics
+                    </Link>
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {[
-                    { 
-                      name: "Sunset Apartments", 
-                      location: "Austin, TX", 
-                      invested: "$250K", 
-                      currentValue: "$285K",
-                      return: "+14%",
-                      distributions: "$18.5K",
-                      status: "Under Construction",
-                      statusColor: "bg-[#56CCF2]/20 text-[#56CCF2]"
-                    },
-                    { 
-                      name: "Downtown Office Tower", 
-                      location: "Denver, CO", 
-                      invested: "$500K", 
-                      currentValue: "$675K",
-                      return: "+35%",
-                      distributions: "$45K",
-                      status: "Performing",
-                      statusColor: "bg-green-500/20 text-green-600"
-                    },
-                    { 
-                      name: "Riverside Condos", 
-                      location: "Portland, OR", 
-                      invested: "$150K", 
-                      currentValue: "$168K",
-                      return: "+12%",
-                      distributions: "$9.8K",
-                      status: "Under Construction",
-                      statusColor: "bg-[#56CCF2]/20 text-[#56CCF2]"
-                    },
+                    { name: "Sunset Apartments", location: "Austin, TX", invested: "$250K", value: "$325K", gain: "+30%", gainColor: "text-green-600", status: "Active" },
+                    { name: "Downtown Office Tower", location: "Denver, CO", invested: "$500K", value: "$620K", gain: "+24%", gainColor: "text-green-600", status: "Active" },
+                    { name: "Riverside Condos", location: "Portland, OR", invested: "$300K", value: "$378K", gain: "+26%", gainColor: "text-green-600", status: "Active" },
+                    { name: "Tech Campus", location: "Seattle, WA", invested: "$400K", value: "$485K", gain: "+21%", gainColor: "text-green-600", status: "Active" },
                   ].map((investment, i) => (
-                    <div key={i} className="p-4 rounded-xl bg-muted/50 border-2 border-slate-200 dark:border-[#E07A47] hover:shadow-lg transition-all">
+                    <div key={i} className="p-5 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-2 border-slate-200 dark:border-[#56CCF2] hover:shadow-xl transition-all cursor-pointer">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
-                          <h4 className="font-bold text-lg">{investment.name}</h4>
+                          <h4 className="font-black text-lg mb-1">{investment.name}</h4>
                           <p className="text-sm text-muted-foreground">{investment.location}</p>
                         </div>
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${investment.statusColor}`}>
+                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400">
                           {investment.status}
                         </span>
                       </div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div className="grid grid-cols-3 gap-4 pt-3 border-t border-slate-200 dark:border-slate-700">
                         <div>
-                          <p className="text-muted-foreground text-xs">Invested</p>
+                          <p className="text-xs text-muted-foreground mb-1">Invested</p>
                           <p className="font-bold">{investment.invested}</p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground text-xs">Current Value</p>
-                          <p className="font-bold">{investment.currentValue}</p>
+                          <p className="text-xs text-muted-foreground mb-1">Current Value</p>
+                          <p className="font-bold">{investment.value}</p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground text-xs">Return</p>
-                          <p className="font-bold text-green-600">{investment.return}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground text-xs">Distributions</p>
-                          <p className="font-bold">{investment.distributions}</p>
+                          <p className="text-xs text-muted-foreground mb-1">Gain</p>
+                          <p className={`font-bold ${investment.gainColor}`}>{investment.gain}</p>
                         </div>
                       </div>
                     </div>
@@ -200,136 +236,116 @@ export default function InvestorDashboardPage() {
               </CardContent>
             </Card>
 
-            {/* Quick Actions */}
-            <Card className="border-4 border-[#E07A47]">
-              <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-                <CardDescription>Investor tools</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button className="w-full justify-start" variant="outline">
-                  <TrendingUp className="mr-2 h-4 w-4" />
-                  Browse Opportunities
-                </Button>
-                <Button className="w-full justify-start" variant="outline" asChild>
-                  <Link href="/dashboard/investor/documents">
-                    <FileText className="mr-2 h-4 w-4" />
-                    View Documents
-                  </Link>
-                </Button>
-                <Button className="w-full justify-start" variant="outline" asChild>
-                  <Link href="/dashboard/investor/documents">
-                    <Download className="mr-2 h-4 w-4" />
-                    Download K-1s
-                  </Link>
-                </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <DollarSign className="mr-2 h-4 w-4" />
-                  Distribution History
-                </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <PieChart className="mr-2 h-4 w-4" />
-                  Performance Report
-                </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <AlertCircle className="mr-2 h-4 w-4" />
-                  Update Profile
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="space-y-6">
+              {/* Recent Distributions */}
+              <Card className="border-4 border-[#E07A47]">
+                <CardHeader>
+                  <CardTitle className="text-lg">Recent Distributions</CardTitle>
+                  <CardDescription>Last 3 months</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {[
+                      { property: "Sunset Apartments", amount: "$8,250", date: "Dec 15", type: "Quarterly" },
+                      { property: "Office Tower", amount: "$15,500", date: "Dec 10", type: "Quarterly" },
+                      { property: "Riverside Condos", amount: "$6,800", date: "Dec 5", type: "Monthly" },
+                    ].map((dist, i) => (
+                      <div key={i} className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 transition-all">
+                        <div className="w-10 h-10 rounded-xl bg-[#E07A47]/10 flex items-center justify-center">
+                          <CheckCircle2 className="h-5 w-5 text-[#E07A47]" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-bold text-sm">{dist.amount}</p>
+                          <p className="text-xs text-muted-foreground">{dist.property}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs font-semibold">{dist.date}</p>
+                          <p className="text-xs text-muted-foreground">{dist.type}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Quick Actions */}
+              <Card className="border-4 border-[#56CCF2]">
+                <CardHeader>
+                  <CardTitle className="text-lg">Quick Actions</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <Button className="w-full justify-start" variant="outline" asChild>
+                    <Link href="/dashboard/investor/tax-center">
+                      <FileText className="mr-2 h-4 w-4" />
+                      Download K-1s
+                    </Link>
+                  </Button>
+                  <Button className="w-full justify-start" variant="outline" asChild>
+                    <Link href="/dashboard/investor/banking">
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      Update Banking
+                    </Link>
+                  </Button>
+                  <Button className="w-full justify-start" variant="outline" asChild>
+                    <Link href="/dashboard/investor/documents">
+                      <Download className="mr-2 h-4 w-4" />
+                      View Documents
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </div>
 
-          {/* Bottom Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* New Opportunities */}
-            <Card className="border-4 border-[#E07A47]">
+          {/* Performance Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="border-4 border-[#56CCF2]">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <AlertCircle className="h-5 w-5" />
-                  New Investment Opportunities
-                </CardTitle>
-                <CardDescription>Deals accepting capital</CardDescription>
+                <CardTitle className="text-lg">Portfolio IRR</CardTitle>
+                <CardDescription>Internal rate of return</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  {[
-                    { name: "Marina Bay Apartments", location: "San Diego, CA", target: "$12M", min: "$50K", irr: "15-18%", type: "Multifamily" },
-                    { name: "Tech Park Office", location: "Seattle, WA", target: "$25M", min: "$100K", irr: "18-22%", type: "Office" },
-                    { name: "Suburban Storage", location: "Phoenix, AZ", target: "$8M", min: "$25K", irr: "12-15%", type: "Self-Storage" },
-                  ].map((opp, i) => (
-                    <div key={i} className="p-4 rounded-xl bg-muted/50 border-2 border-slate-200 dark:border-[#E07A47] hover:shadow-lg transition-all">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <h4 className="font-bold">{opp.name}</h4>
-                          <p className="text-xs text-muted-foreground">{opp.location}</p>
-                        </div>
-                        <span className="px-2 py-1 rounded-full text-xs font-semibold bg-[#E07A47]/20 text-[#E07A47]">
-                          {opp.type}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-3 gap-2 text-xs mt-3">
-                        <div>
-                          <p className="text-muted-foreground">Target</p>
-                          <p className="font-bold">{opp.target}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground">Min. Invest</p>
-                          <p className="font-bold">{opp.min}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground">Target IRR</p>
-                          <p className="font-bold text-green-600">{opp.irr}</p>
-                        </div>
-                      </div>
-                      <Button className="w-full mt-3" size="sm" variant="outline">
-                        View Details
-                      </Button>
-                    </div>
-                  ))}
+                <div className="text-5xl font-black text-[#56CCF2] mb-2">15.8%</div>
+                <p className="text-sm text-muted-foreground mb-4">Since inception (Jan 2021)</p>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  <span className="text-green-600 dark:text-green-400 font-semibold">Above target</span>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Recent Activity */}
             <Card className="border-4 border-[#E07A47]">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5" />
-                  Recent Activity
-                </CardTitle>
-                <CardDescription>Updates from your investments</CardDescription>
+                <CardTitle className="text-lg">Cash on Cash</CardTitle>
+                <CardDescription>Annual return</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  {[
-                    { action: "Distribution received", detail: "$12,500 from Downtown Office Tower", time: "2d ago", icon: DollarSign, color: "text-green-500" },
-                    { action: "Project update", detail: "Sunset Apartments Phase 1 complete", time: "4d ago", icon: AlertCircle, color: "text-[#56CCF2]" },
-                    { action: "Document available", detail: "Q4 2025 financial report ready", time: "1w ago", icon: FileText, color: "text-blue-500" },
-                    { action: "K-1 ready", detail: "Tax documents for 2025 available", time: "2w ago", icon: Download, color: "text-[#E07A47]" },
-                    { action: "Milestone achieved", detail: "Riverside Condos 50% pre-sold", time: "3w ago", icon: CheckCircle2, color: "text-green-500" },
-                  ].map((activity, i) => {
-                    const Icon = activity.icon
-                    return (
-                      <div key={i} className="flex items-start gap-3 p-2">
-                        <div className={`w-8 h-8 rounded-full bg-muted flex items-center justify-center flex-shrink-0 ${activity.color}`}>
-                          <Icon className="h-4 w-4" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-sm">{activity.action}</p>
-                          <p className="text-xs text-muted-foreground">{activity.detail}</p>
-                        </div>
-                        <span className="text-xs text-muted-foreground whitespace-nowrap">{activity.time}</span>
-                      </div>
-                    )
-                  })}
+                <div className="text-5xl font-black text-[#E07A47] mb-2">9.8%</div>
+                <p className="text-sm text-muted-foreground mb-4">Average across portfolio</p>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  <span className="text-green-600 dark:text-green-400 font-semibold">Strong performance</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-4 border-[#56CCF2]">
+              <CardHeader>
+                <CardTitle className="text-lg">Total Returns</CardTitle>
+                <CardDescription>Appreciation + distributions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-5xl font-black text-green-600 mb-2">$945K</div>
+                <p className="text-sm text-muted-foreground mb-4">Lifetime earnings</p>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  <span className="text-green-600 dark:text-green-400 font-semibold">+37.8% total return</span>
                 </div>
               </CardContent>
             </Card>
           </div>
         </div>
-      </section>
-
-      <MarketingFooter />
-    </>
+      </main>
+    </div>
   )
 }

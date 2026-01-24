@@ -1,500 +1,219 @@
 "use client"
 
-import { useAuth } from "@/lib/auth-context"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
+import { MediaViewer } from "@/components/media/MediaViewer"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import {
-  Building2,
-  TrendingUp,
-  Users,
-  DollarSign,
+import { 
+  Building2, 
+  DollarSign, 
+  FileText, 
   BarChart3,
-  Calendar,
-  FileText,
-  Target,
+  Users,
+  TrendingUp,
   Home,
-  Key,
-  Wrench,
-  PiggyBank,
+  Calculator,
   Mail,
-  Award,
-  ArrowUpRight,
-  ArrowDownRight,
+  Settings,
+  PieChart,
+  Briefcase
 } from "lucide-react"
+import { useAuth } from "@/lib/auth-context"
 
-export default function FundManagerDashboard() {
-  const { user } = useAuth()
+export default function FundManagerDashboardPage() {
+  const { user, logout } = useAuth()
 
-  // Mock data for the dashboard
-  const portfolioMetrics = {
-    totalAssets: 23,
-    totalUnits: 1847,
-    avgOccupancy: 94.3,
-    totalInvestors: 412,
-    aum: 485000000, // Assets Under Management
-    ytdNOI: 28400000,
-  }
-
-  const recentActivity = [
-    { type: 'lease', message: 'New lease signed at Maple Heights #302', time: '2 hours ago' },
-    { type: 'maintenance', message: 'HVAC repair completed at Oak Plaza', time: '5 hours ago' },
-    { type: 'payment', message: 'Distribution processed: $2.4M to 89 investors', time: '1 day ago' },
-    { type: 'report', message: 'Q1 2026 investor reports sent', time: '2 days ago' },
-  ]
-
-  const upcomingTasks = [
-    { task: '12 lease renewals', due: 'This week', urgent: true },
-    { task: 'Monthly operating statements', due: 'Due in 3 days', urgent: false },
-    { task: 'Capital project: Roof replacement approval', due: 'Due in 5 days', urgent: false },
-    { task: 'Investor annual meeting', due: 'March 15', urgent: false },
-  ]
-
-  const topPerformers = [
-    { name: 'Riverside Apartments', noi: '$845K', occupancy: 98.2, growth: 12.4 },
-    { name: 'Downtown Lofts', noi: '$720K', occupancy: 97.5, growth: 8.3 },
-    { name: 'Parkside Townhomes', noi: '$580K', occupancy: 95.8, growth: 6.7 },
+  const sidebarItems = [
+    { title: "Dashboard", href: "/dashboard/fund-manager", icon: Home },
+    { title: "Properties", href: "/dashboard/fund-manager/properties", icon: Building2, badge: "24" },
+    { title: "Analytics", href: "/dashboard/fund-manager/analytics", icon: BarChart3 },
+    { title: "Financials", href: "/dashboard/fund-manager/financials", icon: Calculator },
+    { title: "Distributions", href: "/dashboard/fund-manager/distributions", icon: DollarSign },
+    { title: "Capital Accounts", href: "/dashboard/fund-manager/capital-accounts", icon: PieChart },
+    { title: "Dispositions", href: "/dashboard/fund-manager/dispositions", icon: TrendingUp },
+    { title: "Investor Relations", href: "/dashboard/fund-manager/communications", icon: Users },
+    { title: "Reports", href: "/dashboard/fund-manager/reports", icon: FileText },
+    { title: "Maintenance", href: "/dashboard/fund-manager/maintenance", icon: Settings },
   ]
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      {/* Header */}
-      <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
-        <div className="container max-w-7xl px-6 py-8 mx-auto">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-black mb-2">Asset & Fund Management</h1>
-              <p className="text-white/80">Welcome back, {user?.email}</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <Badge className="bg-[#56CCF2] text-white text-lg px-4 py-2">
-                {user?.tier?.toUpperCase()} TIER
-              </Badge>
-              <Button asChild variant="outline" className="bg-white text-[#2C3E50]">
-                <Link href="/pricing">Upgrade Plan</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Fund Manager"
+        roleIcon={Briefcase}
+        userName={user?.name || "Elite Asset Management"}
+        onLogout={logout}
+      />
 
-      <div className="container max-w-7xl px-6 py-8 mx-auto">
-        {/* NEW FEATURE Banner */}
-        <div className="mb-8 bg-gradient-to-r from-[#E07A47] to-[#56CCF2] p-8 rounded-xl text-white border-4 border-white shadow-2xl">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-4xl">🎉</span>
-                <h3 className="text-3xl font-black">Finance & Trust Module Now Live!</h3>
-              </div>
-              <p className="text-white/90 text-lg mb-6 max-w-3xl">
-                Complete payment processing, escrow management, compliance tracking, and AI-powered insights are now integrated into the platform.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <h4 className="font-bold text-lg mb-2">Payment & Banking:</h4>
-                  <div className="flex items-center gap-3">
-                    <span className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-xl">✓</span>
-                    <span>Plaid instant bank verification</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-xl">✓</span>
-                    <span>ACH payment processing (Stripe)</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-xl">✓</span>
-                    <span>Automated distribution processing</span>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <h4 className="font-bold text-lg mb-2">Compliance & AI:</h4>
-                  <div className="flex items-center gap-3">
-                    <span className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-xl">✓</span>
-                    <span>KYC/AML/OFAC screening</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-xl">✓</span>
-                    <span>AI-powered fraud detection</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-xl">✓</span>
-                    <span>1099/K-1 tax document generation</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="hidden lg:block text-8xl opacity-20">💰</div>
-          </div>
-        </div>
-
-        {/* Portfolio Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
-          <Card className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground dark:text-white/70 mb-1">Total Assets</p>
-                  <p className="text-3xl font-black dark:text-white">{portfolioMetrics.totalAssets}</p>
-                </div>
-                <Building2 className="h-10 w-10 text-[#E07A47]" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground dark:text-white/70 mb-1">Total Units</p>
-                  <p className="text-3xl font-black dark:text-white">{portfolioMetrics.totalUnits.toLocaleString()}</p>
-                </div>
-                <Home className="h-10 w-10 text-[#E07A47]" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground dark:text-white/70 mb-1">Avg Occupancy</p>
-                  <p className="text-3xl font-black dark:text-white">{portfolioMetrics.avgOccupancy}%</p>
-                </div>
-                <Key className="h-10 w-10 text-[#E07A47]" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground dark:text-white/70 mb-1">Investors</p>
-                  <p className="text-3xl font-black dark:text-white">{portfolioMetrics.totalInvestors}</p>
-                </div>
-                <Users className="h-10 w-10 text-[#E07A47]" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground dark:text-white/70 mb-1">AUM</p>
-                  <p className="text-2xl font-black dark:text-white">
-                    ${(portfolioMetrics.aum / 1000000).toFixed(1)}M
-                  </p>
-                </div>
-                <PiggyBank className="h-10 w-10 text-[#E07A47]" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground dark:text-white/70 mb-1">YTD NOI</p>
-                  <p className="text-2xl font-black dark:text-white">
-                    ${(portfolioMetrics.ytdNOI / 1000000).toFixed(1)}M
-                  </p>
-                </div>
-                <DollarSign className="h-10 w-10 text-[#E07A47]" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-3 gap-8 mb-8">
-          {/* Asset Operations (Left Column) */}
-          <div className="lg:col-span-2 space-y-6">
-            <Card className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-2xl dark:text-white">Asset Operations</CardTitle>
-                  <Building2 className="h-6 w-6 text-[#E07A47]" />
-                </div>
-                <CardDescription className="dark:text-white/80">
-                  Manage properties, leases, and maintenance
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4">
-                  <Button asChild variant="outline" className="h-auto flex-col items-start p-4 border-2 border-[#E07A47]">
-                    <Link href="/dashboard/fund-manager/properties">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Building2 className="h-5 w-5 text-[#E07A47]" />
-                        <span className="font-bold">Properties</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground text-left">
-                        View all {portfolioMetrics.totalAssets} properties
-                      </p>
-                    </Link>
-                  </Button>
-
-                  <Button asChild variant="outline" className="h-auto flex-col items-start p-4 border-2 border-[#E07A47]">
-                    <Link href="/dashboard/fund-manager/leases">
-                      <div className="flex items-center gap-2 mb-2">
-                        <FileText className="h-5 w-5 text-[#E07A47]" />
-                        <span className="font-bold">Leases</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground text-left">
-                        Manage leases & renewals
-                      </p>
-                    </Link>
-                  </Button>
-
-                  <Button asChild variant="outline" className="h-auto flex-col items-start p-4 border-2 border-[#E07A47]">
-                    <Link href="/dashboard/fund-manager/maintenance">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Wrench className="h-5 w-5 text-[#E07A47]" />
-                        <span className="font-bold">Maintenance</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground text-left">
-                        Track work orders & projects
-                      </p>
-                    </Link>
-                  </Button>
-
-                  <Button asChild variant="outline" className="h-auto flex-col items-start p-4 border-2 border-[#E07A47]">
-                    <Link href="/dashboard/fund-manager/financials">
-                      <div className="flex items-center gap-2 mb-2">
-                        <BarChart3 className="h-5 w-5 text-[#E07A47]" />
-                        <span className="font-bold">Financials</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground text-left">
-                        Operating statements & NOI
-                      </p>
-                    </Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Fund Accounting */}
-            <Card className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-2xl dark:text-white">Fund Accounting</CardTitle>
-                  <DollarSign className="h-6 w-6 text-[#E07A47]" />
-                </div>
-                <CardDescription className="dark:text-white/80">
-                  Investor capital accounts and distributions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4">
-                  <Button asChild variant="outline" className="h-auto flex-col items-start p-4 border-2 border-[#E07A47]">
-                    <Link href="/dashboard/fund-manager/capital-accounts">
-                      <div className="flex items-center gap-2 mb-2">
-                        <PiggyBank className="h-5 w-5 text-[#E07A47]" />
-                        <span className="font-bold">Capital Accounts</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground text-left">
-                        Track investor positions
-                      </p>
-                    </Link>
-                  </Button>
-
-                  <Button asChild variant="outline" className="h-auto flex-col items-start p-4 border-2 border-[#E07A47]">
-                    <Link href="/dashboard/fund-manager/distributions">
-                      <div className="flex items-center gap-2 mb-2">
-                        <TrendingUp className="h-5 w-5 text-[#E07A47]" />
-                        <span className="font-bold">Distributions</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground text-left">
-                        Process waterfall payments
-                      </p>
-                    </Link>
-                  </Button>
-
-                  <Button asChild variant="outline" className="h-auto flex-col items-start p-4 border-2 border-[#E07A47]">
-                    <Link href="/dashboard/fund-manager/reports">
-                      <div className="flex items-center gap-2 mb-2">
-                        <FileText className="h-5 w-5 text-[#E07A47]" />
-                        <span className="font-bold">Reports</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground text-left">
-                        Quarterly investor reports
-                      </p>
-                    </Link>
-                  </Button>
-
-                  <Button asChild variant="outline" className="h-auto flex-col items-start p-4 border-2 border-[#E07A47]">
-                    <Link href="/dashboard/fund-manager/communications">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Mail className="h-5 w-5 text-[#E07A47]" />
-                        <span className="font-bold">Communications</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground text-left">
-                        Investor updates & events
-                      </p>
-                    </Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Top Performing Assets */}
-            <Card className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
-              <CardHeader>
-                <CardTitle className="text-2xl dark:text-white">Top Performing Assets</CardTitle>
-                <CardDescription className="dark:text-white/80">Based on YTD NOI and occupancy</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {topPerformers.map((property, index) => (
-                    <div key={property.name} className="flex items-center justify-between p-4 bg-muted/50 dark:bg-slate-700 rounded-lg">
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#E07A47] text-white font-bold">
-                          {index + 1}
-                        </div>
-                        <div>
-                          <p className="font-bold dark:text-white">{property.name}</p>
-                          <p className="text-sm text-muted-foreground dark:text-white/70">
-                            {property.occupancy}% occupied
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-bold dark:text-white">{property.noi}</p>
-                        <div className="flex items-center gap-1 text-green-600">
-                          <ArrowUpRight className="h-4 w-4" />
-                          <span className="text-sm font-semibold">+{property.growth}%</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Right Column: Activity & Tasks */}
-          <div className="space-y-6">
-            {/* Upcoming Tasks */}
-            <Card className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="dark:text-white">Upcoming Tasks</CardTitle>
-                  <Calendar className="h-5 w-5 text-[#E07A47]" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {upcomingTasks.map((item, index) => (
-                    <div
-                      key={index}
-                      className={`p-3 rounded-lg border-2 ${
-                        item.urgent ? 'border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-slate-200 dark:border-slate-600 bg-muted/50 dark:bg-slate-700'
-                      }`}
-                    >
-                      <p className="font-semibold text-sm dark:text-white">{item.task}</p>
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mt-1">
-                        {item.due}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Recent Activity */}
-            <Card className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
-              <CardHeader>
-                <CardTitle className="dark:text-white">Recent Activity</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {recentActivity.map((activity, index) => (
-                    <div key={index} className="flex gap-3">
-                      <div className={`w-2 h-2 rounded-full mt-2 shrink-0 ${
-                        activity.type === 'lease' ? 'bg-blue-500' :
-                        activity.type === 'maintenance' ? 'bg-yellow-500' :
-                        activity.type === 'payment' ? 'bg-green-500' :
-                        'bg-purple-500'
-                      }`} />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium dark:text-white">{activity.message}</p>
-                        <p className="text-xs text-muted-foreground dark:text-white/70">{activity.time}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Portfolio Analytics */}
-            <Card className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="dark:text-white">Portfolio Analytics</CardTitle>
-                  <BarChart3 className="h-5 w-5 text-[#E07A47]" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <Button asChild className="w-full bg-[#56CCF2] hover:bg-[#56CCF2]/90">
-                  <Link href="/dashboard/fund-manager/analytics">
-                    View Full Analytics
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Exit Management */}
-            <Card className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="dark:text-white">Exit Management</CardTitle>
-                  <Target className="h-5 w-5 text-[#E07A47]" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground dark:text-white/80 mb-4">
-                  Manage property dispositions and exits
+      <main className="flex-1 ml-64">
+        <div className="container max-w-7xl px-8 py-8 mx-auto">
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h1 className="text-4xl font-black mb-2">Fund Manager Dashboard</h1>
+                <p className="text-lg text-muted-foreground">
+                  Manage assets, track performance, and report to investors
                 </p>
-                <Button asChild variant="outline" className="w-full border-2 border-[#E07A47]">
-                  <Link href="/dashboard/fund-manager/dispositions">
-                    View Dispositions
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Quick Actions */}
-        <Card className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
-          <CardHeader>
-            <CardTitle className="text-2xl dark:text-white">Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              <Button asChild className="bg-green-600 hover:bg-green-700">
-                <Link href="/dashboard/fund-manager/analytics">
-                  <BarChart3 className="mr-2 h-4 w-4" />
-                  Analytics
+              </div>
+              <Button asChild>
+                <Link href="/dashboard/fund-manager/distributions">
+                  <DollarSign className="mr-2 h-4 w-4" />
+                  Process Distribution
                 </Link>
               </Button>
-              <Button asChild className="bg-[#56CCF2] hover:bg-[#56CCF2]/90">
-                <Link href="/dashboard/fund-manager/properties/new">Add Property</Link>
-              </Button>
-              <Button asChild className="bg-[#E07A47] hover:bg-[#E07A47]/90">
-                <Link href="/dashboard/fund-manager/reports/new">Generate Report</Link>
-              </Button>
-              <Button asChild variant="outline" className="border-2 border-[#E07A47]">
-                <Link href="/dashboard/fund-manager/communications/new">Send Update</Link>
-              </Button>
-              <Button asChild variant="outline" className="border-2 border-[#E07A47]">
-                <Link href="/dashboard/fund-manager/distributions/new">Process Distribution</Link>
-              </Button>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            
+            <div className="bg-gradient-to-r from-purple-500/10 to-[#E07A47]/10 border-2 border-purple-500 rounded-xl p-4 flex items-start gap-3">
+              <Building2 className="h-5 w-5 text-purple-500 mt-0.5" />
+              <div>
+                <p className="font-bold text-purple-600 dark:text-purple-400">🏢 Fund Manager Demo Portal</p>
+                <p className="text-sm text-muted-foreground">
+                  See how fund managers oversee portfolios, manage properties, and report performance to investors.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-8">
+            <MediaViewer
+              type="video"
+              src="/fund-manager-demo.mp4"
+              title="🎬 Fund Management Overview"
+              description="Learn how to manage $485M in assets, track property performance, and automate investor reporting"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <Card className="border-4 border-purple-500 hover:shadow-xl transition-all">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-semibold text-muted-foreground">Properties</CardTitle>
+                  <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
+                    <Building2 className="h-6 w-6 text-purple-600" />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-black mb-1">24</div>
+                <p className="text-xs text-muted-foreground">Across 8 markets</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-4 border-[#E07A47] hover:shadow-xl transition-all">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-semibold text-muted-foreground">Assets Under Mgmt</CardTitle>
+                  <div className="w-12 h-12 rounded-xl bg-[#E07A47]/10 flex items-center justify-center">
+                    <DollarSign className="h-6 w-6 text-[#E07A47]" />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-black mb-1">$485M</div>
+                <p className="text-xs text-muted-foreground">+12% YoY</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-4 border-[#56CCF2] hover:shadow-xl transition-all">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-semibold text-muted-foreground">Total Investors</CardTitle>
+                  <div className="w-12 h-12 rounded-xl bg-[#56CCF2]/10 flex items-center justify-center">
+                    <Users className="h-6 w-6 text-[#56CCF2]" />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-black mb-1">1,247</div>
+                <p className="text-xs text-muted-foreground">Active LPs</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-4 border-green-500 hover:shadow-xl transition-all">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-semibold text-muted-foreground">Portfolio IRR</CardTitle>
+                  <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                    <TrendingUp className="h-6 w-6 text-green-600" />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-black mb-1">11.2%</div>
+                <p className="text-xs text-green-600 dark:text-green-400 font-semibold">Above target</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <Card className="lg:col-span-2 border-4 border-purple-500">
+              <CardHeader>
+                <CardTitle>Top Performing Properties</CardTitle>
+                <CardDescription>Based on NOI and appreciation</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {[
+                    { name: "Skyline Apartments", location: "Seattle, WA", noi: "$2.8M", appreciation: "+18%", occupancy: "98%" },
+                    { name: "Harbor Plaza", location: "San Diego, CA", noi: "$3.2M", appreciation: "+22%", occupancy: "96%" },
+                    { name: "Tech Hub Offices", location: "Austin, TX", noi: "$4.5M", appreciation: "+25%", occupancy: "100%" },
+                  ].map((property, i) => (
+                    <div key={i} className="p-5 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-2 border-slate-200 dark:border-purple-500 hover:shadow-xl transition-all">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h4 className="font-black text-lg">{property.name}</h4>
+                          <p className="text-sm text-muted-foreground">{property.location}</p>
+                        </div>
+                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 dark:bg-green-900/20 text-green-600">
+                          {property.occupancy} Occupied
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4 pt-3 border-t border-slate-200 dark:border-slate-700">
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-1">Annual NOI</p>
+                          <p className="font-bold text-lg">{property.noi}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-1">Appreciation</p>
+                          <p className="font-bold text-lg text-green-600">{property.appreciation}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="space-y-6">
+              <Card className="border-4 border-[#E07A47]">
+                <CardHeader>
+                  <CardTitle className="text-lg">Upcoming Distributions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {[
+                      { fund: "Fund III", amount: "$2.8M", date: "Jan 15", investors: 245 },
+                      { fund: "Fund II", amount: "$1.9M", date: "Jan 20", investors: 183 },
+                      { fund: "Fund I", amount: "$1.2M", date: "Jan 25", investors: 142 },
+                    ].map((dist, i) => (
+                      <div key={i} className="p-3 rounded-xl hover:bg-muted/50">
+                        <div className="flex justify-between mb-2">
+                          <p className="font-bold">{dist.fund}</p>
+                          <p className="text-sm text-muted-foreground">{dist.date}</p>
+                        </div>
+                        <p className="text-2xl font-black text-[#E07A47] mb-1">{dist.amount}</p>
+                        <p className="text-xs text-muted-foreground">{dist.investors} investors</p>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   )
 }
