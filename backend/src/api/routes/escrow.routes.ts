@@ -138,10 +138,6 @@ export async function escrowRoutes(server: FastifyInstance) {
     '/escrow/accounts/:id/balance',
     {
       preHandler: requireAuth,
-      schema: {
-        description: 'Get escrow account balance',
-        tags: ['escrow'],
-      },
     },
     async (req: FastifyRequest, reply: FastifyReply) => {
       try {
@@ -150,13 +146,9 @@ export async function escrowRoutes(server: FastifyInstance) {
         const account = await escrowService.getEscrowAccount(id);
         
         return reply.send({
-          currentBalance: account.currentBalance,
+          balance: account.balance,
           availableBalance: account.availableBalance,
-          pendingBalance: account.pendingBalance,
-          heldBalance: account.heldBalance,
-          totalDeposits: account.totalDeposits,
-          totalWithdrawals: account.totalWithdrawals,
-          totalDistributions: account.totalDistributions,
+          reservedAmount: account.reservedAmount,
         });
       } catch (error) {
         return handleError(error, reply);
@@ -284,10 +276,6 @@ export async function escrowRoutes(server: FastifyInstance) {
     '/escrow/accounts/:id/unfreeze',
     {
       preHandler: requireAuth,
-      schema: {
-        description: 'Unfreeze escrow account (admin only)',
-        tags: ['escrow'],
-      },
     },
     async (req: FastifyRequest, reply: FastifyReply) => {
       try {

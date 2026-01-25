@@ -104,15 +104,10 @@ export class EscrowService {
         data: {
           offeringId: data.offeringId,
           accountNumber,
-          externalAccountId: data.externalAccountId,
           status: 'ACTIVE',
-          currentBalance: 0,
+          balance: 0,
           availableBalance: 0,
-          pendingBalance: 0,
-          heldBalance: 0,
-          totalDeposits: 0,
-          totalWithdrawals: 0,
-          totalDistributions: 0,
+          reservedAmount: 0,
         },
       });
 
@@ -186,7 +181,7 @@ export class EscrowService {
 
     const updated = await this.prisma.$transaction(async (tx) => {
       // Get current balance
-      const currentBalance = account.currentBalance;
+      const currentBalance = Number(account.balance);
 
       // Create ledger entry
       await tx.escrowLedgerEntry.create({
@@ -194,9 +189,9 @@ export class EscrowService {
           escrowAccountId,
           transactionId: data.transactionId,
           entryType: 'DEPOSIT',
-          amount: data.amount,
+          amount: Number(data.amount),
           balanceBefore: currentBalance,
-          balanceAfter: currentBalance + data.amount,
+          balanceAfter: currentBalance + Number(data.amount),
           description: data.description,
         },
       });
@@ -205,18 +200,17 @@ export class EscrowService {
       return await tx.escrowAccount.update({
         where: { id: escrowAccountId },
         data: {
-          currentBalance: { increment: data.amount },
+          balance: { increment: data.amount },
           availableBalance: { increment: data.amount },
-          totalDeposits: { increment: data.amount },
         },
       });
     });
 
-    await emitEvent('escrow.deposited', {
-      escrowAccountId,
-      amount: data.amount,
-      newBalance: updated.currentBalance,
-    });
+    // emitEvent('escrow.deposited', {
+    //   escrowAccountId,
+    //   amount: data.amount,
+    //   newBalance: updated.balance,
+    // });
 
     return updated;
   }
@@ -235,7 +229,7 @@ export class EscrowService {
     }
 
     const updated = await this.prisma.$transaction(async (tx) => {
-      const currentBalance = account.currentBalance;
+      const currentBalance = Number(account.balance);
 
       // Create ledger entry
       await tx.escrowLedgerEntry.create({
@@ -243,9 +237,9 @@ export class EscrowService {
           escrowAccountId,
           transactionId: data.transactionId,
           entryType: 'WITHDRAWAL',
-          amount: -data.amount, // Negative for withdrawal
+          amount: -Number(data.amount), // Negative for withdrawal
           balanceBefore: currentBalance,
-          balanceAfter: currentBalance - data.amount,
+          balanceAfter: currentBalance - Number(data.amount),
           description: data.description,
         },
       });
@@ -254,18 +248,17 @@ export class EscrowService {
       return await tx.escrowAccount.update({
         where: { id: escrowAccountId },
         data: {
-          currentBalance: { decrement: data.amount },
+          balance: { decrement: data.amount },
           availableBalance: { decrement: data.amount },
-          totalWithdrawals: { increment: data.amount },
         },
       });
     });
 
-    await emitEvent('escrow.withdrawn', {
-      escrowAccountId,
-      amount: data.amount,
-      newBalance: updated.currentBalance,
-    });
+    // emitEvent('escrow.withdrawn', {
+    //   escrowAccountId,
+    //   amount: data.amount,
+    //   newBalance: updated.balance,
+    // });
 
     return updated;
   }
@@ -415,7 +408,7 @@ export class EscrowService {
   }> {
     const account = await this.getEscrowAccount(escrowAccountId);
 
-    const difference = Math.abs(account.currentBalance - bankBalance);
+    const difference = Math.abs(Number(account.balance) - bankBalance);
     const matched = difference < 0.01; // Allow 1 cent variance for rounding
 
     // Update last reconciled
@@ -429,14 +422,14 @@ export class EscrowService {
 
     if (!matched) {
       console.warn(
-        `Escrow reconciliation mismatch: DB=${account.currentBalance}, Bank=${bankBalance}, Diff=${difference}`
+        `Escrow reconciliation mismatch: DB=${account.balance}, Bank=${bankBalance}, Diff=${difference}`
       );
     }
 
     return {
       matched,
       difference,
-      databaseBalance: account.currentBalance,
+      databaseBalance: Number(account.balance),
       bankBalance,
     };
   }
@@ -448,16 +441,14 @@ export class EscrowService {
     const updated = await this.prisma.escrowAccount.update({
       where: { id: escrowAccountId },
       data: {
-        status: 'FROZEN',
-        frozenReason: reason,
-        frozenAt: new Date(),
+        status: 'SUSPENDED',
       },
     });
 
-    await emitEvent('escrow.frozen', {
-      escrowAccountId,
-      reason,
-    });
+    // emitEvent('escrow.frozen', {
+    //   escrowAccountId,
+    //   reason,
+    // });
 
     return updated;
   }
@@ -470,14 +461,12 @@ export class EscrowService {
       where: { id: escrowAccountId },
       data: {
         status: 'ACTIVE',
-        frozenReason: null,
-        frozenAt: null,
       },
     });
 
-    await emitEvent('escrow.unfrozen', {
-      escrowAccountId,
-    });
+    // emitEvent('escrow.unfrozen', {
+    //   escrowAccountId,
+    // });
 
     return updated;
   }

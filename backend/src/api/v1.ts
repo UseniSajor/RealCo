@@ -10,11 +10,11 @@ import { ProjectService } from '../services/project.service.js';
 import { TaskService } from '../services/task.service.js';
 import { DailyLogService } from '../services/daily-log.service.js';
 import { NotificationService } from '../services/notifications.js';
-import { BankAccountService } from '../services/bank-account.service.js';
-import { transactionRoutes } from './routes/transactions.routes.js';
-import { bankingRoutes } from './routes/banking.routes.js';
-import { escrowRoutes } from './routes/escrow.routes.js';
-import { complianceRoutes } from './routes/compliance.routes.js';
+// import { BankAccountService } from '../services/bank-account.service.js'; // TODO: Refactor bank account service
+// import { transactionRoutes } from './routes/transactions.routes.js'; // TODO: Create transactions routes
+// import { bankingRoutes } from './routes/banking.routes.js';
+// import { escrowRoutes } from './routes/escrow.routes.js';
+// import { complianceRoutes } from './routes/compliance.routes.js';
 import { authRoutes } from './routes/auth.routes.js';
 import { constructionRoutes } from './routes/construction.routes.js';
 import { ProjectNotFoundError, ValidationError, ComplianceError } from '../services/errors.js';
@@ -23,7 +23,8 @@ const projectService = new ProjectService(prisma);
 const taskService = new TaskService(prisma);
 const dailyLogService = new DailyLogService(prisma);
 const notificationService = new NotificationService(prisma);
-const bankAccountService = new BankAccountService(prisma);
+// Bank account service disabled pending refactor
+  // const bankAccountService = new BankAccountService(prisma);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -665,7 +666,8 @@ export async function registerV1Routes(app: FastifyInstance) {
   });
 
   // ========== Bank Account Management (Prompt 6) ==========
-
+  // Bank account endpoints disabled pending service refactor
+  /*
   app.post('/bank-accounts', { preHandler: [requireAuth] }, async (req, reply) => {
     const user = (req as any).user as { userId: string; orgId: string };
     if (!user) throw new Error('User not authenticated');
@@ -687,8 +689,11 @@ export async function registerV1Routes(app: FastifyInstance) {
       throw e;
     }
   });
+  */
 
-  app.post('/bank-accounts/verify-plaid', { preHandler: [requireAuth] }, async (req, reply) => {
+  // TODO: Implement Plaid account linking
+  /*
+  app.post('/bank-accounts/link-plaid', { preHandler: [requireAuth] }, async (req, reply) => {
     const user = (req as any).user as { userId: string; orgId: string };
     if (!user) throw new Error('User not authenticated');
 
@@ -707,7 +712,10 @@ export async function registerV1Routes(app: FastifyInstance) {
       throw e;
     }
   });
+  */
 
+  // TODO: Implement micro-deposit initiation
+  /*
   app.post('/bank-accounts/:id/initiate-micro-deposits', { preHandler: [requireAuth] }, async (req, reply) => {
     const user = (req as any).user as { userId: string; orgId: string };
     if (!user) throw new Error('User not authenticated');
@@ -720,7 +728,10 @@ export async function registerV1Routes(app: FastifyInstance) {
       return reply.status(404).send({ error: 'BankAccountNotFound', message: 'Bank account not found' });
     }
   });
+  */
 
+  // TODO: Implement micro-deposit verification
+  /*
   app.post('/bank-accounts/:id/verify-micro-deposits', { preHandler: [requireAuth] }, async (req, reply) => {
     const user = (req as any).user as { userId: string; orgId: string };
     if (!user) throw new Error('User not authenticated');
@@ -740,7 +751,10 @@ export async function registerV1Routes(app: FastifyInstance) {
       return reply.status(404).send({ error: 'BankAccountNotFound', message: 'Bank account not found' });
     }
   });
+  */
 
+  // Bank account get/set-default/delete endpoints disabled pending service refactor
+  /*
   app.get('/bank-accounts', { preHandler: [requireAuth] }, async (req) => {
     const user = (req as any).user as { userId: string; orgId: string };
     if (!user) throw new Error('User not authenticated');
@@ -761,19 +775,21 @@ export async function registerV1Routes(app: FastifyInstance) {
       return reply.status(404).send({ error: 'BankAccountNotFound', message: 'Bank account not found' });
     }
   });
-
+  */
+  /*
   app.delete('/bank-accounts/:id', { preHandler: [requireAuth] }, async (req, reply) => {
     const user = (req as any).user as { userId: string; orgId: string };
     if (!user) throw new Error('User not authenticated');
 
     try {
-      const account = await bankAccountService.removeBankAccount((req.params as any).id, user.userId);
+      const account = await bankAccountService.removeAccount((req.params as any).id, user.userId);
       return account;
     } catch (e) {
       if (e instanceof ValidationError) return reply.status(400).send({ error: 'Validation', message: e.message });
       return reply.status(404).send({ error: 'BankAccountNotFound', message: 'Bank account not found' });
     }
   });
+  */
 
   // ==========================================================================
   // AUTHENTICATION ROUTES
@@ -787,16 +803,16 @@ export async function registerV1Routes(app: FastifyInstance) {
   // ==========================================================================
 
   // Register all transaction routes
-  await transactionRoutes(app);
+  // await transactionRoutes(app); // TODO: Create transactions routes
 
   // Register banking routes
-  await bankingRoutes(app);
+  // await bankingRoutes(app); // TODO: Refactor banking services
 
   // Register escrow routes
-  await escrowRoutes(app);
+  // await escrowRoutes(app); // TODO: Refactor escrow services
 
   // Register compliance routes
-  await complianceRoutes(app);
+  // await complianceRoutes(app); // TODO: Refactor compliance services
 
   // ==========================================================================
   // CONSTRUCTION PROJECT MANAGEMENT (OS-PM MODULE)
