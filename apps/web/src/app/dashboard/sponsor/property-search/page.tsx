@@ -236,7 +236,7 @@ export default function PropertySearchPage() {
           </div>
 
           {/* AI Search Section */}
-          <Card className="border-4 border-gradient-to-r from-[#56CCF2] to-[#E07A47] bg-gradient-to-r from-[#56CCF2]/5 to-[#E07A47]/5">
+          <Card className="border-4 border-[#56CCF2] bg-white">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#56CCF2] to-[#E07A47] flex items-center justify-center">
@@ -587,13 +587,13 @@ export default function PropertySearchPage() {
       </main>
 
       {/* Right Filter Sidebar */}
-      <aside className="fixed right-0 top-0 h-screen w-80 bg-white dark:bg-slate-900 border-l-4 border-[#E07A47] p-4 overflow-y-auto z-40">
+      <aside className="fixed right-0 top-0 h-screen w-80 bg-[#56CCF2] border-l-4 border-[#E07A47] p-4 overflow-y-auto z-40">
         <div className="space-y-4">
           {/* Filter Header */}
-          <div className="flex items-center justify-between pb-3 border-b-2 border-slate-200">
+          <div className="flex items-center justify-between pb-3 border-b-2 border-[#3BB5E0]">
             <div className="flex items-center gap-2">
-              <SlidersHorizontal className="h-5 w-5 text-[#E07A47]" />
-              <h3 className="font-black text-lg">Filters</h3>
+              <SlidersHorizontal className="h-5 w-5 text-white" />
+              <h3 className="font-black text-lg text-white">Filters</h3>
             </div>
             <Button
               size="sm"
@@ -611,7 +611,7 @@ export default function PropertySearchPage() {
                 setMinNOI('')
                 setYearBuiltMin('')
               }}
-              className="text-[#E07A47] hover:text-[#E07A47]"
+              className="text-white hover:text-white hover:bg-[#3BB5E0]"
             >
               <RefreshCw className="mr-1 h-3 w-3" />
               Reset
@@ -620,8 +620,8 @@ export default function PropertySearchPage() {
 
           {/* Property Type */}
           <div className="space-y-2">
-            <label className="text-sm font-bold flex items-center gap-2">
-              <Building2 className="h-4 w-4 text-[#56CCF2]" />
+            <label className="text-sm font-bold flex items-center gap-2 text-white">
+              <Building2 className="h-4 w-4" />
               Property Type
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -637,7 +637,7 @@ export default function PropertySearchPage() {
                   size="sm"
                   variant={propertyType === type.value ? 'default' : 'outline'}
                   onClick={() => setPropertyType(type.value)}
-                  className={`justify-start ${propertyType === type.value ? 'bg-[#56CCF2] hover:bg-[#56CCF2]/90' : 'border-2'}`}
+                  className={`justify-start ${propertyType === type.value ? 'bg-[#E07A47] hover:bg-[#E07A47]/90' : 'border-2 bg-white'}`}
                 >
                   <type.icon className="mr-2 h-3 w-3" />
                   {type.label}
@@ -648,8 +648,8 @@ export default function PropertySearchPage() {
 
           {/* Price Range */}
           <div className="space-y-2">
-            <label className="text-sm font-bold flex items-center gap-2">
-              <DollarSign className="h-4 w-4 text-[#E07A47]" />
+            <label className="text-sm font-bold flex items-center gap-2 text-white">
+              <DollarSign className="h-4 w-4" />
               Price Range
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -665,7 +665,7 @@ export default function PropertySearchPage() {
                   size="sm"
                   variant={priceRange === range.value ? 'default' : 'outline'}
                   onClick={() => setPriceRange(range.value)}
-                  className={`justify-start ${priceRange === range.value ? 'bg-[#E07A47] hover:bg-[#E07A47]/90' : 'border-2'}`}
+                  className={`justify-start ${priceRange === range.value ? 'bg-[#E07A47] hover:bg-[#E07A47]/90' : 'border-2 bg-white'}`}
                 >
                   {range.label}
                 </Button>
@@ -675,8 +675,8 @@ export default function PropertySearchPage() {
 
           {/* Cap Rate */}
           <div className="space-y-2">
-            <label className="text-sm font-bold flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-green-500" />
+            <label className="text-sm font-bold flex items-center gap-2 text-white">
+              <TrendingUp className="h-4 w-4" />
               Cap Rate (%)
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -685,22 +685,22 @@ export default function PropertySearchPage() {
                 placeholder="Min"
                 value={minCapRate}
                 onChange={(e) => setMinCapRate(e.target.value)}
-                className="border-2"
+                className="border-2 bg-white"
               />
               <Input
                 type="number"
                 placeholder="Max"
                 value={maxCapRate}
                 onChange={(e) => setMaxCapRate(e.target.value)}
-                className="border-2"
+                className="border-2 bg-white"
               />
             </div>
           </div>
 
           {/* Units */}
           <div className="space-y-2">
-            <label className="text-sm font-bold flex items-center gap-2">
-              <Users className="h-4 w-4 text-purple-500" />
+            <label className="text-sm font-bold flex items-center gap-2 text-white">
+              <Users className="h-4 w-4" />
               Units
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -709,42 +709,42 @@ export default function PropertySearchPage() {
                 placeholder="Min"
                 value={minUnits}
                 onChange={(e) => setMinUnits(e.target.value)}
-                className="border-2"
+                className="border-2 bg-white"
               />
               <Input
                 type="number"
                 placeholder="Max"
                 value={maxUnits}
                 onChange={(e) => setMaxUnits(e.target.value)}
-                className="border-2"
+                className="border-2 bg-white"
               />
             </div>
           </div>
 
           {/* Location */}
           <div className="space-y-2">
-            <label className="text-sm font-bold flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-blue-500" />
+            <label className="text-sm font-bold flex items-center gap-2 text-white">
+              <MapPin className="h-4 w-4" />
               Location
             </label>
             <Input
               placeholder="City"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              className="border-2"
+              className="border-2 bg-white"
             />
             <Input
               placeholder="State (e.g., TX)"
               value={state}
               onChange={(e) => setState(e.target.value)}
-              className="border-2"
+              className="border-2 bg-white"
             />
           </div>
 
           {/* Min NOI */}
           <div className="space-y-2">
-            <label className="text-sm font-bold flex items-center gap-2">
-              <DollarSign className="h-4 w-4 text-green-600" />
+            <label className="text-sm font-bold flex items-center gap-2 text-white">
+              <DollarSign className="h-4 w-4" />
               Minimum NOI
             </label>
             <Input
@@ -752,14 +752,14 @@ export default function PropertySearchPage() {
               placeholder="e.g., 500000"
               value={minNOI}
               onChange={(e) => setMinNOI(e.target.value)}
-              className="border-2"
+              className="border-2 bg-white"
             />
           </div>
 
           {/* Year Built */}
           <div className="space-y-2">
-            <label className="text-sm font-bold flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-slate-500" />
+            <label className="text-sm font-bold flex items-center gap-2 text-white">
+              <Calendar className="h-4 w-4" />
               Year Built After
             </label>
             <Input
@@ -767,13 +767,13 @@ export default function PropertySearchPage() {
               placeholder="e.g., 2010"
               value={yearBuiltMin}
               onChange={(e) => setYearBuiltMin(e.target.value)}
-              className="border-2"
+              className="border-2 bg-white"
             />
           </div>
 
           {/* Apply Filters Button */}
-          <div className="pt-4 border-t-2 border-slate-200">
-            <p className="text-xs text-muted-foreground mb-3 text-center">
+          <div className="pt-4 border-t-2 border-[#3BB5E0]">
+            <p className="text-xs text-white/80 mb-3 text-center">
               Filters apply automatically
             </p>
             <Button className="w-full bg-[#E07A47] hover:bg-[#D96835]">
@@ -783,20 +783,20 @@ export default function PropertySearchPage() {
           </div>
 
           {/* Saved Searches */}
-          <div className="pt-4 border-t-2 border-slate-200">
-            <label className="text-sm font-bold flex items-center gap-2 mb-3">
-              <Heart className="h-4 w-4 text-red-500" />
+          <div className="pt-4 border-t-2 border-[#3BB5E0]">
+            <label className="text-sm font-bold flex items-center gap-2 mb-3 text-white">
+              <Heart className="h-4 w-4" />
               Saved Searches
             </label>
             <div className="space-y-2">
-              <Button variant="outline" className="w-full justify-start border-2 text-sm">
+              <Button variant="outline" className="w-full justify-start border-2 text-sm bg-white">
                 Austin Multifamily &lt;$25M
               </Button>
-              <Button variant="outline" className="w-full justify-start border-2 text-sm">
+              <Button variant="outline" className="w-full justify-start border-2 text-sm bg-white">
                 TX Industrial 6%+ Cap
               </Button>
             </div>
-            <Button variant="ghost" className="w-full mt-2 text-[#56CCF2]" size="sm">
+            <Button variant="ghost" className="w-full mt-2 text-white hover:bg-[#3BB5E0]" size="sm">
               <Plus className="mr-2 h-3 w-3" />
               Save Current Search
             </Button>

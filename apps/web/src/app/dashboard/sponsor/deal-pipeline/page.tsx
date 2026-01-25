@@ -4,6 +4,9 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
+import { BackButton } from "@/components/ui/back-button"
+import { useAuth } from "@/lib/auth-context"
 import Link from "next/link"
 import {
   Target,
@@ -11,16 +14,41 @@ import {
   DollarSign,
   Calendar,
   Building2,
-  ArrowLeft,
   Plus,
   Search,
   Filter,
   CheckCircle2,
   Clock,
   AlertCircle,
+  Home,
+  UserPlus,
+  MapPin,
+  Calculator,
+  BarChart3,
+  FileText,
+  Users,
+  MessageSquare,
+  Settings,
 } from "lucide-react"
 
 export default function DealPipelinePage() {
+  const { user, logout } = useAuth()
+
+  const sidebarItems = [
+    { title: "Dashboard", href: "/dashboard/sponsor", icon: Home },
+    { title: "Property Search", href: "/dashboard/sponsor/property-search", icon: Search },
+    { title: "Lead Management", href: "/dashboard/sponsor/leads", icon: UserPlus, badge: "12" },
+    { title: "Market Research", href: "/dashboard/sponsor/market-research", icon: MapPin },
+    { title: "Deal Pipeline", href: "/dashboard/sponsor/deal-pipeline", icon: Target },
+    { title: "Underwriting", href: "/dashboard/sponsor/underwriting", icon: Calculator },
+    { title: "Analytics", href: "/dashboard/sponsor/analytics", icon: BarChart3 },
+    { title: "Capital Raise", href: "/dashboard/sponsor/investor-relations", icon: TrendingUp },
+    { title: "Distributions", href: "/dashboard/sponsor/distributions", icon: DollarSign },
+    { title: "Draw Requests", href: "/dashboard/sponsor/draw-request", icon: FileText },
+    { title: "Investor CRM", href: "/dashboard/sponsor/investor-relations", icon: Users },
+    { title: "Messages", href: "/dashboard/sponsor/team", icon: MessageSquare, badge: "3" },
+    { title: "Settings", href: "/dashboard/sponsor/team", icon: Settings },
+  ]
   const [stageFilter, setStageFilter] = useState<'all' | 'sourcing' | 'underwriting' | 'diligence' | 'closing'>('all')
 
   // Mock deal pipeline data
@@ -181,30 +209,34 @@ export default function DealPipelinePage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      {/* Header */}
-      <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
-        <div className="container max-w-7xl px-6 py-8 mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Button asChild variant="outline" size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/30">
-                <Link href="/dashboard/sponsor">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Dashboard
+    <div className="flex min-h-screen bg-white">
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Sponsor Portal"
+        roleIcon={Building2}
+        userName={user?.name || "Acme Development Group"}
+        onLogout={logout}
+      />
+
+      <main className="flex-1 ml-24">
+        {/* Header */}
+        <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
+          <div className="container max-w-7xl px-6 py-8 mx-auto">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <BackButton href="/dashboard/sponsor" />
+                <div>
+                  <h1 className="text-4xl font-black">Deal Pipeline</h1>
+                  <p className="text-white/80">Track and manage acquisition opportunities</p>
+                </div>
+              </div>
+              <Button asChild className="bg-[#56CCF2] hover:bg-[#56CCF2]/90">
+                <Link href="/dashboard/sponsor/deal-pipeline/new">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Deal
                 </Link>
               </Button>
-              <div>
-                <h1 className="text-4xl font-black">Deal Pipeline</h1>
-                <p className="text-white/80">Track and manage acquisition opportunities</p>
-              </div>
             </div>
-            <Button asChild className="bg-[#56CCF2] hover:bg-[#56CCF2]/90">
-              <Link href="/dashboard/sponsor/deal-pipeline/new">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Deal
-              </Link>
-            </Button>
-          </div>
 
           {/* Summary Metrics */}
           <div className="grid grid-cols-4 gap-4">
@@ -462,7 +494,8 @@ export default function DealPipelinePage() {
             </div>
           </CardContent>
         </Card>
-      </div>
+        </div>
+      </main>
     </div>
   )
 }
