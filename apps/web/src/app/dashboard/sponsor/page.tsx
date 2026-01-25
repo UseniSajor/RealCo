@@ -134,10 +134,10 @@ export default function SponsorDashboardPage() {
               <CardContent>
                 <div className="text-4xl font-black mb-1">8</div>
                 <p className="text-xs text-muted-foreground">2 raising, 6 in construction</p>
-                <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                <div className="mt-3 pt-3 border-t border-slate-200">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-green-500 status-dot"></div>
-                    <span className="text-xs text-green-600 dark:text-green-400 font-semibold">
+                    <span className="text-xs text-green-600 font-semibold">
                       +2 this quarter
                     </span>
                   </div>
@@ -159,12 +159,12 @@ export default function SponsorDashboardPage() {
               <CardContent>
                 <div className="text-4xl font-black mb-1">$32.5M</div>
                 <p className="text-xs text-muted-foreground">Target: $38M total</p>
-                <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                <div className="mt-3 pt-3 border-t border-slate-200">
                   <div className="flex justify-between items-center mb-1">
                     <span className="text-xs font-semibold">85% Complete</span>
                     <span className="text-xs text-muted-foreground">$5.5M to go</span>
                   </div>
-                  <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                  <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
                     <div className="h-full progress-gradient" style={{ width: "85%" }} />
                   </div>
                 </div>
@@ -185,7 +185,7 @@ export default function SponsorDashboardPage() {
               <CardContent>
                 <div className="text-4xl font-black mb-1">342</div>
                 <p className="text-xs text-muted-foreground">18 pending onboarding</p>
-                <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                <div className="mt-3 pt-3 border-t border-slate-200">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-[#E07A47]"></div>
                     <span className="text-xs text-[#E07A47] font-semibold">
@@ -202,15 +202,15 @@ export default function SponsorDashboardPage() {
                   <CardTitle className="text-sm font-semibold text-muted-foreground">
                     Pending Tasks
                   </CardTitle>
-                  <div className="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-                    <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
+                  <div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center">
+                    <AlertTriangle className="h-6 w-6 text-red-600" />
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="text-4xl font-black mb-1">7</div>
                 <p className="text-xs text-muted-foreground">3 urgent, 4 normal</p>
-                <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                <div className="mt-3 pt-3 border-t border-slate-200">
                   <Button size="sm" variant="outline" className="w-full" asChild>
                     <Link href="/dashboard/sponsor/issues">
                       <AlertCircle className="mr-2 h-4 w-4" />
@@ -283,12 +283,12 @@ export default function SponsorDashboardPage() {
                       updated: "5 hours ago"
                     },
                   ].map((deal, i) => (
-                    <div key={i} className="p-5 rounded-xl bg-[#6b7280]/10 border-2 border-slate-300 hover:shadow-xl hover:border-[#E07A47] transition-all group cursor-pointer">
+                    <div key={i} className="p-5 rounded-xl border-2 border-[#56CCF2] hover:shadow-xl hover:border-[#E07A47] transition-all group cursor-pointer">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <h4 className="font-black text-xl">{deal.name}</h4>
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-slate-200 text-slate-600">
                               {deal.type}
                             </span>
                           </div>
@@ -308,7 +308,7 @@ export default function SponsorDashboardPage() {
                             <span className="font-bold text-lg">{deal.raised} <span className="text-sm text-muted-foreground font-normal">/ {deal.target}</span></span>
                             <span className="text-[#56CCF2] font-black text-lg">{deal.percent}%</span>
                           </div>
-                          <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                          <div className="h-3 bg-slate-200 rounded-full overflow-hidden">
                             <div
                               className="h-full progress-gradient transition-all"
                               style={{ width: `${deal.percent}%` }}
@@ -316,7 +316,7 @@ export default function SponsorDashboardPage() {
                           </div>
                         </div>
 
-                        <div className="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-700">
+                        <div className="flex items-center justify-between pt-3 border-t border-slate-200">
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Users className="h-4 w-4" />
                             <span className="font-semibold">{deal.investors}</span> investors
@@ -358,8 +358,8 @@ export default function SponsorDashboardPage() {
                 <CardContent>
                   <div className="space-y-3">
                     {[
-                      { task: "Review subscription docs", deal: "Sunset Apartments", icon: FileText, color: "text-red-500", bg: "bg-red-100 dark:bg-red-900/20" },
-                      { task: "Approve draw ($125K)", deal: "Office Tower", icon: DollarSign, color: "text-red-500", bg: "bg-red-100 dark:bg-red-900/20" },
+                      { task: "Review subscription docs", deal: "Sunset Apartments", icon: FileText, color: "text-red-500", bg: "bg-red-100" },
+                      { task: "Approve draw ($125K)", deal: "Office Tower", icon: DollarSign, color: "text-red-500", bg: "bg-red-100" },
                       { task: "Send Q4 update", deal: "Riverside Condos", icon: TrendingUp, color: "text-[#E07A47]", bg: "bg-[#E07A47]/10" },
                     ].map((item, i) => {
                       const Icon = item.icon
@@ -458,7 +458,7 @@ export default function SponsorDashboardPage() {
                 <p className="text-sm text-muted-foreground mb-4">Target: 12-15% annually</p>
                 <div className="flex items-center gap-2 text-sm">
                   <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  <span className="text-green-600 dark:text-green-400 font-semibold">+2.1% vs target</span>
+                  <span className="text-green-600 font-semibold">+2.1% vs target</span>
                 </div>
               </CardContent>
             </Card>
@@ -488,7 +488,7 @@ export default function SponsorDashboardPage() {
                 <p className="text-sm text-muted-foreground mb-4">24 of 25 deals profitable</p>
                 <div className="flex items-center gap-2 text-sm">
                   <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  <span className="text-green-600 dark:text-green-400 font-semibold">Industry leading</span>
+                  <span className="text-green-600 font-semibold">Industry leading</span>
                 </div>
               </CardContent>
             </Card>

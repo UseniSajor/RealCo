@@ -1,7 +1,5 @@
 "use client"
 
-import { MarketingNav } from "@/components/marketing/marketing-nav"
-import { MarketingFooter } from "@/components/marketing/marketing-footer"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -30,8 +28,27 @@ import {
   UserPlus,
   Briefcase,
   Eye,
-  MessageSquare
+  MessageSquare,
+  Home,
+  Receipt,
+  Calculator,
+  BarChart3,
+  Building,
 } from "lucide-react"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
+import { useAuth } from "@/lib/auth-context"
+
+const sidebarItems = [
+  { title: "Dashboard", href: "/dashboard/fund-manager", icon: Home },
+  { title: "Properties", href: "/dashboard/fund-manager/properties", icon: Building2 },
+  { title: "Investors", href: "/dashboard/fund-manager/investors", icon: Users },
+  { title: "Capital Accounts", href: "/dashboard/fund-manager/capital-accounts", icon: DollarSign },
+  { title: "Distributions", href: "/dashboard/fund-manager/distributions", icon: Receipt },
+  { title: "Financials", href: "/dashboard/fund-manager/financials", icon: Calculator },
+  { title: "Analytics", href: "/dashboard/fund-manager/analytics", icon: BarChart3 },
+  { title: "Reports", href: "/dashboard/fund-manager/reports", icon: FileText },
+  { title: "Communications", href: "/dashboard/fund-manager/communications", icon: MessageSquare },
+]
 
 // Mock investor data
 const MOCK_INVESTORS = [
@@ -158,6 +175,7 @@ const MOCK_VENDORS = [
 ]
 
 export default function FundManagerInvestorsPage() {
+  const { user, logout } = useAuth()
   const [activeTab, setActiveTab] = useState<'investors' | 'vendors'>('investors')
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
@@ -204,18 +222,17 @@ export default function FundManagerInvestorsPage() {
   }
 
   return (
-    <>
-      <MarketingNav />
-
+    <div className="flex min-h-screen bg-white">
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Fund Manager Portal"
+        roleIcon={Building}
+        userName={user?.name || "Fund Manager"}
+        onLogout={logout}
+      />
+      <main className="flex-1 ml-24 bg-white">
       <section className="py-12 min-h-screen bg-white">
         <div className="container max-w-7xl px-6 mx-auto">
-          {/* Back Button */}
-          <Button variant="ghost" asChild className="mb-6">
-            <Link href="/dashboard/fund-manager">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Dashboard
-            </Link>
-          </Button>
 
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
@@ -495,8 +512,7 @@ export default function FundManagerInvestorsPage() {
           )}
         </div>
       </section>
-
-      <MarketingFooter />
-    </>
+      </main>
+    </div>
   )
 }

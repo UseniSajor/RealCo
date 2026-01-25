@@ -16,9 +16,31 @@ import {
   Download,
   FileText,
   AlertCircle,
+  Home,
+  Building2,
+  Users,
+  Receipt,
+  Calculator,
+  MessageSquare,
+  Building,
 } from "lucide-react"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
+import { useAuth } from "@/lib/auth-context"
+
+const sidebarItems = [
+  { title: "Dashboard", href: "/dashboard/fund-manager", icon: Home },
+  { title: "Properties", href: "/dashboard/fund-manager/properties", icon: Building2 },
+  { title: "Investors", href: "/dashboard/fund-manager/investors", icon: Users },
+  { title: "Capital Accounts", href: "/dashboard/fund-manager/capital-accounts", icon: DollarSign },
+  { title: "Distributions", href: "/dashboard/fund-manager/distributions", icon: Receipt },
+  { title: "Financials", href: "/dashboard/fund-manager/financials", icon: Calculator },
+  { title: "Analytics", href: "/dashboard/fund-manager/analytics", icon: BarChart3 },
+  { title: "Reports", href: "/dashboard/fund-manager/reports", icon: FileText },
+  { title: "Communications", href: "/dashboard/fund-manager/communications", icon: MessageSquare },
+]
 
 export default function FinancialsPage() {
+  const { user, logout } = useAuth()
 
   const [period, setPeriod] = useState<'monthly' | 'quarterly' | 'ytd'>('monthly')
   const [selectedProperty, setSelectedProperty] = useState<'all' | string>('all')
@@ -61,7 +83,15 @@ export default function FinancialsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="flex min-h-screen bg-white">
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Fund Manager Portal"
+        roleIcon={Building}
+        userName={user?.name || "Fund Manager"}
+        onLogout={logout}
+      />
+      <main className="flex-1 ml-24 bg-white">
       {/* Header */}
       <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
         <div className="container max-w-7xl px-6 py-8 mx-auto">
@@ -162,7 +192,7 @@ export default function FinancialsPage() {
             <select
               value={selectedProperty}
               onChange={(e) => setSelectedProperty(e.target.value)}
-              className="px-4 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white"
+              className="px-4 py-2 rounded-lg border-2 border-slate-200 border-slate-200 focus:border-[#56CCF2] focus:outline-none bg-white bg-white text-slate-900"
             >
               <option value="all">All Properties</option>
               {statements.map(s => (
@@ -175,21 +205,21 @@ export default function FinancialsPage() {
         {/* Operating Statements */}
         <div className="space-y-6">
           {filteredStatements.map((statement) => (
-            <Card key={statement.id} className="border-4 border-[#E07A47] dark:bg-[#6b7280]">
+            <Card key={statement.id} className="border-4 border-[#E07A47] bg-white">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-2xl dark:text-white">{statement.property}</CardTitle>
+                    <CardTitle className="text-2xl text-slate-900">{statement.property}</CardTitle>
                     <div className="flex items-center gap-2 mt-2">
                       <Calendar className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground dark:text-white/70">{statement.period}</span>
+                      <span className="text-sm text-muted-foreground text-slate-900/70">{statement.period}</span>
                       <Badge className={`ml-2 ${statement.noiVariance >= 0 ? 'bg-green-500' : 'bg-red-500'} text-white`}>
                         {statement.noiVariance >= 0 ? '+' : ''}{statement.noiVariancePct}% vs Budget
                       </Badge>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-muted-foreground dark:text-white/70 mb-1">Net Operating Income</p>
+                    <p className="text-sm text-muted-foreground text-slate-900/70 mb-1">Net Operating Income</p>
                     <p className="text-4xl font-black text-[#56CCF2]">${(statement.noi / 1000).toFixed(1)}K</p>
                   </div>
                 </div>
@@ -198,23 +228,23 @@ export default function FinancialsPage() {
                 <div className="grid md:grid-cols-3 gap-6">
                   {/* Income Section */}
                   <div>
-                    <h4 className="font-bold text-lg mb-4 dark:text-white">Income</h4>
+                    <h4 className="font-bold text-lg mb-4 text-slate-900">Income</h4>
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground dark:text-white/70">Rental Income</span>
-                        <span className="font-bold dark:text-white">${(statement.rentalIncome / 1000).toFixed(1)}K</span>
+                        <span className="text-muted-foreground text-slate-900/70">Rental Income</span>
+                        <span className="font-bold text-slate-900">${(statement.rentalIncome / 1000).toFixed(1)}K</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground dark:text-white/70">Other Income</span>
-                        <span className="font-bold dark:text-white">${(statement.otherIncome / 1000).toFixed(1)}K</span>
+                        <span className="text-muted-foreground text-slate-900/70">Other Income</span>
+                        <span className="font-bold text-slate-900">${(statement.otherIncome / 1000).toFixed(1)}K</span>
                       </div>
                       <div className="flex justify-between text-sm text-red-600">
                         <span>Vacancy Loss</span>
                         <span className="font-bold">-${(statement.vacancyLoss / 1000).toFixed(1)}K</span>
                       </div>
-                      <div className="border-t-2 border-slate-200 dark:border-slate-600 pt-2 mt-2">
+                      <div className="border-t-2 border-slate-200 border-slate-200 pt-2 mt-2">
                         <div className="flex justify-between font-bold">
-                          <span className="dark:text-white">Effective Gross Income</span>
+                          <span className="text-slate-900">Effective Gross Income</span>
                           <span className="text-[#56CCF2]">${(statement.effectiveGrossIncome / 1000).toFixed(1)}K</span>
                         </div>
                       </div>
@@ -223,39 +253,39 @@ export default function FinancialsPage() {
 
                   {/* Operating Expenses */}
                   <div>
-                    <h4 className="font-bold text-lg mb-4 dark:text-white">Operating Expenses</h4>
+                    <h4 className="font-bold text-lg mb-4 text-slate-900">Operating Expenses</h4>
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground dark:text-white/70">Property Management</span>
-                        <span className="font-bold dark:text-white">${(statement.propertyManagement / 1000).toFixed(1)}K</span>
+                        <span className="text-muted-foreground text-slate-900/70">Property Management</span>
+                        <span className="font-bold text-slate-900">${(statement.propertyManagement / 1000).toFixed(1)}K</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground dark:text-white/70">Utilities</span>
-                        <span className="font-bold dark:text-white">${(statement.utilities / 1000).toFixed(1)}K</span>
+                        <span className="text-muted-foreground text-slate-900/70">Utilities</span>
+                        <span className="font-bold text-slate-900">${(statement.utilities / 1000).toFixed(1)}K</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground dark:text-white/70">Insurance</span>
-                        <span className="font-bold dark:text-white">${(statement.insurance / 1000).toFixed(1)}K</span>
+                        <span className="text-muted-foreground text-slate-900/70">Insurance</span>
+                        <span className="font-bold text-slate-900">${(statement.insurance / 1000).toFixed(1)}K</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground dark:text-white/70">Property Taxes</span>
-                        <span className="font-bold dark:text-white">${(statement.propertyTaxes / 1000).toFixed(1)}K</span>
+                        <span className="text-muted-foreground text-slate-900/70">Property Taxes</span>
+                        <span className="font-bold text-slate-900">${(statement.propertyTaxes / 1000).toFixed(1)}K</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground dark:text-white/70">Repairs & Maintenance</span>
-                        <span className="font-bold dark:text-white">${(statement.repairsMaintenance / 1000).toFixed(1)}K</span>
+                        <span className="text-muted-foreground text-slate-900/70">Repairs & Maintenance</span>
+                        <span className="font-bold text-slate-900">${(statement.repairsMaintenance / 1000).toFixed(1)}K</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground dark:text-white/70">Marketing</span>
-                        <span className="font-bold dark:text-white">${(statement.marketing / 1000).toFixed(1)}K</span>
+                        <span className="text-muted-foreground text-slate-900/70">Marketing</span>
+                        <span className="font-bold text-slate-900">${(statement.marketing / 1000).toFixed(1)}K</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground dark:text-white/70">Administrative</span>
-                        <span className="font-bold dark:text-white">${(statement.administrative / 1000).toFixed(1)}K</span>
+                        <span className="text-muted-foreground text-slate-900/70">Administrative</span>
+                        <span className="font-bold text-slate-900">${(statement.administrative / 1000).toFixed(1)}K</span>
                       </div>
-                      <div className="border-t-2 border-slate-200 dark:border-slate-600 pt-2 mt-2">
+                      <div className="border-t-2 border-slate-200 border-slate-200 pt-2 mt-2">
                         <div className="flex justify-between font-bold">
-                          <span className="dark:text-white">Total OpEx</span>
+                          <span className="text-slate-900">Total OpEx</span>
                           <span className="text-red-600">${(statement.totalOpex / 1000).toFixed(1)}K</span>
                         </div>
                       </div>
@@ -264,30 +294,30 @@ export default function FinancialsPage() {
 
                   {/* Performance Analysis */}
                   <div>
-                    <h4 className="font-bold text-lg mb-4 dark:text-white">Performance</h4>
+                    <h4 className="font-bold text-lg mb-4 text-slate-900">Performance</h4>
                     <div className="space-y-4">
-                      <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                        <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Net Operating Income</p>
+                      <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                        <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">Net Operating Income</p>
                         <p className="text-3xl font-black text-[#56CCF2]">${(statement.noi / 1000).toFixed(1)}K</p>
                       </div>
 
-                      <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                        <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Budgeted NOI</p>
-                        <p className="text-2xl font-black dark:text-white">${(statement.budgetedNOI / 1000).toFixed(1)}K</p>
+                      <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                        <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">Budgeted NOI</p>
+                        <p className="text-2xl font-black text-slate-900">${(statement.budgetedNOI / 1000).toFixed(1)}K</p>
                       </div>
 
-                      <div className={`rounded-lg p-4 ${statement.noiVariance >= 0 ? 'bg-green-50 dark:bg-green-900/20 border-2 border-green-500' : 'bg-red-50 dark:bg-red-900/20 border-2 border-red-500'}`}>
+                      <div className={`rounded-lg p-4 ${statement.noiVariance >= 0 ? 'bg-green-50 bg-green-50 border-2 border-green-500' : 'bg-red-50 bg-red-50 border-2 border-red-500'}`}>
                         <div className="flex items-center gap-2 mb-1">
                           {statement.noiVariance >= 0 ? 
                             <TrendingUp className="h-4 w-4 text-green-600" /> :
                             <TrendingDown className="h-4 w-4 text-red-600" />
                           }
-                          <p className="text-xs font-semibold text-muted-foreground dark:text-white/70">Variance</p>
+                          <p className="text-xs font-semibold text-muted-foreground text-slate-900/70">Variance</p>
                         </div>
                         <p className={`text-2xl font-black ${statement.noiVariance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                           {statement.noiVariance >= 0 ? '+' : ''}${(statement.noiVariance / 1000).toFixed(1)}K
                         </p>
-                        <p className="text-sm font-bold mt-1 dark:text-white">
+                        <p className="text-sm font-bold mt-1 text-slate-900">
                           {statement.noiVariancePct >= 0 ? '+' : ''}{statement.noiVariancePct}%
                         </p>
                       </div>
@@ -307,25 +337,25 @@ export default function FinancialsPage() {
 
         {/* Portfolio Summary Card */}
         {selectedProperty === 'all' && (
-          <Card className="border-4 border-[#56CCF2] dark:bg-[#6b7280] mt-6">
+          <Card className="border-4 border-[#56CCF2] bg-white mt-6">
             <CardHeader>
-              <CardTitle className="text-2xl dark:text-white">Portfolio Summary - {period.toUpperCase()}</CardTitle>
+              <CardTitle className="text-2xl text-slate-900">Portfolio Summary - {period.toUpperCase()}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-4 gap-6">
-                <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                  <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">Total Rental Income</p>
-                  <p className="text-3xl font-black dark:text-white">${(totals.rentalIncome / 1000).toFixed(0)}K</p>
+                <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                  <p className="text-sm text-muted-foreground text-slate-900/70 mb-2">Total Rental Income</p>
+                  <p className="text-3xl font-black text-slate-900">${(totals.rentalIncome / 1000).toFixed(0)}K</p>
                 </div>
-                <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                  <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">Effective Gross Income</p>
-                  <p className="text-3xl font-black dark:text-white">${(totals.effectiveGrossIncome / 1000).toFixed(0)}K</p>
+                <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                  <p className="text-sm text-muted-foreground text-slate-900/70 mb-2">Effective Gross Income</p>
+                  <p className="text-3xl font-black text-slate-900">${(totals.effectiveGrossIncome / 1000).toFixed(0)}K</p>
                 </div>
-                <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                  <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">Total Operating Expenses</p>
+                <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                  <p className="text-sm text-muted-foreground text-slate-900/70 mb-2">Total Operating Expenses</p>
                   <p className="text-3xl font-black text-red-600">${(totals.totalOpex / 1000).toFixed(0)}K</p>
                 </div>
-                <div className="bg-[#56CCF2]/10 dark:bg-[#56CCF2]/20 rounded-lg p-4 border-2 border-[#56CCF2]">
+                <div className="bg-[#56CCF2]/10 bg-[#56CCF2]/10 rounded-lg p-4 border-2 border-[#56CCF2]">
                   <p className="text-sm font-bold text-[#56CCF2] mb-2">Portfolio NOI</p>
                   <p className="text-4xl font-black text-[#56CCF2]">${(totals.noi / 1000).toFixed(0)}K</p>
                 </div>
@@ -334,6 +364,7 @@ export default function FinancialsPage() {
           </Card>
         )}
       </div>
+      </main>
     </div>
   )
 }

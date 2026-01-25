@@ -166,11 +166,11 @@ export default function PropertySearchPage() {
 
   const getTypeColor = (type: string) => {
     switch (type.toUpperCase()) {
-      case 'MULTIFAMILY': return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
+      case 'MULTIFAMILY': return 'bg-blue-100 text-blue-700'
       case 'OFFICE':
-      case 'COMMERCIAL': return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300'
-      case 'INDUSTRIAL': return 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300'
-      case 'RETAIL': return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+      case 'COMMERCIAL': return 'bg-purple-100 text-purple-700'
+      case 'INDUSTRIAL': return 'bg-orange-100 text-orange-700'
+      case 'RETAIL': return 'bg-green-100 text-green-700'
       default: return 'bg-gray-100 text-gray-700'
     }
   }
@@ -198,7 +198,7 @@ export default function PropertySearchPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-white dark:bg-slate-900">
+    <div className="flex min-h-screen bg-white">
       {/* Left Sidebar */}
       <DashboardSidebar
         items={sidebarItems}
@@ -281,7 +281,7 @@ export default function PropertySearchPage() {
 
               {/* AI Insights Panel */}
               {showAIPanel && aiInsights.length > 0 && (
-                <div className="mt-4 p-4 bg-white dark:bg-slate-800 rounded-lg border-2 border-[#56CCF2]/30">
+                <div className="mt-4 p-4 bg-white rounded-lg border-2 border-[#56CCF2]/30">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-bold flex items-center gap-2">
                       <Brain className="h-4 w-4 text-[#56CCF2]" />
@@ -357,7 +357,7 @@ export default function PropertySearchPage() {
                       <div className="flex gap-6">
                         {/* Property Image */}
                         <div className="w-72 flex-shrink-0">
-                          <div className="h-48 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 rounded-lg flex items-center justify-center relative overflow-hidden">
+                          <div className="h-48 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center relative overflow-hidden">
                             <TypeIcon className="h-16 w-16 text-slate-400" />
 
                             {/* AI Score Badge */}
@@ -369,7 +369,7 @@ export default function PropertySearchPage() {
                             )}
 
                             {/* Source Badge */}
-                            <div className="absolute top-2 right-2 px-2 py-1 bg-white/90 dark:bg-slate-800/90 rounded text-xs font-medium">
+                            <div className="absolute top-2 right-2 px-2 py-1 bg-white/90 rounded text-xs font-medium">
                               {property.source}
                             </div>
 
@@ -539,7 +539,7 @@ export default function PropertySearchPage() {
           ) : (
             <Card className="border-4 border-[#56CCF2] h-[600px]">
               <CardContent className="p-6 h-full">
-                <div className="h-full bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 rounded-lg flex items-center justify-center">
+                <div className="h-full bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
                   <div className="text-center">
                     <Map className="h-16 w-16 text-slate-400 mx-auto mb-4" />
                     <h3 className="text-xl font-bold mb-2">Interactive Map View</h3>
@@ -945,8 +945,8 @@ export default function PropertySearchPage() {
 
               {/* Strengths & Weaknesses */}
               <div className="grid grid-cols-2 gap-6">
-                <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg border-2 border-green-200 dark:border-green-800">
-                  <h4 className="font-bold text-green-700 dark:text-green-300 mb-3 flex items-center gap-2">
+                <div className="p-4 bg-green-50 rounded-lg border-2 border-green-200">
+                  <h4 className="font-bold text-green-700 mb-3 flex items-center gap-2">
                     <Check className="h-4 w-4" />
                     Strengths
                   </h4>
@@ -959,8 +959,8 @@ export default function PropertySearchPage() {
                     ))}
                   </ul>
                 </div>
-                <div className="p-4 bg-red-50 dark:bg-red-950 rounded-lg border-2 border-red-200 dark:border-red-800">
-                  <h4 className="font-bold text-red-700 dark:text-red-300 mb-3 flex items-center gap-2">
+                <div className="p-4 bg-red-50 rounded-lg border-2 border-red-200">
+                  <h4 className="font-bold text-red-700 mb-3 flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4" />
                     Risk Factors
                   </h4>

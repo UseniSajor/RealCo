@@ -18,9 +18,32 @@ import {
   TrendingUp,
   Home,
   Zap,
+  Building2,
+  Users,
+  Receipt,
+  Calculator,
+  BarChart3,
+  FileText,
+  MessageSquare,
+  Building,
 } from "lucide-react"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
+import { useAuth } from "@/lib/auth-context"
+
+const sidebarItems = [
+  { title: "Dashboard", href: "/dashboard/fund-manager", icon: Home },
+  { title: "Properties", href: "/dashboard/fund-manager/properties", icon: Building2 },
+  { title: "Investors", href: "/dashboard/fund-manager/investors", icon: Users },
+  { title: "Capital Accounts", href: "/dashboard/fund-manager/capital-accounts", icon: DollarSign },
+  { title: "Distributions", href: "/dashboard/fund-manager/distributions", icon: Receipt },
+  { title: "Financials", href: "/dashboard/fund-manager/financials", icon: Calculator },
+  { title: "Analytics", href: "/dashboard/fund-manager/analytics", icon: BarChart3 },
+  { title: "Reports", href: "/dashboard/fund-manager/reports", icon: FileText },
+  { title: "Communications", href: "/dashboard/fund-manager/communications", icon: MessageSquare },
+]
 
 export default function MaintenancePage() {
+  const { user, logout } = useAuth()
   const [statusFilter, setStatusFilter] = useState<'all' | 'submitted' | 'in_progress' | 'completed'>('all')
   const [priorityFilter, setPriorityFilter] = useState<'all' | 'emergency' | 'high' | 'normal'>('all')
 
@@ -174,7 +197,15 @@ export default function MaintenancePage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="flex min-h-screen bg-white">
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Fund Manager Portal"
+        roleIcon={Building}
+        userName={user?.name || "Fund Manager"}
+        onLogout={logout}
+      />
+      <main className="flex-1 ml-24 bg-white">
       {/* Header */}
       <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
         <div className="container max-w-7xl px-6 py-8 mx-auto">
@@ -258,7 +289,7 @@ export default function MaintenancePage() {
             <input
               type="text"
               placeholder="Search by property, unit, or category..."
-              className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white"
+              className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-slate-200 border-slate-200 focus:border-[#56CCF2] focus:outline-none bg-white bg-white text-slate-900"
             />
           </div>
         </div>
@@ -302,7 +333,7 @@ export default function MaintenancePage() {
         {/* Maintenance Requests Grid */}
         <div className="grid gap-6">
           {filteredRequests.map((request) => (
-            <Card key={request.id} className="border-4 border-[#E07A47] dark:bg-[#6b7280] hover:shadow-lg transition-shadow">
+            <Card key={request.id} className="border-4 border-[#E07A47] bg-white hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <div className="grid lg:grid-cols-12 gap-6">
                   {/* Request Info */}
@@ -311,13 +342,13 @@ export default function MaintenancePage() {
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
                           {request.priority === 'emergency' && <Zap className="h-5 w-5 text-red-600" />}
-                          <h3 className="text-xl font-black dark:text-white">{request.title}</h3>
+                          <h3 className="text-xl font-black text-slate-900">{request.title}</h3>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-white/70 mb-2">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground text-slate-900/70 mb-2">
                           <Home className="h-4 w-4" />
                           {request.property} {request.unit !== 'Common Area' && `- Unit ${request.unit}`}
                         </div>
-                        <p className="text-sm text-muted-foreground dark:text-white/70 mb-3">
+                        <p className="text-sm text-muted-foreground text-slate-900/70 mb-3">
                           {request.description}
                         </p>
                         <div className="flex gap-2 flex-wrap">
@@ -333,48 +364,48 @@ export default function MaintenancePage() {
 
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Requested by:</span>
-                        <span className="font-bold dark:text-white">{request.requestedBy}</span>
+                        <span className="text-muted-foreground text-slate-900/70">Requested by:</span>
+                        <span className="font-bold text-slate-900">{request.requestedBy}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Contact:</span>
-                        <span className="font-bold dark:text-white">{request.contactPhone}</span>
+                        <span className="text-muted-foreground text-slate-900/70">Contact:</span>
+                        <span className="font-bold text-slate-900">{request.contactPhone}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Photos:</span>
-                        <span className="font-bold dark:text-white">{request.photoCount} attached</span>
+                        <span className="text-muted-foreground text-slate-900/70">Photos:</span>
+                        <span className="font-bold text-slate-900">{request.photoCount} attached</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Status & Schedule */}
                   <div className="lg:col-span-4 grid grid-cols-2 gap-4">
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4 col-span-2">
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4 col-span-2">
                       <div className="flex items-center gap-2 mb-2">
                         {getStatusIcon(request.status)}
-                        <p className="text-sm font-bold dark:text-white">
+                        <p className="text-sm font-bold text-slate-900">
                           {request.status.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                         </p>
                       </div>
                       {request.assignedTo && (
-                        <p className="text-xs text-muted-foreground dark:text-white/70">
+                        <p className="text-xs text-muted-foreground text-slate-900/70">
                           Assigned to: {request.assignedTo}
                         </p>
                       )}
                     </div>
 
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Submitted</p>
-                      <p className="text-sm font-bold dark:text-white">
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                      <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">Submitted</p>
+                      <p className="text-sm font-bold text-slate-900">
                         {new Date(request.submittedDate).toLocaleDateString()}
                       </p>
                     </div>
 
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                      <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">
                         {request.completedDate ? 'Completed' : request.scheduledDate ? 'Scheduled' : 'Not Scheduled'}
                       </p>
-                      <p className="text-sm font-bold dark:text-white">
+                      <p className="text-sm font-bold text-slate-900">
                         {request.completedDate 
                           ? new Date(request.completedDate).toLocaleDateString()
                           : request.scheduledDate
@@ -383,14 +414,14 @@ export default function MaintenancePage() {
                       </p>
                     </div>
 
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Estimated Cost</p>
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                      <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">Estimated Cost</p>
                       <p className="text-lg font-black text-[#E07A47]">${request.estimatedCost}</p>
                     </div>
 
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Actual Cost</p>
-                      <p className="text-lg font-black dark:text-white">
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                      <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">Actual Cost</p>
+                      <p className="text-lg font-black text-slate-900">
                         {request.actualCost ? `$${request.actualCost}` : 'Pending'}
                       </p>
                     </div>
@@ -421,7 +452,7 @@ export default function MaintenancePage() {
                         </Button>
                       )}
 
-                      <Button variant="outline" className="w-full border-2 border-slate-300 dark:border-slate-600">
+                      <Button variant="outline" className="w-full border-2 border-slate-300 border-slate-200">
                         View Photos
                       </Button>
                     </div>
@@ -432,6 +463,7 @@ export default function MaintenancePage() {
           ))}
         </div>
       </div>
+      </main>
     </div>
   )
 }

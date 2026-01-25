@@ -1,5 +1,6 @@
 "use client"
 
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -19,6 +20,14 @@ import {
   CheckCircle,
   Clock,
   XCircle,
+  Building2,
+  Search,
+  UserPlus,
+  MapPin,
+  Target,
+  Calculator,
+  BarChart3,
+  TrendingUp,
 } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { constructionAPI, type ConstructionProject, type Task } from "@/lib/api/construction.api"
@@ -30,8 +39,20 @@ import { SubmittalModal } from "@/components/construction/SubmittalModal"
 import { InspectionModal } from "@/components/construction/InspectionModal"
 import { SafetyIncidentModal } from "@/components/construction/SafetyIncidentModal"
 
+const sidebarItems = [
+  { title: "Dashboard", href: "/dashboard/sponsor", icon: Home },
+  { title: "Property Search", href: "/dashboard/sponsor/property-search", icon: Search },
+  { title: "Leads", href: "/dashboard/sponsor/leads", icon: UserPlus },
+  { title: "Market Research", href: "/dashboard/sponsor/market-research", icon: MapPin },
+  { title: "Deal Pipeline", href: "/dashboard/sponsor/deal-pipeline", icon: Target },
+  { title: "Underwriting", href: "/dashboard/sponsor/underwriting", icon: Calculator },
+  { title: "Analytics", href: "/dashboard/sponsor/analytics", icon: BarChart3 },
+  { title: "Capital Raise", href: "/dashboard/sponsor/investor-relations", icon: TrendingUp },
+  { title: "Distributions", href: "/dashboard/sponsor/distributions", icon: DollarSign },
+]
+
 export default function SponsorConstructionPage() {
-  const { logout } = useAuth()
+  const { user, logout } = useAuth()
   const [project, setProject] = useState<ConstructionProject | null>(null)
   const [tasks, setTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState(true)
@@ -99,19 +120,6 @@ export default function SponsorConstructionPage() {
     setTaskModalOpen(true)
   }
 
-  // Page-specific sidebar for construction tools
-  const constructionSidebarItems = [
-    { title: "Overview", href: "#overview", icon: Home },
-    { title: "Timeline", href: "#timeline", icon: Calendar },
-    { title: "Budget", href: "#budget", icon: DollarSign },
-    { title: "Tasks", href: "#tasks", icon: List },
-    { title: "Documents", href: "#documents", icon: FileText },
-    { title: "Photos", href: "#photos", icon: ImageIcon },
-    { title: "Inspections", href: "#inspections", icon: CheckCircle },
-    { title: "Issues", href: "#issues", icon: AlertTriangle },
-    { title: "Team", href: "#team", icon: Users },
-  ]
-
   // Helper function to get phase display name
   const getPhaseDisplay = (phase: string) => {
     return phase.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
@@ -152,13 +160,22 @@ export default function SponsorConstructionPage() {
   // Loading state
   if (loading) {
     return (
-      <div className="flex min-h-screen bg-white items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#E07A47] to-[#56CCF2] flex items-center justify-center mx-auto mb-4 animate-pulse">
-            <Hammer className="h-8 w-8 text-white" />
+      <div className="flex min-h-screen bg-white">
+        <DashboardSidebar
+          items={sidebarItems}
+          role="Sponsor"
+          roleIcon={Building2}
+          userName={user?.email || "Sponsor User"}
+          onLogout={logout}
+        />
+        <main className="flex-1 ml-24 bg-white flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#E07A47] to-[#56CCF2] flex items-center justify-center mx-auto mb-4 animate-pulse">
+              <Hammer className="h-8 w-8 text-white" />
+            </div>
+            <p className="text-lg font-semibold text-muted-foreground">Loading construction data...</p>
           </div>
-          <p className="text-lg font-semibold text-muted-foreground">Loading construction data...</p>
-        </div>
+        </main>
       </div>
     )
   }
@@ -167,13 +184,13 @@ export default function SponsorConstructionPage() {
   if (error) {
     return (
       <div className="flex min-h-screen bg-white">
-        <aside className="fixed left-0 top-0 h-screen w-24 bg-slate-900 border-r-4 border-[#E07A47] flex flex-col items-center py-6">
-          <Button asChild size="icon" className="w-12 h-12 bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-xl">
-            <Link href="/dashboard/sponsor">
-              <ArrowLeft className="h-5 w-5" />
-            </Link>
-          </Button>
-        </aside>
+        <DashboardSidebar
+          items={sidebarItems}
+          role="Sponsor"
+          roleIcon={Building2}
+          userName={user?.email || "Sponsor User"}
+          onLogout={logout}
+        />
         <main className="flex-1 ml-24 bg-white flex items-center justify-center">
           <Card className="max-w-md border-4 border-[#56CCF2]">
             <CardHeader className="text-center">
@@ -206,16 +223,13 @@ export default function SponsorConstructionPage() {
   if (!project) {
     return (
       <div className="flex min-h-screen bg-white">
-        <aside className="fixed left-0 top-0 h-screen w-24 bg-slate-900 border-r-4 border-[#E07A47] flex flex-col items-center py-6 gap-4">
-          <Button asChild size="icon" className="w-12 h-12 bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-xl">
-            <Link href="/dashboard/sponsor">
-              <ArrowLeft className="h-5 w-5" />
-            </Link>
-          </Button>
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#E07A47] to-[#56CCF2] flex items-center justify-center">
-            <Hammer className="h-6 w-6 text-white" />
-          </div>
-        </aside>
+        <DashboardSidebar
+          items={sidebarItems}
+          role="Sponsor"
+          roleIcon={Building2}
+          userName={user?.email || "Sponsor User"}
+          onLogout={logout}
+        />
         <main className="flex-1 ml-24 bg-white flex items-center justify-center">
           <Card className="max-w-md border-4 border-[#56CCF2]">
             <CardHeader className="text-center">
@@ -252,67 +266,31 @@ export default function SponsorConstructionPage() {
 
   return (
     <div className="flex min-h-screen bg-white">
-      {/* Page-Specific Sidebar */}
-      <aside className="fixed left-0 top-0 h-screen w-64 bg-slate-900 border-r-4 border-[#E07A47] flex flex-col overflow-hidden">
-        {/* Header with Return to Dashboard */}
-        <div className="p-6 border-b border-slate-700">
-          <Button asChild className="w-full mb-4 bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-full">
-            <Link href="/dashboard/sponsor">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Return to Dashboard
-            </Link>
-          </Button>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#E07A47] to-[#D96835] flex items-center justify-center">
-              <Hammer className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h2 className="font-black text-white text-lg">Construction</h2>
-              <p className="text-xs text-slate-400">{project.developmentProject?.name || project.projectCode}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto scrollbar-hide">
-          {constructionSidebarItems.map((item) => {
-            const Icon = item.icon
-            return (
-              <a key={item.href} href={item.href} className="block">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-3 h-12 text-slate-300 hover:bg-slate-800 hover:text-white"
-                >
-                  <Icon className="h-5 w-5" />
-                  <span className="flex-1 text-left">{item.title}</span>
-                </Button>
-              </a>
-            )
-          })}
-        </nav>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-slate-700">
-          <Button
-            variant="ghost"
-            className="w-full text-slate-400 hover:bg-red-600 hover:text-white"
-            size="sm"
-            onClick={logout}
-          >
-            Sign Out
-          </Button>
-        </div>
-      </aside>
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Sponsor"
+        roleIcon={Building2}
+        userName={user?.email || "Sponsor User"}
+        onLogout={logout}
+      />
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 bg-white">
+      <main className="flex-1 ml-24 bg-white">
         <div className="container max-w-7xl px-8 py-8 mx-auto">
           {/* Overview Section */}
           <div id="overview" className="mb-12">
             <div className="flex items-center justify-between mb-2">
-              <h1 className="text-4xl font-black">
-                {project.developmentProject?.name || project.projectCode}
-              </h1>
+              <div className="flex items-center gap-4">
+                <Button asChild variant="outline" size="sm" className="border-2 border-[#E07A47]">
+                  <Link href="/dashboard/sponsor">
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Back to Dashboard
+                  </Link>
+                </Button>
+                <h1 className="text-4xl font-black">
+                  {project.developmentProject?.name || project.projectCode}
+                </h1>
+              </div>
               <Badge className="bg-[#56CCF2] text-white text-sm px-4 py-1">
                 {getPhaseDisplay(project.phase)}
               </Badge>
@@ -459,7 +437,7 @@ export default function SponsorConstructionPage() {
                     {tasks.slice(0, 10).map((task) => (
                       <div
                         key={task.id}
-                        className="flex items-center gap-4 p-4 rounded-xl bg-[#6b7280]/10 border-2 border-slate-300 hover:shadow-md transition-all cursor-pointer"
+                        className="flex items-center gap-4 p-4 rounded-xl bg-slate-100 border-2 border-slate-300 hover:shadow-md transition-all cursor-pointer"
                         onClick={() => handleTaskEdit(task)}
                       >
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
@@ -480,7 +458,7 @@ export default function SponsorConstructionPage() {
                           <h4 className="font-bold">{task.title}</h4>
                           <p className="text-sm text-muted-foreground">
                             {task.percentComplete}% Complete
-                            {task.assignedTo && ` • ${task.assignedTo.email}`}
+                            {task.assignedTo && ` - ${task.assignedTo.email}`}
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
