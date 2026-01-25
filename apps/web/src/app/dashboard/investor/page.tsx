@@ -88,7 +88,7 @@ export default function InvestorDashboardPage() {
       />
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 bg-white">
+      <main className="flex-1 ml-20 bg-white">
         <div className="container max-w-7xl px-8 py-8 mx-auto">
           {/* Header */}
           <div className="mb-8">
