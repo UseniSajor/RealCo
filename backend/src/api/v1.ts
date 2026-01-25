@@ -802,6 +802,59 @@ export async function registerV1Routes(app: FastifyInstance) {
   // FINANCE & TRUST MODULE ROUTES
   // ==========================================================================
 
+    // =========================
+    // OPERATING STATEMENTS API
+    // =========================
+
+    // Get all operating statements for all projects in the org (optionally filter by project)
+    app.get('/operating-statements', { preHandler: [requireAuth] }, async (req, reply) => {
+      const user = (req as any).user as { userId: string; orgId: string };
+      if (!user) return reply.status(401).send({ error: 'Not authenticated' });
+
+      // Optional projectId filter
+      const q = req.query as any;
+      let where: any = {};
+      if (q.projectId) {
+        where.project = { id: q.projectId, developmentProject: { orgId: user.orgId } };
+      } else {
+        where.project = { developmentProject: { orgId: user.orgId } };
+      }
+
+      const statements = await prisma.operatingStatement.findMany({
+        where,
+        include: {
+          project: {
+            select: {
+              id: true,
+              projectCode: true,
+              developmentProject: { select: { name: true, address: true } },
+            },
+          },
+        },
+        orderBy: [{ periodStart: 'desc' }],
+      });
+      return { items: statements };
+    });
+
+    // Get all operating statements for a single project
+    app.get('/projects/:id/operating-statements', { preHandler: [requireAuth] }, async (req, reply) => {
+      const user = (req as any).user as { userId: string; orgId: string };
+      if (!user) return reply.status(401).send({ error: 'Not authenticated' });
+      const { id } = req.params as any;
+
+      // Verify project belongs to org
+      const project = await prisma.project.findFirst({
+        where: { id, developmentProject: { orgId: user.orgId } },
+      });
+      if (!project) return reply.status(404).send({ error: 'Project not found' });
+
+      const statements = await prisma.operatingStatement.findMany({
+        where: { projectId: id },
+        orderBy: [{ periodStart: 'desc' }],
+      });
+      return { items: statements };
+    });
+
   // Register all transaction routes
   // await transactionRoutes(app); // TODO: Create transactions routes
 
