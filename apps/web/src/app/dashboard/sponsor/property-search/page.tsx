@@ -199,7 +199,7 @@ export default function PropertySearchPage() {
 
   return (
     <div className="flex min-h-screen bg-white dark:bg-slate-900">
-      {/* Sidebar */}
+      {/* Left Sidebar */}
       <DashboardSidebar
         items={sidebarItems}
         role="Sponsor"
@@ -208,9 +208,9 @@ export default function PropertySearchPage() {
         onLogout={handleLogout}
       />
 
-      {/* Main Content */}
-      <main className="flex-1 ml-24 p-6">
-        <div className="max-w-7xl mx-auto space-y-6">
+      {/* Main Content - between two sidebars */}
+      <main className="flex-1 ml-24 mr-80 p-6">
+        <div className="max-w-6xl mx-auto space-y-6">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
@@ -304,193 +304,47 @@ export default function PropertySearchPage() {
             </CardContent>
           </Card>
 
-          {/* Standard Search & Filters */}
-          <Card className="border-4 border-[#E07A47]">
-            <CardContent className="pt-6">
-              <div className="space-y-4">
-                {/* Search Bar */}
-                <div className="flex gap-3">
-                  <div className="flex-1 relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input
-                      type="text"
-                      placeholder="Search by property name, address, or market..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 h-12 border-2"
-                    />
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className={`border-2 ${showAdvancedFilters ? 'border-[#E07A47] bg-[#E07A47]/10' : 'border-[#56CCF2]'}`}
-                    onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-                  >
-                    <SlidersHorizontal className="mr-2 h-4 w-4" />
-                    Advanced Filters
-                  </Button>
-                </div>
+          {/* Quick Search Bar */}
+          <div className="flex gap-3">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search by property name, address, or market..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-12 border-2 border-[#E07A47]"
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button
+                size="lg"
+                variant={viewMode === 'list' ? 'default' : 'outline'}
+                onClick={() => setViewMode('list')}
+                className={viewMode === 'list' ? 'bg-[#56CCF2]' : 'border-2'}
+              >
+                <List className="mr-2 h-4 w-4" />
+                List
+              </Button>
+              <Button
+                size="lg"
+                variant={viewMode === 'map' ? 'default' : 'outline'}
+                onClick={() => setViewMode('map')}
+                className={viewMode === 'map' ? 'bg-[#56CCF2]' : 'border-2'}
+              >
+                <Map className="mr-2 h-4 w-4" />
+                Map
+              </Button>
+            </div>
+          </div>
 
-                {/* Quick Filters */}
-                <div className="flex flex-wrap gap-3">
-                  <div className="flex items-center gap-2">
-                    <Filter className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-semibold">Type:</span>
-                  </div>
-                  {[
-                    { value: 'all', label: 'All Types', icon: Building2 },
-                    { value: 'multifamily', label: 'Multifamily', icon: Home },
-                    { value: 'office', label: 'Office', icon: Building2 },
-                    { value: 'industrial', label: 'Industrial', icon: Warehouse },
-                    { value: 'retail', label: 'Retail', icon: Store },
-                  ].map(type => (
-                    <Button
-                      key={type.value}
-                      size="sm"
-                      variant={propertyType === type.value ? 'default' : 'outline'}
-                      onClick={() => setPropertyType(type.value)}
-                      className={propertyType === type.value ? 'bg-[#56CCF2] hover:bg-[#56CCF2]/90' : ''}
-                    >
-                      <type.icon className="mr-2 h-3 w-3" />
-                      {type.label}
-                    </Button>
-                  ))}
-
-                  <div className="border-l-2 border-slate-200 mx-2" />
-
-                  <span className="text-sm font-semibold">Price:</span>
-                  {[
-                    { value: 'all', label: 'All' },
-                    { value: 'under10', label: '<$10M' },
-                    { value: '10to25', label: '$10-25M' },
-                    { value: '25to50', label: '$25-50M' },
-                    { value: 'over50', label: '$50M+' },
-                  ].map(range => (
-                    <Button
-                      key={range.value}
-                      size="sm"
-                      variant={priceRange === range.value ? 'default' : 'outline'}
-                      onClick={() => setPriceRange(range.value)}
-                      className={priceRange === range.value ? 'bg-[#E07A47] hover:bg-[#E07A47]/90' : ''}
-                    >
-                      {range.label}
-                    </Button>
-                  ))}
-                </div>
-
-                {/* Advanced Filters Panel */}
-                {showAdvancedFilters && (
-                  <div className="grid grid-cols-4 gap-4 p-4 bg-muted/30 rounded-lg border-2 border-dashed border-[#E07A47]/30">
-                    <div>
-                      <label className="text-xs font-medium mb-1 block">Min Cap Rate</label>
-                      <Input
-                        type="number"
-                        placeholder="5.0"
-                        value={minCapRate}
-                        onChange={(e) => setMinCapRate(e.target.value)}
-                        className="h-9"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium mb-1 block">Max Cap Rate</label>
-                      <Input
-                        type="number"
-                        placeholder="8.0"
-                        value={maxCapRate}
-                        onChange={(e) => setMaxCapRate(e.target.value)}
-                        className="h-9"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium mb-1 block">Min Units</label>
-                      <Input
-                        type="number"
-                        placeholder="50"
-                        value={minUnits}
-                        onChange={(e) => setMinUnits(e.target.value)}
-                        className="h-9"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium mb-1 block">Max Units</label>
-                      <Input
-                        type="number"
-                        placeholder="500"
-                        value={maxUnits}
-                        onChange={(e) => setMaxUnits(e.target.value)}
-                        className="h-9"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium mb-1 block">City</label>
-                      <Input
-                        placeholder="Austin"
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
-                        className="h-9"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium mb-1 block">State</label>
-                      <Input
-                        placeholder="TX"
-                        value={state}
-                        onChange={(e) => setState(e.target.value)}
-                        className="h-9"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium mb-1 block">Min NOI</label>
-                      <Input
-                        type="number"
-                        placeholder="500000"
-                        value={minNOI}
-                        onChange={(e) => setMinNOI(e.target.value)}
-                        className="h-9"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium mb-1 block">Year Built After</label>
-                      <Input
-                        type="number"
-                        placeholder="2015"
-                        value={yearBuiltMin}
-                        onChange={(e) => setYearBuiltMin(e.target.value)}
-                        className="h-9"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* View Mode & Results Count */}
-                <div className="flex items-center justify-between pt-2 border-t">
-                  <p className="text-sm text-muted-foreground">
-                    <span className="font-bold text-foreground">{filteredProperties.length}</span> properties found
-                  </p>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant={viewMode === 'list' ? 'default' : 'outline'}
-                      onClick={() => setViewMode('list')}
-                      className={viewMode === 'list' ? 'bg-[#56CCF2]' : ''}
-                    >
-                      <List className="mr-2 h-4 w-4" />
-                      List
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={viewMode === 'map' ? 'default' : 'outline'}
-                      onClick={() => setViewMode('map')}
-                      className={viewMode === 'map' ? 'bg-[#56CCF2]' : ''}
-                    >
-                      <Map className="mr-2 h-4 w-4" />
-                      Map
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Results Count */}
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              <span className="font-bold text-foreground">{filteredProperties.length}</span> properties found
+            </p>
+            <p className="text-sm text-muted-foreground">Use the filter panel on the right to refine results</p>
+          </div>
 
           {/* Results */}
           {viewMode === 'list' ? (
@@ -731,6 +585,224 @@ export default function PropertySearchPage() {
           )}
         </div>
       </main>
+
+      {/* Right Filter Sidebar */}
+      <aside className="fixed right-0 top-0 h-screen w-80 bg-white dark:bg-slate-900 border-l-4 border-[#E07A47] p-4 overflow-y-auto z-40">
+        <div className="space-y-4">
+          {/* Filter Header */}
+          <div className="flex items-center justify-between pb-3 border-b-2 border-slate-200">
+            <div className="flex items-center gap-2">
+              <SlidersHorizontal className="h-5 w-5 text-[#E07A47]" />
+              <h3 className="font-black text-lg">Filters</h3>
+            </div>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                setPropertyType('all')
+                setPriceRange('all')
+                setSearchQuery('')
+                setMinCapRate('')
+                setMaxCapRate('')
+                setMinUnits('')
+                setMaxUnits('')
+                setCity('')
+                setState('')
+                setMinNOI('')
+                setYearBuiltMin('')
+              }}
+              className="text-[#E07A47] hover:text-[#E07A47]"
+            >
+              <RefreshCw className="mr-1 h-3 w-3" />
+              Reset
+            </Button>
+          </div>
+
+          {/* Property Type */}
+          <div className="space-y-2">
+            <label className="text-sm font-bold flex items-center gap-2">
+              <Building2 className="h-4 w-4 text-[#56CCF2]" />
+              Property Type
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { value: 'all', label: 'All', icon: Building2 },
+                { value: 'multifamily', label: 'Multifamily', icon: Home },
+                { value: 'office', label: 'Office', icon: Building2 },
+                { value: 'industrial', label: 'Industrial', icon: Warehouse },
+                { value: 'retail', label: 'Retail', icon: Store },
+              ].map(type => (
+                <Button
+                  key={type.value}
+                  size="sm"
+                  variant={propertyType === type.value ? 'default' : 'outline'}
+                  onClick={() => setPropertyType(type.value)}
+                  className={`justify-start ${propertyType === type.value ? 'bg-[#56CCF2] hover:bg-[#56CCF2]/90' : 'border-2'}`}
+                >
+                  <type.icon className="mr-2 h-3 w-3" />
+                  {type.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Price Range */}
+          <div className="space-y-2">
+            <label className="text-sm font-bold flex items-center gap-2">
+              <DollarSign className="h-4 w-4 text-[#E07A47]" />
+              Price Range
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { value: 'all', label: 'All Prices' },
+                { value: 'under10', label: 'Under $10M' },
+                { value: '10to25', label: '$10M - $25M' },
+                { value: '25to50', label: '$25M - $50M' },
+                { value: 'over50', label: '$50M+' },
+              ].map(range => (
+                <Button
+                  key={range.value}
+                  size="sm"
+                  variant={priceRange === range.value ? 'default' : 'outline'}
+                  onClick={() => setPriceRange(range.value)}
+                  className={`justify-start ${priceRange === range.value ? 'bg-[#E07A47] hover:bg-[#E07A47]/90' : 'border-2'}`}
+                >
+                  {range.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Cap Rate */}
+          <div className="space-y-2">
+            <label className="text-sm font-bold flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-green-500" />
+              Cap Rate (%)
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              <Input
+                type="number"
+                placeholder="Min"
+                value={minCapRate}
+                onChange={(e) => setMinCapRate(e.target.value)}
+                className="border-2"
+              />
+              <Input
+                type="number"
+                placeholder="Max"
+                value={maxCapRate}
+                onChange={(e) => setMaxCapRate(e.target.value)}
+                className="border-2"
+              />
+            </div>
+          </div>
+
+          {/* Units */}
+          <div className="space-y-2">
+            <label className="text-sm font-bold flex items-center gap-2">
+              <Users className="h-4 w-4 text-purple-500" />
+              Units
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              <Input
+                type="number"
+                placeholder="Min"
+                value={minUnits}
+                onChange={(e) => setMinUnits(e.target.value)}
+                className="border-2"
+              />
+              <Input
+                type="number"
+                placeholder="Max"
+                value={maxUnits}
+                onChange={(e) => setMaxUnits(e.target.value)}
+                className="border-2"
+              />
+            </div>
+          </div>
+
+          {/* Location */}
+          <div className="space-y-2">
+            <label className="text-sm font-bold flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-blue-500" />
+              Location
+            </label>
+            <Input
+              placeholder="City"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="border-2"
+            />
+            <Input
+              placeholder="State (e.g., TX)"
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              className="border-2"
+            />
+          </div>
+
+          {/* Min NOI */}
+          <div className="space-y-2">
+            <label className="text-sm font-bold flex items-center gap-2">
+              <DollarSign className="h-4 w-4 text-green-600" />
+              Minimum NOI
+            </label>
+            <Input
+              type="number"
+              placeholder="e.g., 500000"
+              value={minNOI}
+              onChange={(e) => setMinNOI(e.target.value)}
+              className="border-2"
+            />
+          </div>
+
+          {/* Year Built */}
+          <div className="space-y-2">
+            <label className="text-sm font-bold flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-slate-500" />
+              Year Built After
+            </label>
+            <Input
+              type="number"
+              placeholder="e.g., 2010"
+              value={yearBuiltMin}
+              onChange={(e) => setYearBuiltMin(e.target.value)}
+              className="border-2"
+            />
+          </div>
+
+          {/* Apply Filters Button */}
+          <div className="pt-4 border-t-2 border-slate-200">
+            <p className="text-xs text-muted-foreground mb-3 text-center">
+              Filters apply automatically
+            </p>
+            <Button className="w-full bg-[#E07A47] hover:bg-[#D96835]">
+              <Search className="mr-2 h-4 w-4" />
+              {filteredProperties.length} Results
+            </Button>
+          </div>
+
+          {/* Saved Searches */}
+          <div className="pt-4 border-t-2 border-slate-200">
+            <label className="text-sm font-bold flex items-center gap-2 mb-3">
+              <Heart className="h-4 w-4 text-red-500" />
+              Saved Searches
+            </label>
+            <div className="space-y-2">
+              <Button variant="outline" className="w-full justify-start border-2 text-sm">
+                Austin Multifamily &lt;$25M
+              </Button>
+              <Button variant="outline" className="w-full justify-start border-2 text-sm">
+                TX Industrial 6%+ Cap
+              </Button>
+            </div>
+            <Button variant="ghost" className="w-full mt-2 text-[#56CCF2]" size="sm">
+              <Plus className="mr-2 h-3 w-3" />
+              Save Current Search
+            </Button>
+          </div>
+        </div>
+      </aside>
 
       {/* Owner Lookup Modal */}
       {showOwnerLookup && selectedProperty && (

@@ -50,11 +50,11 @@ export default function SponsorDashboardPage() {
     { title: "Deal Pipeline", href: "/dashboard/sponsor/deal-pipeline", icon: Target },
     { title: "Underwriting", href: "/dashboard/sponsor/underwriting", icon: Calculator },
     { title: "Analytics", href: "/dashboard/sponsor/analytics", icon: BarChart3 },
-    { title: "Capital Raised", href: "/dashboard/sponsor/capital-raised", icon: TrendingUp },
+    { title: "Capital Raise", href: "/dashboard/sponsor/investor-relations", icon: TrendingUp },
     { title: "Construction", href: "/dashboard/sponsor/construction", icon: HardHat },
     { title: "Distributions", href: "/dashboard/sponsor/distributions", icon: DollarSign },
     { title: "Draw Requests", href: "/dashboard/sponsor/draw-request", icon: FileText },
-    { title: "Investor Relations", href: "/dashboard/sponsor/team", icon: Users },
+    { title: "Investor CRM", href: "/dashboard/sponsor/investor-relations", icon: Users },
     { title: "Messages", href: "/dashboard/sponsor/team", icon: MessageSquare, badge: "3" },
     { title: "Settings", href: "/dashboard/sponsor/team", icon: Settings },
   ]

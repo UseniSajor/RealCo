@@ -1,9 +1,12 @@
 "use client"
 
 import { useState } from "react"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { BackButton } from "@/components/ui/back-button"
+import { useAuth } from "@/lib/auth-context"
 import Link from "next/link"
 import {
   Users,
@@ -13,7 +16,6 @@ import {
   Calendar,
   MapPin,
   Building2,
-  ArrowLeft,
   Plus,
   Search,
   Filter,
@@ -27,11 +29,36 @@ import {
   MessageSquare,
   FileText,
   BarChart3,
+  Home,
+  UserPlus,
+  Target,
+  Calculator,
+  Hammer,
+  DollarSign,
+  Settings,
 } from "lucide-react"
 
 export default function LeadsPage() {
+  const { user, logout } = useAuth()
   const [statusFilter, setStatusFilter] = useState<'all' | 'new' | 'contacted' | 'qualifying' | 'qualified' | 'cold'>('all')
   const [scoreFilter, setScoreFilter] = useState<'all' | 'hot' | 'warm' | 'cold'>('all')
+
+  const sidebarItems = [
+    { title: "Dashboard", href: "/dashboard/sponsor", icon: Home },
+    { title: "Property Search", href: "/dashboard/sponsor/property-search", icon: Search },
+    { title: "Lead Management", href: "/dashboard/sponsor/leads", icon: UserPlus, badge: "12" },
+    { title: "Market Research", href: "/dashboard/sponsor/market-research", icon: MapPin },
+    { title: "Deal Pipeline", href: "/dashboard/sponsor/deal-pipeline", icon: Target },
+    { title: "Underwriting", href: "/dashboard/sponsor/underwriting", icon: Calculator },
+    { title: "Analytics", href: "/dashboard/sponsor/analytics", icon: BarChart3 },
+    { title: "Capital Raise", href: "/dashboard/sponsor/investor-relations", icon: TrendingUp },
+    { title: "Construction", href: "/dashboard/sponsor/construction", icon: Hammer },
+    { title: "Distributions", href: "/dashboard/sponsor/distributions", icon: DollarSign },
+    { title: "Draw Requests", href: "/dashboard/sponsor/draw-request", icon: FileText },
+    { title: "Investor CRM", href: "/dashboard/sponsor/investor-relations", icon: Users },
+    { title: "Messages", href: "/dashboard/sponsor/team", icon: MessageSquare, badge: "3" },
+    { title: "Settings", href: "/dashboard/sponsor/team", icon: Settings },
+  ]
 
   // Mock leads data with CRM features
   const leads = [
@@ -245,30 +272,38 @@ export default function LeadsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="flex min-h-screen bg-white">
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Sponsor Portal"
+        roleIcon={Building2}
+        userName={user?.name || "Acme Development Group"}
+        onLogout={logout}
+      />
+
+      <main className="flex-1 ml-24 p-8">
+        <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div>
-            <Button variant="ghost" asChild className="mb-2">
-              <Link href="/dashboard/sponsor">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Dashboard
-              </Link>
-            </Button>
-            <h1 className="text-4xl font-black mb-2">Lead Management</h1>
-            <p className="text-muted-foreground">
-              Track and convert deal opportunities into pipeline
-            </p>
+          <div className="flex items-center gap-4">
+            <BackButton href="/dashboard/sponsor" />
+            <div>
+              <h1 className="text-4xl font-black mb-2">Lead Management</h1>
+              <p className="text-muted-foreground">
+                Track and convert deal opportunities into pipeline
+              </p>
+            </div>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" className="border-2 border-[#56CCF2]">
               <BarChart3 className="mr-2 h-4 w-4" />
               Analytics
             </Button>
-            <Button className="bg-[#E07A47] hover:bg-[#E07A47]/90">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Lead
+            <Button className="bg-[#E07A47] hover:bg-[#E07A47]/90" asChild>
+              <Link href="/dashboard/sponsor/leads/new">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Lead
+              </Link>
             </Button>
           </div>
         </div>
@@ -535,7 +570,8 @@ export default function LeadsPage() {
             </CardContent>
           </Card>
         )}
-      </div>
+        </div>
+      </main>
     </div>
   )
 }
