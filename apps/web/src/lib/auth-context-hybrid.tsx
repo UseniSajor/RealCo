@@ -6,9 +6,9 @@ import { AuthAPI, type AuthUser, type RegisterRequest, type LoginRequest } from 
 import type { TierName } from './pricing-tiers'
 
 // Determine if we're in demo mode or production mode
-const IS_DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true' || 
-                     process.env.NEXT_PUBLIC_AUTH_MODE === 'demo' ||
-                     !process.env.NEXT_PUBLIC_API_URL;
+// DEFAULT: Production mode (live site) - demo must be explicitly enabled
+const IS_DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true' && 
+                     process.env.NEXT_PUBLIC_AUTH_MODE === 'demo';
 
 interface DemoUser {
   email: string
