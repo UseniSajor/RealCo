@@ -167,17 +167,14 @@ export default function SponsorConstructionPage() {
   if (error) {
     return (
       <div className="flex min-h-screen bg-white">
-        <aside className="fixed left-0 top-0 h-screen w-64 bg-[#56CCF2] border-r border-[#56CCF2] flex flex-col">
-          <div className="p-6 border-b border-white/20">
-            <Button asChild className="w-full mb-4 bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-full">
-              <Link href="/dashboard/sponsor">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Return to Dashboard
-              </Link>
-            </Button>
-          </div>
+        <aside className="fixed left-0 top-0 h-screen w-20 bg-gradient-to-b from-[#56CCF2] to-[#3BB5E0] border-r-4 border-[#E07A47] flex flex-col items-center py-6">
+          <Button asChild size="icon" className="w-12 h-12 bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-xl">
+            <Link href="/dashboard/sponsor">
+              <ArrowLeft className="h-5 w-5" />
+            </Link>
+          </Button>
         </aside>
-        <main className="flex-1 ml-64 bg-white flex items-center justify-center">
+        <main className="flex-1 ml-20 bg-white flex items-center justify-center">
           <Card className="max-w-md border-4 border-red-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-red-600">
@@ -201,26 +198,17 @@ export default function SponsorConstructionPage() {
   if (!project) {
     return (
       <div className="flex min-h-screen bg-white">
-        <aside className="fixed left-0 top-0 h-screen w-64 bg-[#56CCF2] border-r border-[#56CCF2] flex flex-col">
-          <div className="p-6 border-b border-white/20">
-            <Button asChild className="w-full mb-4 bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-full">
-              <Link href="/dashboard/sponsor">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Return to Dashboard
-              </Link>
-            </Button>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#E07A47] to-[#56CCF2] flex items-center justify-center">
-                <Hammer className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h2 className="font-black text-white text-lg">Construction</h2>
-                <p className="text-xs text-white/70">No Projects</p>
-              </div>
-            </div>
+        <aside className="fixed left-0 top-0 h-screen w-20 bg-gradient-to-b from-[#56CCF2] to-[#3BB5E0] border-r-4 border-[#E07A47] flex flex-col items-center py-6 gap-4">
+          <Button asChild size="icon" className="w-12 h-12 bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-xl">
+            <Link href="/dashboard/sponsor">
+              <ArrowLeft className="h-5 w-5" />
+            </Link>
+          </Button>
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#E07A47] to-[#56CCF2] flex items-center justify-center">
+            <Hammer className="h-6 w-6 text-white" />
           </div>
         </aside>
-        <main className="flex-1 ml-64 bg-white flex items-center justify-center">
+        <main className="flex-1 ml-20 bg-white flex items-center justify-center">
           <Card className="max-w-md border-4 border-[#56CCF2]">
             <CardHeader className="text-center">
               <div className="w-20 h-20 rounded-full bg-[#56CCF2]/20 flex items-center justify-center mx-auto mb-4">
@@ -304,7 +292,7 @@ export default function SponsorConstructionPage() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 bg-white">
+      <main className="flex-1 ml-20 bg-white">
         <div className="container max-w-7xl px-8 py-8 mx-auto">
           {/* Overview Section */}
           <div id="overview" className="mb-12">

@@ -1,14 +1,13 @@
 "use client"
 import { useState, useEffect } from "react"
-import { useState } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { 
-  Hammer, 
-  Calendar, 
-  AlertTriangle, 
+import {
+  Hammer,
+  Calendar,
+  AlertTriangle,
   CheckCircle2,
   Clock,
   TrendingUp,
@@ -18,8 +17,8 @@ import {
   AlertCircle,
   DollarSign,
   List
-import { constructionAPI, type ConstructionProject, type Task } from "@/lib/api/construction.api"
 } from "lucide-react"
+import { constructionAPI, type ConstructionProject, type Task } from "@/lib/api/construction.api"
 
 export function ConstructionDashboard() {
   const [selectedPhase, setSelectedPhase] = useState<string>('ALL')
@@ -98,103 +97,7 @@ export function ConstructionDashboard() {
     : []
 
   const activeTasks = tasks.filter(t => t.status === 'IN_PROGRESS')
-  const issues = [] // TODO: Fetch issues from API if available
-      endDate: '2026-02-28',
-      status: 'IN_PROGRESS',
-      percentComplete: 25,
-      budget: 1500000,
-      spent: 375000,
-      daysTotal: 150,
-      daysElapsed: 38,
-    },
-    {
-      id: '5',
-      name: 'Interior Finishes',
-      startDate: '2026-01-15',
-      endDate: '2026-06-30',
-      status: 'NOT_STARTED',
-      percentComplete: 0,
-      budget: 1800000,
-      spent: 0,
-      daysTotal: 167,
-      daysElapsed: 0,
-    },
-    {
-      id: '6',
-      name: 'Exterior & Landscaping',
-      startDate: '2026-05-01',
-      endDate: '2026-07-31',
-      status: 'NOT_STARTED',
-      percentComplete: 0,
-      budget: 620000,
-      spent: 0,
-      daysTotal: 92,
-      daysElapsed: 0,
-    },
-    {
-      id: '7',
-      name: 'Final Inspections & Closeout',
-      startDate: '2026-08-01',
-      endDate: '2026-08-31',
-      status: 'NOT_STARTED',
-      percentComplete: 0,
-      budget: 120000,
-      spent: 0,
-      daysTotal: 31,
-      daysElapsed: 0,
-    },
-  ]
-
-  // Mock active tasks
-  const activeTasks = [
-    {
-      id: '1',
-      title: 'Complete 3rd floor framing',
-      phase: 'Framing & Structure',
-      assignee: 'ABC Construction',
-      dueDate: '2026-01-30',
-      priority: 'HIGH',
-      status: 'IN_PROGRESS',
-    },
-    {
-      id: '2',
-      title: 'Install HVAC units - Building A',
-      phase: 'MEP',
-      assignee: 'XYZ Mechanical',
-      dueDate: '2026-02-05',
-      priority: 'MEDIUM',
-      status: 'IN_PROGRESS',
-    },
-    {
-      id: '3',
-      title: 'Electrical rough-in inspection',
-      phase: 'MEP',
-      assignee: 'Power Systems Inc',
-      dueDate: '2026-01-28',
-      priority: 'HIGH',
-      status: 'PENDING',
-    },
-  ]
-
-  // Mock issues/alerts
-  const issues = [
-    {
-      id: '1',
-      title: 'Material delivery delay - Steel beams',
-      severity: 'MEDIUM',
-      phase: 'Framing & Structure',
-      dateReported: '2026-01-20',
-      status: 'OPEN',
-    },
-    {
-      id: '2',
-      title: 'Foundation budget overrun',
-      severity: 'LOW',
-      phase: 'Foundation',
-      dateReported: '2025-06-25',
-      status: 'RESOLVED',
-    },
-  ]
+  const issues: { id: string; title: string; severity: string; phase: string; dateReported: string; status: string }[] = [] // TODO: Fetch issues from API if available
 
   const getStatusColor = (status: string) => {
     switch(status) {
@@ -249,12 +152,12 @@ export function ConstructionDashboard() {
               <TrendingUp className="h-5 w-5 text-[#56CCF2]" />
             </div>
             <p className="text-3xl font-black text-[#56CCF2]">
-              {projectOverview.percentComplete}%
+              {project.percentComplete}%
             </p>
             <div className="mt-3 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-[#56CCF2]"
-                style={{ width: `${projectOverview.percentComplete}%` }}
+                style={{ width: `${project.percentComplete}%` }}
               />
             </div>
           </CardContent>
@@ -267,10 +170,10 @@ export function ConstructionDashboard() {
               <Hammer className="h-5 w-5 text-[#E07A47]" />
             </div>
             <p className="text-3xl font-black text-[#E07A47]">
-              {((projectOverview.spent / projectOverview.budget) * 100).toFixed(0)}%
+              {project.totalBudget ? ((project.spentToDate / project.totalBudget) * 100).toFixed(0) : 0}%
             </p>
             <p className="text-xs text-muted-foreground mt-2">
-              {formatCurrency(projectOverview.spent)} of {formatCurrency(projectOverview.budget)}
+              {formatCurrency(project.spentToDate)} of {formatCurrency(project.totalBudget || 0)}
             </p>
           </CardContent>
         </Card>
@@ -282,10 +185,10 @@ export function ConstructionDashboard() {
               <CheckCircle2 className="h-5 w-5 text-green-600" />
             </div>
             <p className="text-2xl font-black text-green-600">
-              ON TRACK
+              {project.phase || 'IN PROGRESS'}
             </p>
             <p className="text-xs text-muted-foreground mt-2">
-              {projectOverview.daysRemaining} days remaining
+              {project.plannedEndDate ? Math.max(0, Math.ceil((new Date(project.plannedEndDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))) : '-'} days remaining
             </p>
           </CardContent>
         </Card>
@@ -314,21 +217,21 @@ export function ConstructionDashboard() {
               <Calendar className="h-8 w-8 text-[#56CCF2]" />
               <div>
                 <p className="text-sm text-muted-foreground">Project Start</p>
-                <p className="font-bold text-lg">{formatDate(projectOverview.startDate)}</p>
+                <p className="font-bold text-lg">{formatDate(project.actualStartDate || project.plannedStartDate)}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <Clock className="h-8 w-8 text-[#E07A47]" />
               <div>
                 <p className="text-sm text-muted-foreground">Target Completion</p>
-                <p className="font-bold text-lg">{formatDate(projectOverview.targetCompletion)}</p>
+                <p className="font-bold text-lg">{formatDate(project.plannedEndDate)}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <Hammer className="h-8 w-8 text-green-600" />
               <div>
                 <p className="text-sm text-muted-foreground">Days Remaining</p>
-                <p className="font-bold text-lg text-green-600">{projectOverview.daysRemaining} days</p>
+                <p className="font-bold text-lg text-green-600">{project.plannedEndDate ? Math.max(0, Math.ceil((new Date(project.plannedEndDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))) : '-'} days</p>
               </div>
             </div>
           </div>
@@ -443,15 +346,15 @@ export function ConstructionDashboard() {
                       {task.priority}
                     </Badge>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-2">{task.phase}</p>
+                  <p className="text-sm text-muted-foreground mb-2">{task.status}</p>
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-1">
                       <Users className="h-3 w-3" />
-                      <span>{task.assignee}</span>
+                      <span>{task.assignedToId || 'Unassigned'}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
-                      <span>Due {formatDate(task.dueDate)}</span>
+                      <span>Due {formatDate(task.plannedEndDate)}</span>
                     </div>
                   </div>
                 </div>

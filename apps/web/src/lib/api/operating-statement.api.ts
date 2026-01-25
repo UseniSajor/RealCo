@@ -4,6 +4,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/a
 export interface OperatingStatement {
   id: string;
   projectId: string;
+  property: string;
   period: string;
   periodStart: string;
   periodEnd: string;
