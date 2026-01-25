@@ -104,6 +104,7 @@ export class EscrowService {
         data: {
           offeringId: data.offeringId,
           accountNumber,
+          accountName: `Escrow Account ${accountNumber}`, // Added missing required field
           status: 'ACTIVE',
           balance: 0,
           availableBalance: 0,
@@ -222,9 +223,12 @@ export class EscrowService {
     const account = await this.getEscrowAccount(escrowAccountId);
 
     // Check sufficient funds
-    if (account.availableBalance < data.amount) {
+    const availableBal = typeof account.availableBalance === 'object' 
+      ? account.availableBalance.toNumber() 
+      : Number(account.availableBalance);
+    if (availableBal < data.amount) {
       throw new InsufficientFundsError(
-        `Insufficient escrow funds. Available: $${account.availableBalance}, Requested: $${data.amount}`
+        `Insufficient escrow funds. Available: $${availableBal}, Requested: $${data.amount}`
       );
     }
 
@@ -384,7 +388,7 @@ export class EscrowService {
         transaction: {
           select: {
             id: true,
-            type: true,
+            // type: true, // Not in Transaction model
             status: true,
           },
         },

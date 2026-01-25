@@ -20,5 +20,8 @@ export async function emit(event: string, payload: unknown): Promise<void> {
   }
 }
 
+// Alias for backward compatibility
+export const emitEvent = emit;
+
 
 

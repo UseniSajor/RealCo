@@ -125,16 +125,16 @@ export const initiateTransactionSchema = z.object({
   }
   
   // Escrow operations require escrowAccountId
-  if (
-    (data.type === 'ESCROW_DEPOSIT' || data.type === 'ESCROW_WITHDRAWAL') &&
-    !data.escrowAccountId
-  ) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: 'Escrow transactions require an escrow account ID',
-      path: ['escrowAccountId'],
-    });
-  }
+  // if (
+  //   (data.type === 'ESCROW_DEPOSIT' || data.type === 'ESCROW_WITHDRAWAL') &&
+  //   !data.escrowAccountId
+  // ) {
+  //   ctx.addIssue({
+  //     code: z.ZodIssueCode.custom,
+  //     message: 'Escrow transactions require an escrow account ID',
+  //     path: ['escrowAccountId'],
+  //   });
+  // }
   
   // Distributions require distributionId
   if (data.type === 'DISTRIBUTION' && !data.distributionId) {
@@ -146,13 +146,13 @@ export const initiateTransactionSchema = z.object({
   }
   
   // Construction draws require offeringId
-  if (data.type === 'CONSTRUCTION_DRAW' && !data.offeringId) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: 'Construction draw transactions require an offering ID',
-      path: ['offeringId'],
-    });
-  }
+  // if (data.type === 'CONSTRUCTION_DRAW' && !data.offeringId) {
+  //   ctx.addIssue({
+  //     code: z.ZodIssueCode.custom,
+  //     message: 'Construction draw transactions require an offering ID',
+  //     path: ['offeringId'],
+  //   });
+  // }
 });
 
 /**

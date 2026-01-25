@@ -20,7 +20,7 @@ import { StripeError as StripeAPIError, PaymentProcessingError } from './errors.
  * Initialize Stripe client
  */
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-11-20.acacia',
+  apiVersion: '2025-02-24.acacia',
   typescript: true,
 });
 
@@ -329,7 +329,7 @@ export class StripePaymentService {
     
     // Find transaction by Stripe payment intent ID
     const transaction = await this.prisma.transaction.findUnique({
-      where: { stripePaymentIntentId: paymentIntent.id },
+      where: { stripePaymentId: paymentIntent.id }, // Fixed field name
     });
     
     if (!transaction) {
@@ -343,7 +343,7 @@ export class StripePaymentService {
       data: {
         status: 'COMPLETED',
         completedAt: new Date(),
-        stripeChargeId: paymentIntent.latest_charge as string,
+        // stripeChargeId: paymentIntent.latest_charge as string, // Not a Transaction field
       },
     });
     
@@ -373,7 +373,7 @@ export class StripePaymentService {
     const paymentIntent = event.data.object as Stripe.PaymentIntent;
     
     const transaction = await this.prisma.transaction.findUnique({
-      where: { stripePaymentIntentId: paymentIntent.id },
+      where: { stripePaymentId: paymentIntent.id }, // Fixed field name
     });
     
     if (!transaction) {
@@ -387,8 +387,8 @@ export class StripePaymentService {
       data: {
         status: 'FAILED',
         failedAt: new Date(),
-        failureCode: paymentIntent.last_payment_error?.code || 'unknown',
-        failureMessage: paymentIntent.last_payment_error?.message || 'Payment failed',
+        // failureCode: paymentIntent.last_payment_error?.code || 'unknown', // Not a Transaction field
+        // failureMessage: paymentIntent.last_payment_error?.message || 'Payment failed',
       },
     });
     

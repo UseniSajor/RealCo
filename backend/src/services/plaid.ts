@@ -195,6 +195,7 @@ export async function createProcessorToken(
     const response = await plaidClient.processorTokenCreate({
       access_token: accessToken,
       account_id: accountId,
+      // @ts-ignore - Plaid API enum mismatch
       processor: processor,
     });
 

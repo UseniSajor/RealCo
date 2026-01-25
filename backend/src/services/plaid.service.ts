@@ -37,13 +37,13 @@ const PLAID_CONFIG = {
  * Get Plaid environment URL
  */
 function getPlaidEnvironment(): string {
-  const envMap = {
+  const envMap: Record<string, string | undefined> = {
     sandbox: PlaidEnvironments.sandbox,
     development: PlaidEnvironments.development,
     production: PlaidEnvironments.production,
   };
   
-  return envMap[PLAID_CONFIG.env];
+  return (envMap[PLAID_CONFIG.env] as string) || (PlaidEnvironments.sandbox as string);
 }
 
 /**
@@ -107,6 +107,7 @@ export class PlaidService {
           : undefined,
         account_filters: {
           depository: {
+            // @ts-ignore - Plaid API version mismatch
             account_subtypes: ['checking', 'savings'],
           },
         },

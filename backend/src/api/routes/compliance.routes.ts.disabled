@@ -1,0 +1,295 @@
+/**
+ * Compliance API Routes
+ * 
+ * RESTful endpoints for compliance checking and reporting
+ * All routes require authentication (most require admin role)
+ */
+
+import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { z } from 'zod';
+import { ComplianceService } from '../../services/compliance.service.js';
+import { requireAuth } from '../../middlewares/auth.js';
+import type { AuthenticatedUser } from '../../middlewares/auth.js';
+import { AppError } from '../../services/errors.js';
+import { prisma } from '../../lib/prisma.js';
+
+const complianceService = new ComplianceService(prisma);
+
+// =============================================================================
+// VALIDATION SCHEMAS
+// =============================================================================
+
+const runComplianceCheckSchema = z.object({
+  userId: z.string().uuid().optional(),
+  amount: z.number().positive(),
+  transactionType: z.string(),
+  toUserId: z.string().uuid().optional(),
+});
+
+const getChecksQuerySchema = z.object({
+  entityType: z.string().optional(),
+  checkType: z.string().optional(),
+  status: z.string().optional(),
+  limit: z.number().int().positive().max(100).default(50),
+  offset: z.number().int().nonnegative().default(0),
+});
+
+// =============================================================================
+// ROUTES
+// =============================================================================
+
+export async function complianceRoutes(server: FastifyInstance) {
+  
+  // ==========================================================================
+  // POST /compliance/check - Run compliance check
+  // ==========================================================================
+  server.post(
+    '/compliance/check',
+    {
+      preHandler: requireAuth,
+      schema: {
+        description: 'Run compliance checks for a transaction',
+        tags: ['compliance'],
+        body: {
+          type: 'object',
+          required: ['amount', 'transactionType'],
+          properties: {
+            userId: { type: 'string', format: 'uuid' },
+            amount: { type: 'number', minimum: 0 },
+            transactionType: { type: 'string' },
+            toUserId: { type: 'string', format: 'uuid' },
+          },
+        },
+        response: {
+          200: {
+            description: 'Compliance check result',
+            type: 'object',
+            properties: {
+              approved: { type: 'boolean' },
+              reason: { type: 'string' },
+              checksRun: { type: 'array', items: { type: 'string' } },
+            },
+          },
+        },
+      },
+    },
+    async (req: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const user = (req as any).user as AuthenticatedUser;
+        const data = runComplianceCheckSchema.parse(req.body);
+        
+        // Use authenticated user if not specified
+        const request = {
+          userId: data.userId || user.userId,
+          amount: data.amount,
+          transactionType: data.transactionType,
+          toUserId: data.toUserId,
+        };
+        
+        const result = await complianceService.runComplianceChecks(request);
+        
+        return reply.send(result);
+      } catch (error) {
+        return handleError(error, reply);
+      }
+    }
+  );
+
+  // ==========================================================================
+  // GET /compliance/checks/:entityId - Get checks for entity
+  // ==========================================================================
+  server.get(
+    '/compliance/checks/:entityId',
+    {
+      preHandler: requireAuth,
+      schema: {
+        description: 'Get compliance checks for an entity (admin only)',
+        tags: ['compliance'],
+        params: {
+          type: 'object',
+          required: ['entityId'],
+          properties: {
+            entityId: { type: 'string' },
+          },
+        },
+      },
+    },
+    async (req: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const { entityId } = z.object({ entityId: z.string() }).parse(req.params);
+        
+        // TODO: Check admin role
+        
+        const checks = await prisma.complianceCheck.findMany({
+          where: { userId: entityId },
+          orderBy: { performedAt: 'desc' },
+          take: 50,
+        });
+        
+        return reply.send({
+          checks,
+          count: checks.length,
+        });
+      } catch (error) {
+        return handleError(error, reply);
+      }
+    }
+  );
+
+  // ==========================================================================
+  // GET /compliance/checks - List compliance checks (admin only)
+  // ==========================================================================
+  server.get(
+    '/compliance/checks',
+    {
+      preHandler: requireAuth,
+      schema: {
+        description: 'List compliance checks with filters (admin only)',
+        tags: ['compliance'],
+        querystring: {
+          type: 'object',
+          properties: {
+            entityType: { type: 'string' },
+            checkType: { type: 'string' },
+            status: { type: 'string' },
+            limit: { type: 'number', minimum: 1, maximum: 100, default: 50 },
+            offset: { type: 'number', minimum: 0, default: 0 },
+          },
+        },
+      },
+    },
+    async (req: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const query = getChecksQuerySchema.parse(req.query);
+        
+        // TODO: Check admin role
+        
+        const [checks, total] = await Promise.all([
+          prisma.complianceCheck.findMany({
+            where: {
+              ...(query.checkType && { checkType: query.checkType as any }),
+              ...(query.status && { status: query.status as any }),
+            },
+            orderBy: { performedAt: 'desc' },
+            take: query.limit,
+            skip: query.offset,
+          }),
+          prisma.complianceCheck.count({
+            where: {
+              ...(query.checkType && { checkType: query.checkType as any }),
+              ...(query.status && { status: query.status as any }),
+            },
+          }),
+        ]);
+        
+        return reply.send({
+          checks,
+          pagination: {
+            total,
+            limit: query.limit,
+            offset: query.offset,
+            hasMore: query.offset + query.limit < total,
+          },
+        });
+      } catch (error) {
+        return handleError(error, reply);
+      }
+    }
+  );
+
+  // ==========================================================================
+  // GET /compliance/report - Generate compliance report (admin only)
+  // ==========================================================================
+  server.get(
+    '/compliance/report',
+    {
+      preHandler: requireAuth,
+      schema: {
+        description: 'Generate compliance report (admin only)',
+        tags: ['compliance'],
+        querystring: {
+          type: 'object',
+          properties: {
+            startDate: { type: 'string', format: 'date-time' },
+            endDate: { type: 'string', format: 'date-time' },
+          },
+        },
+      },
+    },
+    async (req: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const query = z.object({
+          startDate: z.string().datetime().transform((s) => new Date(s)).optional(),
+          endDate: z.string().datetime().transform((s) => new Date(s)).optional(),
+        }).parse(req.query);
+        
+        // TODO: Check admin role
+        
+        // Get compliance statistics
+        const stats = await prisma.complianceCheck.groupBy({
+          by: ['checkType', 'status'],
+          where: {
+            ...(query.startDate && { performedAt: { gte: query.startDate } }),
+            ...(query.endDate && { performedAt: { lte: query.endDate } }),
+          },
+          _count: true,
+        });
+        
+        const failedChecks = await prisma.complianceCheck.findMany({
+          where: {
+            status: 'REJECTED' as any,
+            ...(query.startDate && { performedAt: { gte: query.startDate } }),
+            ...(query.endDate && { performedAt: { lte: query.endDate } }),
+          },
+          orderBy: { performedAt: 'desc' },
+          take: 100,
+        });
+        
+        return reply.send({
+          statistics: stats,
+          failedChecks,
+          summary: {
+            totalChecks: stats.reduce((sum, s) => sum + s._count, 0),
+            failedCount: failedChecks.length,
+          },
+        });
+      } catch (error) {
+        return handleError(error, reply);
+      }
+    }
+  );
+}
+
+// =============================================================================
+// ERROR HANDLER
+// =============================================================================
+
+function handleError(error: unknown, reply: FastifyReply) {
+  console.error('Compliance API Error:', error);
+
+  if (error instanceof AppError) {
+    return reply.status(error.statusCode).send({
+      error: {
+        code: error.name,
+        message: error.message,
+      },
+    });
+  }
+
+  if ((error as any).name === 'ZodError') {
+    return reply.status(400).send({
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: 'Invalid input data',
+        details: (error as any).errors,
+      },
+    });
+  }
+
+  return reply.status(500).send({
+    error: {
+      code: 'INTERNAL_SERVER_ERROR',
+      message: 'An unexpected error occurred',
+    },
+  });
+}
