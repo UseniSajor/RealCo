@@ -56,49 +56,9 @@ export async function authRoutes(app: FastifyInstance) {
   /**
    * POST /v1/auth/login
    * Authenticate user and return JWT token
-   * (Already implemented in v1.ts, but included here for completeness)
+   * (Already implemented in v1.ts - removed duplicate to prevent FST_ERR_DUPLICATED_ROUTE)
    */
-  app.post('/auth/login', async (req, reply) => {
-    const body = z
-      .object({
-        email: z.string().email(),
-        password: z.string().min(1),
-      })
-      .parse(req.body);
-
-    try {
-      const user = await authService.authenticateUser(body.email, body.password);
-
-      // Generate JWT token
-      const token = await reply.jwtSign(
-        {
-          sub: user.userId,
-          org_id: user.orgId,
-        },
-        { expiresIn: '8h' }
-      );
-
-      return {
-        token,
-        user: {
-          id: user.userId,
-          email: user.email,
-          organizationId: user.orgId,
-          organizationName: user.organizationName,
-        },
-      };
-    } catch (error) {
-      if (error instanceof ValidationError) {
-        return reply.status(401).send({
-          error: {
-            code: 'INVALID_CREDENTIALS',
-            message: error.message,
-          },
-        });
-      }
-      throw error;
-    }
-  });
+  // Duplicate route removed - see v1.ts for implementation
 
   /**
    * POST /v1/auth/forgot-password
