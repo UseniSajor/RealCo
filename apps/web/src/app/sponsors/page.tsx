@@ -4,6 +4,7 @@ import { Hero } from "@/components/marketing/hero"
 import { FeatureGrid } from "@/components/marketing/feature-grid"
 import { CTASection } from "@/components/marketing/cta-section"
 import { RoleTabs } from "@/components/marketing/role-tabs"
+import { SponsorOverviewDownload } from "@/components/marketing/sponsor-overview-download"
 
 export const metadata = {
   title: "For Sponsors | RealCo",
@@ -136,6 +137,9 @@ export default function SponsorsPage() {
           </div>
         </div>
       </section>
+
+      {/* Sponsor Overview Download Section */}
+      <SponsorOverviewDownload />
 
       <CTASection
         title="See your first deal setup flow in 15 minutes."
