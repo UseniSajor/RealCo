@@ -17,6 +17,7 @@ import {
   Settings,
   Receipt,
   AlertCircle,
+  AlertTriangle,
   ArrowRight,
   Target,
   TrendingUp,
@@ -25,7 +26,8 @@ import {
   Zap,
   HardHat,
   Calendar,
-  Users
+  Users,
+  ClipboardList
 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { portfolioAPI } from "@/lib/api/portfolio.api"
@@ -65,14 +67,14 @@ export default function ProviderDashboardPage() {
 
   const sidebarItems = [
     { title: "Dashboard", href: "/dashboard/provider", icon: Home },
-    { title: "Vendor Portal", href: "/dashboard/provider/vendor-portal", icon: Wrench },
+    { title: "Work Orders", href: "/dashboard/provider/vendor-portal", icon: HardHat, badge: "3" },
     { title: "Submit Invoice", href: "/dashboard/provider/submit-invoice", icon: Upload },
+    { title: "Daily Logs", href: "/dashboard/provider/vendor-portal", icon: ClipboardList },
+    { title: "Inspections", href: "/dashboard/provider/vendor-portal", icon: CheckCircle2 },
     { title: "Transactions", href: "/dashboard/provider/transactions", icon: Receipt },
-    { title: "Banking", href: "/dashboard/provider/banking", icon: CreditCard },
-    { title: "Work Orders", href: "/dashboard/provider/vendor-portal", icon: HardHat },
-    { title: "Messages", href: "/dashboard/provider/vendor-portal", icon: MessageSquare, badge: "2" },
+    { title: "Safety Reports", href: "/dashboard/provider/vendor-portal", icon: AlertTriangle },
     { title: "Documents", href: "/dashboard/provider/vendor-portal", icon: FileText },
-    { title: "Settings", href: "/dashboard/provider/vendor-portal", icon: Settings },
+    { title: "Messages", href: "/dashboard/provider/vendor-portal", icon: MessageSquare, badge: "2" },
   ]
 
   return (

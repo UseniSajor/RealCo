@@ -167,7 +167,7 @@ export default function SponsorConstructionPage() {
   if (error) {
     return (
       <div className="flex min-h-screen bg-white">
-        <aside className="fixed left-0 top-0 h-screen w-24 bg-gradient-to-b from-[#56CCF2] to-[#3BB5E0] border-r-4 border-[#E07A47] flex flex-col items-center py-6">
+        <aside className="fixed left-0 top-0 h-screen w-24 bg-slate-900 border-r-4 border-[#E07A47] flex flex-col items-center py-6">
           <Button asChild size="icon" className="w-12 h-12 bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-xl">
             <Link href="/dashboard/sponsor">
               <ArrowLeft className="h-5 w-5" />
@@ -206,7 +206,7 @@ export default function SponsorConstructionPage() {
   if (!project) {
     return (
       <div className="flex min-h-screen bg-white">
-        <aside className="fixed left-0 top-0 h-screen w-24 bg-gradient-to-b from-[#56CCF2] to-[#3BB5E0] border-r-4 border-[#E07A47] flex flex-col items-center py-6 gap-4">
+        <aside className="fixed left-0 top-0 h-screen w-24 bg-slate-900 border-r-4 border-[#E07A47] flex flex-col items-center py-6 gap-4">
           <Button asChild size="icon" className="w-12 h-12 bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-xl">
             <Link href="/dashboard/sponsor">
               <ArrowLeft className="h-5 w-5" />
@@ -253,9 +253,9 @@ export default function SponsorConstructionPage() {
   return (
     <div className="flex min-h-screen bg-white">
       {/* Page-Specific Sidebar */}
-      <aside className="fixed left-0 top-0 h-screen w-64 bg-[#56CCF2] border-r border-[#56CCF2] flex flex-col overflow-y-auto">
+      <aside className="fixed left-0 top-0 h-screen w-64 bg-slate-900 border-r-4 border-[#E07A47] flex flex-col overflow-hidden">
         {/* Header with Return to Dashboard */}
-        <div className="p-6 border-b border-white/20">
+        <div className="p-6 border-b border-slate-700">
           <Button asChild className="w-full mb-4 bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-full">
             <Link href="/dashboard/sponsor">
               <ArrowLeft className="mr-2 h-4 w-4" />
@@ -263,25 +263,25 @@ export default function SponsorConstructionPage() {
             </Link>
           </Button>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#E07A47] to-[#56CCF2] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#E07A47] to-[#D96835] flex items-center justify-center">
               <Hammer className="h-6 w-6 text-white" />
             </div>
             <div>
               <h2 className="font-black text-white text-lg">Construction</h2>
-              <p className="text-xs text-white/70">{project.developmentProject?.name || project.projectCode}</p>
+              <p className="text-xs text-slate-400">{project.developmentProject?.name || project.projectCode}</p>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto scrollbar-hide">
           {constructionSidebarItems.map((item) => {
             const Icon = item.icon
             return (
               <a key={item.href} href={item.href} className="block">
                 <Button
                   variant="ghost"
-                  className="w-full justify-start gap-3 h-12 text-white hover:bg-white/20 hover:text-white"
+                  className="w-full justify-start gap-3 h-12 text-slate-300 hover:bg-slate-800 hover:text-white"
                 >
                   <Icon className="h-5 w-5" />
                   <span className="flex-1 text-left">{item.title}</span>
@@ -292,10 +292,10 @@ export default function SponsorConstructionPage() {
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-white/20">
+        <div className="p-4 border-t border-slate-700">
           <Button
             variant="ghost"
-            className="w-full text-white hover:bg-white/20 hover:text-white"
+            className="w-full text-slate-400 hover:bg-red-600 hover:text-white"
             size="sm"
             onClick={logout}
           >

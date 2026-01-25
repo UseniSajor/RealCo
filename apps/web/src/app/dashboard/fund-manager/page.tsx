@@ -64,14 +64,14 @@ export default function FundManagerDashboardPage() {
   const sidebarItems = [
     { title: "Dashboard", href: "/dashboard/fund-manager", icon: Home },
     { title: "Properties", href: "/dashboard/fund-manager/properties", icon: Building2, badge: "24" },
+    { title: "CRM", href: "/dashboard/fund-manager/investors", icon: Users, badge: "5" },
     { title: "Analytics", href: "/dashboard/fund-manager/analytics", icon: BarChart3 },
-    { title: "Financials", href: "/dashboard/fund-manager/reports", icon: Calculator },
+    { title: "Financials", href: "/dashboard/fund-manager/financials", icon: Calculator },
     { title: "Distributions", href: "/dashboard/fund-manager/distributions", icon: DollarSign },
     { title: "Capital Accounts", href: "/dashboard/fund-manager/capital-accounts", icon: PieChart },
     { title: "Dispositions", href: "/dashboard/fund-manager/dispositions", icon: TrendingUp },
-    { title: "Investor Relations", href: "/dashboard/fund-manager/communications", icon: Users },
+    { title: "Communications", href: "/dashboard/fund-manager/communications", icon: FileText },
     { title: "Reports", href: "/dashboard/fund-manager/reports", icon: FileText },
-    { title: "Maintenance", href: "/dashboard/fund-manager/maintenance", icon: Settings },
   ]
 
   return (
