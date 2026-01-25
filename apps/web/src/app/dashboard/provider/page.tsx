@@ -1,14 +1,13 @@
 "use client"
 
 import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
-import { MediaViewer } from "@/components/media/MediaViewer"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { 
-  Wrench, 
-  DollarSign, 
-  FileText, 
+import {
+  Wrench,
+  DollarSign,
+  FileText,
   CreditCard,
   CheckCircle2,
   Clock,
@@ -17,12 +16,22 @@ import {
   MessageSquare,
   Settings,
   Receipt,
-  AlertCircle
+  AlertCircle,
+  ArrowRight,
+  Target,
+  TrendingUp,
+  Briefcase,
+  Shield,
+  Zap,
+  HardHat,
+  Calendar,
+  Users
 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { portfolioAPI } from "@/lib/api/portfolio.api"
 import { useAuth } from "@/lib/auth-context"
 
+export default function ProviderDashboardPage() {
   const { user, logout } = useAuth()
 
   const [summary, setSummary] = useState<any>(null)
@@ -60,6 +69,7 @@ import { useAuth } from "@/lib/auth-context"
     { title: "Submit Invoice", href: "/dashboard/provider/submit-invoice", icon: Upload },
     { title: "Transactions", href: "/dashboard/provider/transactions", icon: Receipt },
     { title: "Banking", href: "/dashboard/provider/banking", icon: CreditCard },
+    { title: "Work Orders", href: "/dashboard/provider/vendor-portal", icon: HardHat },
     { title: "Messages", href: "/dashboard/provider/vendor-portal", icon: MessageSquare, badge: "2" },
     { title: "Documents", href: "/dashboard/provider/vendor-portal", icon: FileText },
     { title: "Settings", href: "/dashboard/provider/vendor-portal", icon: Settings },
@@ -85,117 +95,201 @@ import { useAuth } from "@/lib/auth-context"
                   Submit invoices, track payments, and manage projects
                 </p>
               </div>
-              <Button asChild>
-                <Link href="/dashboard/provider/submit-invoice">
-                  <Upload className="mr-2 h-4 w-4" />
-                  Submit Invoice
-                </Link>
-              </Button>
+              <div className="flex gap-3">
+                <Button variant="outline" asChild>
+                  <Link href="/dashboard/provider/vendor-portal">
+                    <HardHat className="mr-2 h-4 w-4" />
+                    Work Orders
+                  </Link>
+                </Button>
+                <Button className="bg-[#E07A47] hover:bg-[#D96835]" asChild>
+                  <Link href="/dashboard/provider/submit-invoice">
+                    <Upload className="mr-2 h-4 w-4" />
+                    Submit Invoice
+                  </Link>
+                </Button>
+              </div>
             </div>
-            
-            <div className="bg-gradient-to-r from-orange-500/10 to-[#E07A47]/10 border-2 border-[#E07A47] rounded-xl p-4 flex items-start gap-3">
-              <Wrench className="h-5 w-5 text-[#E07A47] mt-0.5" />
-              <div>
-                <p className="font-bold text-[#E07A47]">🔧 Service Provider Demo Portal</p>
-                <p className="text-sm text-muted-foreground">
-                  See how contractors and service providers submit invoices, track payments, and manage work orders.
-                </p>
+
+            {/* Payment Status Banner */}
+            <div className="bg-gradient-to-r from-[#56CCF2]/5 via-white to-[#E07A47]/5 border-2 border-[#E07A47] rounded-xl p-5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#56CCF2] to-[#E07A47] flex items-center justify-center">
+                    <Shield className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-black text-lg">Account Status: Verified Vendor</h3>
+                    <p className="text-sm text-muted-foreground">Direct deposit enabled • Avg payment: 7 days • 98.5% on-time rate</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="automation-badge">
+                    <Zap className="h-3 w-3" />
+                    Fast-Track Enabled
+                  </span>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href="/dashboard/provider/banking">
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      Banking Setup
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="mb-8">
-            <MediaViewer
-              type="video"
-              src="/provider-demo.mp4"
-              title="🎬 Provider Portal Walkthrough"
-              description="Learn how to submit invoices, upload documents, and get paid faster on construction projects"
-            />
-          </div>
-
           {/* Stats Grid (Live Data) */}
           {loading ? (
-            <div className="p-8 text-center text-lg">Loading portfolio summary...</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              {[1, 2, 3, 4].map((i) => (
+                <Card key={i} className="border-4 border-slate-200 animate-pulse">
+                  <CardContent className="p-6">
+                    <div className="h-24 bg-slate-100 rounded"></div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           ) : error ? (
-            <div className="p-8 text-center text-red-600">{error}</div>
+            <div className="p-8 text-center text-red-600 bg-red-50 rounded-xl border-2 border-red-200 mb-8">{error}</div>
           ) : summary ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <Card className="border-4 border-primary hover:shadow-xl transition-all bg-slate-50">
+              <Card className="border-4 border-[#56CCF2] hover:shadow-xl transition-all stat-card">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-sm font-semibold text-muted-foreground">Active Projects</CardTitle>
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <Wrench className="h-6 w-6 text-primary" />
+                    <div className="w-12 h-12 rounded-xl bg-[#56CCF2]/10 flex items-center justify-center">
+                      <Wrench className="h-6 w-6 text-[#56CCF2]" />
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="text-4xl font-black mb-1">{summary.activeInvestments}</div>
                   <p className="text-xs text-muted-foreground">Construction sites</p>
+                  <div className="mt-3 pt-3 border-t border-slate-200">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-green-500 status-dot"></div>
+                      <span className="text-xs text-green-600 font-semibold">All active</span>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
-              <Card className="border-4 border-orange-500 hover:shadow-xl transition-all bg-slate-50">
+              <Card className="border-4 border-[#E07A47] hover:shadow-xl transition-all stat-card">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-sm font-semibold text-muted-foreground">Pending Invoices</CardTitle>
-                    <div className="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
-                      <DollarSign className="h-6 w-6 text-orange-600" />
+                    <div className="w-12 h-12 rounded-xl bg-[#E07A47]/10 flex items-center justify-center">
+                      <DollarSign className="h-6 w-6 text-[#E07A47]" />
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="text-4xl font-black mb-1">{formatCurrency(summary.pendingAmount)}</div>
-                  <p className="text-xs text-muted-foreground">Invoices pending</p>
+                  <p className="text-xs text-muted-foreground">Awaiting approval</p>
+                  <div className="mt-3 pt-3 border-t border-slate-200">
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-[#E07A47]" />
+                      <span className="text-xs text-[#E07A47] font-semibold">Processing</span>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
-              <Card className="border-4 border-green-500 hover:shadow-xl transition-all bg-slate-50">
+              <Card className="border-4 border-green-500 hover:shadow-xl transition-all stat-card">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm font-semibold text-muted-foreground">Approved This Month</CardTitle>
-                    <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                    <CardTitle className="text-sm font-semibold text-muted-foreground">Paid This Month</CardTitle>
+                    <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
                       <CheckCircle2 className="h-6 w-6 text-green-600" />
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="text-4xl font-black mb-1">{summary.totalGain}</div>
-                  <p className="text-xs text-green-600 font-semibold">Total paid</p>
+                  <p className="text-xs text-green-600 font-semibold">Deposited</p>
+                  <div className="mt-3 pt-3 border-t border-slate-200">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                      <span className="text-xs text-green-600 font-bold">Funds cleared</span>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
-              <Card className="border-4 border-secondary hover:shadow-xl transition-all bg-slate-50">
+              <Card className="border-4 border-purple-500 hover:shadow-xl transition-all stat-card">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm font-semibold text-muted-foreground">Awaiting Review</CardTitle>
-                    <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
-                      <Clock className="h-6 w-6 text-secondary" />
+                    <CardTitle className="text-sm font-semibold text-muted-foreground">In Review</CardTitle>
+                    <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
+                      <FileText className="h-6 w-6 text-purple-600" />
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="text-4xl font-black mb-1">{summary.properties}</div>
-                  <p className="text-xs text-muted-foreground">In review queue</p>
+                  <p className="text-xs text-muted-foreground">Invoices in queue</p>
+                  <div className="mt-3 pt-3 border-t border-slate-200">
+                    <Button size="sm" variant="outline" className="w-full" asChild>
+                      <Link href="/dashboard/provider/transactions">View Status</Link>
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </div>
           ) : null}
 
+          {/* Quick Actions Row */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            {[
+              { title: "New Invoice", icon: Upload, href: "/dashboard/provider/submit-invoice", color: "bg-[#E07A47]" },
+              { title: "View Payments", icon: Receipt, href: "/dashboard/provider/transactions", color: "bg-green-500" },
+              { title: "Update Banking", icon: CreditCard, href: "/dashboard/provider/banking", color: "bg-[#56CCF2]" },
+              { title: "Bid on Projects", icon: Target, href: "/dashboard/provider/vendor-portal", color: "bg-purple-500" },
+            ].map((action, i) => {
+              const Icon = action.icon
+              return (
+                <Link key={i} href={action.href}>
+                  <Card className="border-3 border-[#E07A47] hover:shadow-xl hover:scale-105 transition-all cursor-pointer h-full">
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <div className={`w-12 h-12 rounded-xl ${action.color} flex items-center justify-center`}>
+                        <Icon className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-sm">{action.title}</h4>
+                        <ArrowRight className="h-4 w-4 text-muted-foreground mt-1" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              )
+            })}
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <Card className="lg:col-span-2 border-4 border-[#56CCF2] bg-slate-50">
+            <Card className="lg:col-span-2 border-4 border-[#56CCF2]">
               <CardHeader>
-                <CardTitle>Recent Invoices</CardTitle>
-                <CardDescription>Your submission history</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Recent Invoices</CardTitle>
+                    <CardDescription>Your submission history</CardDescription>
+                  </div>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href="/dashboard/provider/transactions">
+                      View All
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {[
-                    { project: "Sunset Apartments", invoice: "#INV-2401", amount: "$85,250", status: "Pending", statusColor: "bg-yellow-100 dark:bg-yellow-900/20 text-yellow-600", date: "Jan 20" },
-                    { project: "Office Tower", invoice: "#INV-2398", amount: "$125,000", status: "Approved", statusColor: "bg-green-100 dark:bg-green-900/20 text-green-600", date: "Jan 18" },
-                    { project: "Riverside Condos", invoice: "#INV-2395", amount: "$73,800", status: "Paid", statusColor: "bg-blue-100 dark:bg-blue-900/20 text-blue-600", date: "Jan 15" },
+                    { project: "Sunset Apartments", invoice: "#INV-2401", amount: "$85,250", status: "Pending", statusColor: "bg-yellow-100 text-yellow-600", date: "Jan 20" },
+                    { project: "Office Tower", invoice: "#INV-2398", amount: "$125,000", status: "Approved", statusColor: "bg-green-100 text-green-600", date: "Jan 18" },
+                    { project: "Riverside Condos", invoice: "#INV-2395", amount: "$73,800", status: "Paid", statusColor: "bg-blue-100 text-blue-600", date: "Jan 15" },
                   ].map((invoice, i) => (
-                    <div key={i} className="p-5 rounded-xl bg-white border-2 border-slate-200 hover:shadow-xl transition-all">
+                    <div key={i} className="p-5 rounded-xl bg-white border-2 border-slate-200 hover:shadow-xl hover:border-[#E07A47] transition-all">
                       <div className="flex items-start justify-between mb-3">
                         <div>
                           <h4 className="font-black text-lg">{invoice.project}</h4>
@@ -205,7 +299,7 @@ import { useAuth } from "@/lib/auth-context"
                           {invoice.status}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center pt-3 border-t border-slate-200 dark:border-slate-700">
+                      <div className="flex justify-between items-center pt-3 border-t border-slate-200">
                         <p className="text-2xl font-black">{invoice.amount}</p>
                         <Button size="sm" variant="outline">View Details</Button>
                       </div>
@@ -216,7 +310,7 @@ import { useAuth } from "@/lib/auth-context"
             </Card>
 
             <div className="space-y-6">
-              <Card className="border-4 border-[#E07A47] bg-slate-50">
+              <Card className="border-4 border-[#E07A47]">
                 <CardHeader>
                   <CardTitle className="text-lg">Quick Actions</CardTitle>
                 </CardHeader>
@@ -242,7 +336,7 @@ import { useAuth } from "@/lib/auth-context"
                 </CardContent>
               </Card>
 
-              <Card className="border-4 border-[#56CCF2] bg-slate-50">
+              <Card className="border-4 border-[#56CCF2]">
                 <CardHeader>
                   <CardTitle className="text-lg">Payment Stats</CardTitle>
                   <CardDescription>30-day average</CardDescription>
@@ -250,11 +344,15 @@ import { useAuth } from "@/lib/auth-context"
                 <CardContent className="space-y-4">
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">Avg Payment Time</p>
-                    <p className="text-3xl font-black text-primary">7 days</p>
+                    <p className="text-3xl font-black metric-value-primary">7 days</p>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">Total Paid YTD</p>
                     <p className="text-3xl font-black">$1.2M</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">On-Time Rate</p>
+                    <p className="text-xl font-black text-green-600">98.5%</p>
                   </div>
                 </CardContent>
               </Card>
@@ -263,13 +361,12 @@ import { useAuth } from "@/lib/auth-context"
 
           {/* Active Work Orders */}
           <div className="mb-8">
-            <h2 className="text-2xl font-black mb-6">Active Work Orders</h2>
-            <Card className="border-4 border-[#56CCF2] bg-slate-50">
-              <CardHeader>
-                <CardTitle>Current Projects & Tasks</CardTitle>
-                <CardDescription>Track work completion and submit for payment</CardDescription>
-              </CardHeader>
-              <CardContent>
+            <div className="section-header mb-6">
+              <h2 className="text-2xl font-black">Active Work Orders</h2>
+              <p className="text-muted-foreground">Track work completion and submit for payment</p>
+            </div>
+            <Card className="border-4 border-[#56CCF2]">
+              <CardContent className="p-6">
                 <div className="space-y-4">
                   {[
                     { project: "Sunset Apartments", task: "3rd Floor Framing", dueDate: "Jan 28", completion: 75, budget: "$45,000", status: "In Progress" },
@@ -277,7 +374,7 @@ import { useAuth } from "@/lib/auth-context"
                     { project: "Riverside Condos", task: "Electrical Rough-In", dueDate: "Jan 30", completion: 90, budget: "$38,500", status: "Ready to Invoice" },
                     { project: "Tech Campus", task: "Foundation Pour", dueDate: "Feb 10", completion: 20, budget: "$95,000", status: "Scheduled" },
                   ].map((order, i) => (
-                    <div key={i} className="p-5 rounded-xl bg-white border-2 border-slate-200 hover:shadow-xl transition-all">
+                    <div key={i} className="p-5 rounded-xl bg-white border-2 border-slate-200 hover:shadow-xl hover:border-[#E07A47] transition-all">
                       <div className="flex items-start justify-between mb-4">
                         <div>
                           <h4 className="font-black text-lg mb-1">{order.task}</h4>
@@ -312,7 +409,7 @@ import { useAuth } from "@/lib/auth-context"
                         </div>
                         <div className="h-3 bg-slate-200 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-linear-to-r from-primary to-secondary"
+                            className="h-full progress-gradient"
                             style={{ width: `${order.completion}%` }}
                           />
                         </div>
@@ -324,9 +421,9 @@ import { useAuth } from "@/lib/auth-context"
             </Card>
           </div>
 
-          {/* Payment Insights */}
+          {/* Payment Insights & Opportunities */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="border-4 border-green-500 bg-slate-50">
+            <Card className="border-4 border-green-500">
               <CardHeader>
                 <CardTitle className="text-lg">Payment Performance</CardTitle>
                 <CardDescription>Track your payment history</CardDescription>
@@ -344,13 +441,13 @@ import { useAuth } from "@/lib/auth-context"
                   </div>
                   <div className="pt-4 border-t border-slate-200">
                     <p className="text-xs text-muted-foreground mb-1">Total Paid YTD</p>
-                    <p className="text-2xl font-black text-primary">$1.2M</p>
+                    <p className="text-2xl font-black metric-value-primary">$1.2M</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-4 border-[#E07A47] bg-slate-50">
+            <Card className="border-4 border-[#E07A47]">
               <CardHeader>
                 <CardTitle className="text-lg">Upcoming Opportunities</CardTitle>
                 <CardDescription>New projects available for bidding</CardDescription>
@@ -362,7 +459,7 @@ import { useAuth } from "@/lib/auth-context"
                     { project: "University Housing", value: "$320K", deadline: "Feb 8", type: "Framing" },
                     { project: "Medical Center Expansion", value: "$275K", deadline: "Feb 12", type: "HVAC" },
                   ].map((opp, i) => (
-                    <div key={i} className="p-4 rounded-xl bg-white border-2 border-slate-200 hover:shadow-lg transition-all cursor-pointer">
+                    <div key={i} className="p-4 rounded-xl bg-white border-2 border-slate-200 hover:shadow-lg hover:border-[#E07A47] transition-all cursor-pointer">
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex-1">
                           <h4 className="font-bold text-sm mb-1">{opp.project}</h4>

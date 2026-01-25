@@ -83,7 +83,7 @@ export function DashboardSidebar({ items, role, roleIcon: RoleIcon, userName, on
             size="sm"
             onClick={onLogout}
           >
-            Exit Demo
+            Sign Out
           </Button>
         )}
       </div>
