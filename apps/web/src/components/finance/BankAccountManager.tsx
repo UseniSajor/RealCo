@@ -5,42 +5,50 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button"
 import { Plus, Check, X, Building, CreditCard } from "lucide-react"
 
-// Mock data for demo
-const initialBankAccounts = [
-  {
-    id: "1",
-    bankName: "Chase Bank",
-    accountType: "CHECKING",
-    last4: "4242",
-    status: "VERIFIED",
-    isDefault: true
-  },
-  {
-    id: "2",
-    bankName: "Bank of America",
-    accountType: "SAVINGS",
-    last4: "8765",
-    status: "VERIFIED",
-    isDefault: false
-  }
-]
+
+import { useEffect } from "react"
+import { bankingAPI, BankAccount } from "@/lib/api/banking.api"
+
 
 export function BankAccountManager() {
-  const [accounts, setAccounts] = useState(initialBankAccounts)
+  const [accounts, setAccounts] = useState<BankAccount[]>([])
   const [showAddForm, setShowAddForm] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSetDefault = (id: string) => {
-    setAccounts(accounts.map(acc => ({
-      ...acc,
-      isDefault: acc.id === id
-    })))
+  const fetchAccounts = () => {
+    setLoading(true)
+    bankingAPI.getBankAccounts()
+      .then(setAccounts)
+      .catch(e => setError(e.message || 'Failed to load accounts'))
+      .finally(() => setLoading(false))
   }
 
-  const handleRemove = (id: string) => {
-    if (confirm("Are you sure you want to remove this bank account?")) {
-      setAccounts(accounts.filter(acc => acc.id !== id))
+  useEffect(() => {
+    fetchAccounts()
+  }, [])
+
+  const handleSetDefault = async (id: string) => {
+    try {
+      await bankingAPI.setDefaultAccount(id)
+      fetchAccounts()
+    } catch (e: any) {
+      setError(e.message || 'Failed to set default')
     }
   }
+
+  const handleRemove = async (id: string) => {
+    if (confirm("Are you sure you want to remove this bank account?")) {
+      try {
+        await bankingAPI.removeBankAccount(id)
+        fetchAccounts()
+      } catch (e: any) {
+        setError(e.message || 'Failed to remove account')
+      }
+    }
+  }
+
+  // TODO: Wire up add account (Plaid/manual) to API
 
   return (
     <div className="space-y-6">
@@ -60,64 +68,84 @@ export function BankAccountManager() {
 
       {/* Bank Accounts List */}
       <div className="space-y-4">
-        {accounts.map((account) => (
-          <Card key={account.id} className="border-4 border-[#E07A47]">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-[#56CCF2]/10 flex items-center justify-center">
-                    <Building className="h-6 w-6 text-[#56CCF2]" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-lg">{account.bankName}</h3>
-                      {account.isDefault && (
-                        <span className="px-2 py-1 rounded-full text-xs font-semibold bg-[#56CCF2]/20 text-[#56CCF2]">
-                          Default
-                        </span>
-                      )}
+        {loading ? (
+          <div className="text-center py-8">Loading bank accounts...</div>
+        ) : error ? (
+          <div className="text-center text-red-600 py-8">{error}</div>
+        ) : accounts.length > 0 ? (
+          accounts.map((account) => (
+            <Card key={account.id} className="border-4 border-[#E07A47]">
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-[#56CCF2]/10 flex items-center justify-center">
+                      <Building className="h-6 w-6 text-[#56CCF2]" />
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      {account.accountType} •••• {account.last4}
-                    </p>
-                    <div className="flex items-center gap-1 mt-1">
-                      {account.status === "VERIFIED" ? (
-                        <>
-                          <Check className="h-4 w-4 text-green-600" />
-                          <span className="text-xs text-green-600 font-semibold">Verified</span>
-                        </>
-                      ) : (
-                        <>
-                          <X className="h-4 w-4 text-[#E07A47]" />
-                          <span className="text-xs text-[#E07A47] font-semibold">Pending Verification</span>
-                        </>
-                      )}
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-bold text-lg">{account.bankName}</h3>
+                        {account.isDefault && (
+                          <span className="px-2 py-1 rounded-full text-xs font-semibold bg-[#56CCF2]/20 text-[#56CCF2]">
+                            Default
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {account.accountType} •••• {account.lastFourDigits}
+                      </p>
+                      <div className="flex items-center gap-1 mt-1">
+                        {account.status === "VERIFIED" ? (
+                          <>
+                            <Check className="h-4 w-4 text-green-600" />
+                            <span className="text-xs text-green-600 font-semibold">Verified</span>
+                          </>
+                        ) : (
+                          <>
+                            <X className="h-4 w-4 text-[#E07A47]" />
+                            <span className="text-xs text-[#E07A47] font-semibold">Pending Verification</span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="flex gap-2">
-                  {!account.isDefault && (
+                  <div className="flex gap-2">
+                    {!account.isDefault && (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleSetDefault(account.id)}
+                      >
+                        Set as Default
+                      </Button>
+                    )}
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => handleSetDefault(account.id)}
+                      onClick={() => handleRemove(account.id)}
+                      className="border-red-500 text-red-600 hover:bg-red-50"
                     >
-                      Set as Default
+                      Remove
                     </Button>
-                  )}
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleRemove(account.id)}
-                    className="border-red-500 text-red-600 hover:bg-red-50"
-                  >
-                    Remove
-                  </Button>
+                  </div>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <Card className="border-4 border-[#E07A47]">
+            <CardContent className="py-12 text-center">
+              <Building className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-bold mb-2">No Bank Accounts</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Add a bank account to start making transactions
+              </p>
+              <Button onClick={() => setShowAddForm(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Your First Account
+              </Button>
             </CardContent>
           </Card>
-        ))}
+        )}
 
         {accounts.length === 0 && (
           <Card className="border-4 border-[#E07A47]">

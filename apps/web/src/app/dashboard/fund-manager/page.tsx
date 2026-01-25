@@ -19,10 +19,40 @@ import {
   PieChart,
   Briefcase
 } from "lucide-react"
+import { useEffect, useState } from "react"
+import { portfolioAPI } from "@/lib/api/portfolio.api"
 import { useAuth } from "@/lib/auth-context"
 
-export default function FundManagerDashboardPage() {
   const { user, logout } = useAuth()
+
+  const [summary, setSummary] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const data = await portfolioAPI.getPortfolioSummary()
+        setSummary(data)
+        setLoading(false)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load portfolio summary')
+        setLoading(false)
+      }
+    }
+    fetchSummary()
+  }, [])
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value)
+  }
 
   const sidebarItems = [
     { title: "Dashboard", href: "/dashboard/fund-manager", icon: Home },
@@ -85,67 +115,74 @@ export default function FundManagerDashboardPage() {
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card className="border-4 border-purple-500 hover:shadow-xl transition-all bg-slate-50">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-muted-foreground">Properties</CardTitle>
-                  <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
-                    <Building2 className="h-6 w-6 text-purple-600" />
+          {/* Stats Grid (Live Data) */}
+          {loading ? (
+            <div className="p-8 text-center text-lg">Loading portfolio summary...</div>
+          ) : error ? (
+            <div className="p-8 text-center text-red-600">{error}</div>
+          ) : summary ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <Card className="border-4 border-purple-500 hover:shadow-xl transition-all bg-slate-50">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-semibold text-muted-foreground">Properties</CardTitle>
+                    <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
+                      <Building2 className="h-6 w-6 text-purple-600" />
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-4xl font-black mb-1">24</div>
-                <p className="text-xs text-muted-foreground">Across 8 markets</p>
-              </CardContent>
-            </Card>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-4xl font-black mb-1">{summary.properties}</div>
+                  <p className="text-xs text-muted-foreground">Across all markets</p>
+                </CardContent>
+              </Card>
 
-            <Card className="border-4 border-[#E07A47] hover:shadow-xl transition-all bg-slate-50">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-muted-foreground">Assets Under Mgmt</CardTitle>
-                  <div className="w-12 h-12 rounded-xl bg-[#E07A47]/10 flex items-center justify-center">
-                    <DollarSign className="h-6 w-6 text-[#E07A47]" />
+              <Card className="border-4 border-secondary hover:shadow-xl transition-all bg-slate-50">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-semibold text-muted-foreground">Assets Under Mgmt</CardTitle>
+                    <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
+                      <DollarSign className="h-6 w-6 text-secondary" />
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-4xl font-black mb-1">$485M</div>
-                <p className="text-xs text-muted-foreground">+12% YoY</p>
-              </CardContent>
-            </Card>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-4xl font-black mb-1">{formatCurrency(summary.currentValue)}</div>
+                  <p className="text-xs text-muted-foreground">Current portfolio value</p>
+                </CardContent>
+              </Card>
 
-            <Card className="border-4 border-[#56CCF2] hover:shadow-xl transition-all bg-slate-50">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-muted-foreground">Total Investors</CardTitle>
-                  <div className="w-12 h-12 rounded-xl bg-[#56CCF2]/10 flex items-center justify-center">
-                    <Users className="h-6 w-6 text-[#56CCF2]" />
+              <Card className="border-4 border-primary hover:shadow-xl transition-all bg-slate-50">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-semibold text-muted-foreground">Total Investors</CardTitle>
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <Users className="h-6 w-6 text-primary" />
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-4xl font-black mb-1">1,247</div>
-                <p className="text-xs text-muted-foreground">Active LPs</p>
-              </CardContent>
-            </Card>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-4xl font-black mb-1">{summary.activeInvestments}</div>
+                  <p className="text-xs text-muted-foreground">Active LPs</p>
+                </CardContent>
+              </Card>
 
-            <Card className="border-4 border-green-500 hover:shadow-xl transition-all bg-slate-50">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-muted-foreground">Portfolio IRR</CardTitle>
-                  <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
-                    <TrendingUp className="h-6 w-6 text-green-600" />
+              <Card className="border-4 border-green-500 hover:shadow-xl transition-all bg-slate-50">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-semibold text-muted-foreground">Portfolio IRR</CardTitle>
+                    <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                      <TrendingUp className="h-6 w-6 text-green-600" />
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-4xl font-black mb-1">11.2%</div>
-                <p className="text-xs text-green-600 dark:text-green-400 font-semibold">Above target</p>
-              </CardContent>
-            </Card>
-          </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-4xl font-black mb-1">{summary.weightedAvgIRR}%</div>
+                  <p className="text-xs text-green-600 dark:text-green-400 font-semibold">Above target</p>
+                </CardContent>
+              </Card>
+            </div>
+          ) : null}
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
             <Card className="lg:col-span-2 border-4 border-purple-500 bg-slate-50">
@@ -223,7 +260,7 @@ export default function FundManagerDashboardPage() {
                   <CardDescription>Year-over-year</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-5xl font-black text-[#56CCF2] mb-2">+18.2%</div>
+                  <div className="text-5xl font-black text-primary mb-2">+18.2%</div>
                   <p className="text-sm text-muted-foreground mb-4">Portfolio-wide increase</p>
                   <div className="flex items-center gap-2 text-sm">
                     <div className="w-3 h-3 rounded-full bg-green-500"></div>
@@ -238,7 +275,7 @@ export default function FundManagerDashboardPage() {
                   <CardDescription>Across all properties</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-5xl font-black text-[#E07A47] mb-2">96.8%</div>
+                  <div className="text-5xl font-black text-secondary mb-2">96.8%</div>
                   <p className="text-sm text-muted-foreground mb-4">24 properties</p>
                   <div className="flex items-center gap-2 text-sm">
                     <div className="w-3 h-3 rounded-full bg-green-500"></div>
@@ -315,7 +352,7 @@ export default function FundManagerDashboardPage() {
                           <p className="text-xs text-muted-foreground">{acq.location}</p>
                         </div>
                         <div className="text-right">
-                          <p className="font-black text-[#E07A47]">{acq.price}</p>
+                          <p className="font-black text-secondary">{acq.price}</p>
                         </div>
                       </div>
                       <div className="flex items-center justify-between pt-2 border-t border-slate-100">

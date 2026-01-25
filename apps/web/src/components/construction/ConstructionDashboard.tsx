@@ -1,5 +1,5 @@
 "use client"
-
+import { useState, useEffect } from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -18,10 +18,40 @@ import {
   AlertCircle,
   DollarSign,
   List
+import { constructionAPI, type ConstructionProject, type Task } from "@/lib/api/construction.api"
 } from "lucide-react"
 
 export function ConstructionDashboard() {
   const [selectedPhase, setSelectedPhase] = useState<string>('ALL')
+  const [project, setProject] = useState<ConstructionProject | null>(null)
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const { projects } = await constructionAPI.getProjects()
+        if (projects.length === 0) {
+          setProject(null)
+          setTasks([])
+          setLoading(false)
+          return
+        }
+        const firstProject = projects[0]
+        setProject(firstProject)
+        const { tasks: projectTasks } = await constructionAPI.getTasks(firstProject.id)
+        setTasks(projectTasks)
+        setLoading(false)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load construction data')
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -32,7 +62,8 @@ export function ConstructionDashboard() {
     }).format(value)
   }
 
-  const formatDate = (date: string) => {
+  const formatDate = (date: string | null | undefined) => {
+    if (!date) return '-'
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -40,61 +71,34 @@ export function ConstructionDashboard() {
     })
   }
 
-  // Mock project overview
-  const projectOverview = {
-    name: 'Sunset Apartments',
-    startDate: '2025-03-01',
-    targetCompletion: '2026-08-31',
-    actualCompletion: null,
-    budget: 8000000,
-    spent: 3200000,
-    percentComplete: 42,
-    daysRemaining: 485,
-    status: 'ON_TRACK',
+  if (loading) {
+    return <div className="p-8 text-center text-lg">Loading construction data...</div>
+  }
+  if (error) {
+    return <div className="p-8 text-center text-red-600">{error}</div>
+  }
+  if (!project) {
+    return <div className="p-8 text-center text-muted-foreground">No construction projects found.</div>
   }
 
-  // Mock construction phases with Gantt-like data
-  const phases = [
-    {
-      id: '1',
-      name: 'Site Preparation',
-      startDate: '2025-03-01',
-      endDate: '2025-04-15',
-      status: 'COMPLETED',
-      percentComplete: 100,
-      budget: 450000,
-      spent: 445000,
-      daysTotal: 45,
-      daysElapsed: 45,
-    },
-    {
-      id: '2',
-      name: 'Foundation',
-      startDate: '2025-04-16',
-      endDate: '2025-06-30',
-      status: 'COMPLETED',
-      percentComplete: 100,
-      budget: 980000,
-      spent: 995000,
-      daysTotal: 75,
-      daysElapsed: 75,
-    },
-    {
-      id: '3',
-      name: 'Framing & Structure',
-      startDate: '2025-07-01',
-      endDate: '2025-10-15',
-      status: 'IN_PROGRESS',
-      percentComplete: 68,
-      budget: 1800000,
-      spent: 1220000,
-      daysTotal: 107,
-      daysElapsed: 73,
-    },
-    {
-      id: '4',
-      name: 'MEP (Mechanical, Electrical, Plumbing)',
-      startDate: '2025-10-01',
+  // Example: Calculate phases from tasks (if available)
+  const phases = project.tasks
+    ? Array.from(new Set(project.tasks.map(t => t.status))).map((status, idx) => ({
+        id: String(idx + 1),
+        name: status,
+        startDate: '',
+        endDate: '',
+        status,
+        percentComplete: 0,
+        budget: 0,
+        spent: 0,
+        daysTotal: 0,
+        daysElapsed: 0,
+      }))
+    : []
+
+  const activeTasks = tasks.filter(t => t.status === 'IN_PROGRESS')
+  const issues = [] // TODO: Fetch issues from API if available
       endDate: '2026-02-28',
       status: 'IN_PROGRESS',
       percentComplete: 25,

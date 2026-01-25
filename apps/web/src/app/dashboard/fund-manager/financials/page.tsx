@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { operatingStatementAPI, OperatingStatement } from "@/lib/api/operating-statement.api"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -18,85 +19,32 @@ import {
 } from "lucide-react"
 
 export default function FinancialsPage() {
+
   const [period, setPeriod] = useState<'monthly' | 'quarterly' | 'ytd'>('monthly')
   const [selectedProperty, setSelectedProperty] = useState<'all' | string>('all')
+  const [statements, setStatements] = useState<OperatingStatement[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // Mock operating statements
-  const statements = [
-    {
-      id: 1,
-      property: "Riverside Apartments",
-      period: "December 2023",
-      periodStart: "2023-12-01",
-      periodEnd: "2023-12-31",
-      rentalIncome: 289800,
-      otherIncome: 12400,
-      vacancyLoss: 14490,
-      effectiveGrossIncome: 287710,
-      propertyManagement: 14386,
-      utilities: 18200,
-      insurance: 8400,
-      propertyTaxes: 22100,
-      repairsMaintenance: 12600,
-      marketing: 3200,
-      administrative: 4100,
-      totalOpex: 82986,
-      noi: 204724,
-      budgetedNOI: 195000,
-      noiVariance: 9724,
-      noiVariancePct: 4.99,
-    },
-    {
-      id: 2,
-      property: "Downtown Lofts",
-      period: "December 2023",
-      periodStart: "2023-12-01",
-      periodEnd: "2023-12-31",
-      rentalIncome: 198720,
-      otherIncome: 8600,
-      vacancyLoss: 9936,
-      effectiveGrossIncome: 197384,
-      propertyManagement: 9869,
-      utilities: 14500,
-      insurance: 6200,
-      propertyTaxes: 18400,
-      repairsMaintenance: 8900,
-      marketing: 2400,
-      administrative: 3200,
-      totalOpex: 63469,
-      noi: 133915,
-      budgetedNOI: 128000,
-      noiVariance: 5915,
-      noiVariancePct: 4.62,
-    },
-    {
-      id: 3,
-      property: "Parkside Townhomes",
-      period: "December 2023",
-      periodStart: "2023-12-01",
-      periodEnd: "2023-12-31",
-      rentalIncome: 134400,
-      otherIncome: 5200,
-      vacancyLoss: 6720,
-      effectiveGrossIncome: 132880,
-      propertyManagement: 6644,
-      utilities: 9800,
-      insurance: 4600,
-      propertyTaxes: 13200,
-      repairsMaintenance: 7400,
-      marketing: 1800,
-      administrative: 2400,
-      totalOpex: 45844,
-      noi: 87036,
-      budgetedNOI: 85000,
-      noiVariance: 2036,
-      noiVariancePct: 2.40,
-    },
-  ]
+  useEffect(() => {
+    setLoading(true)
+    operatingStatementAPI.getAll()
+      .then(res => {
+        setStatements(res.items)
+        setLoading(false)
+      })
+      .catch(e => {
+        setError(e.message || 'Failed to load financials')
+        setLoading(false)
+      })
+  }, [])
 
-  const filteredStatements = selectedProperty === 'all' 
-    ? statements 
-    : statements.filter(s => s.property === selectedProperty)
+  // Get unique property/project names for filter
+  const propertyOptions = Array.from(new Set(statements.map(s => s.project?.developmentProject.name || 'Unknown')))
+
+  const filteredStatements = selectedProperty === 'all'
+    ? statements
+    : statements.filter(s => (s.project?.developmentProject.name || 'Unknown') === selectedProperty)
 
   const totals = filteredStatements.reduce((acc, s) => ({
     rentalIncome: acc.rentalIncome + s.rentalIncome,
@@ -107,9 +55,9 @@ export default function FinancialsPage() {
   }), { rentalIncome: 0, effectiveGrossIncome: 0, totalOpex: 0, noi: 0, budgetedNOI: 0 })
 
   const portfolioMetrics = {
-    noiMargin: ((totals.noi / totals.effectiveGrossIncome) * 100).toFixed(1),
-    opexRatio: ((totals.totalOpex / totals.effectiveGrossIncome) * 100).toFixed(1),
-    avgVariance: (((totals.noi - totals.budgetedNOI) / totals.budgetedNOI) * 100).toFixed(1),
+    noiMargin: totals.effectiveGrossIncome ? ((totals.noi / totals.effectiveGrossIncome) * 100).toFixed(1) : '0',
+    opexRatio: totals.effectiveGrossIncome ? ((totals.totalOpex / totals.effectiveGrossIncome) * 100).toFixed(1) : '0',
+    avgVariance: totals.budgetedNOI ? (((totals.noi - totals.budgetedNOI) / totals.budgetedNOI) * 100).toFixed(1) : '0',
   }
 
   return (

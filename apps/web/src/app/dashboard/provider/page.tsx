@@ -19,10 +19,40 @@ import {
   Receipt,
   AlertCircle
 } from "lucide-react"
+import { useEffect, useState } from "react"
+import { portfolioAPI } from "@/lib/api/portfolio.api"
 import { useAuth } from "@/lib/auth-context"
 
-export default function ProviderDashboardPage() {
   const { user, logout } = useAuth()
+
+  const [summary, setSummary] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const data = await portfolioAPI.getPortfolioSummary()
+        setSummary(data)
+        setLoading(false)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load portfolio summary')
+        setLoading(false)
+      }
+    }
+    fetchSummary()
+  }, [])
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value)
+  }
 
   const sidebarItems = [
     { title: "Dashboard", href: "/dashboard/provider", icon: Home },
@@ -83,67 +113,74 @@ export default function ProviderDashboardPage() {
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card className="border-4 border-[#56CCF2] hover:shadow-xl transition-all bg-slate-50">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-muted-foreground">Active Projects</CardTitle>
-                  <div className="w-12 h-12 rounded-xl bg-[#56CCF2]/10 flex items-center justify-center">
-                    <Wrench className="h-6 w-6 text-[#56CCF2]" />
+          {/* Stats Grid (Live Data) */}
+          {loading ? (
+            <div className="p-8 text-center text-lg">Loading portfolio summary...</div>
+          ) : error ? (
+            <div className="p-8 text-center text-red-600">{error}</div>
+          ) : summary ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <Card className="border-4 border-primary hover:shadow-xl transition-all bg-slate-50">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-semibold text-muted-foreground">Active Projects</CardTitle>
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <Wrench className="h-6 w-6 text-primary" />
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-4xl font-black mb-1">8</div>
-                <p className="text-xs text-muted-foreground">Construction sites</p>
-              </CardContent>
-            </Card>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-4xl font-black mb-1">{summary.activeInvestments}</div>
+                  <p className="text-xs text-muted-foreground">Construction sites</p>
+                </CardContent>
+              </Card>
 
-            <Card className="border-4 border-orange-500 hover:shadow-xl transition-all bg-slate-50">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-muted-foreground">Pending Invoices</CardTitle>
-                  <div className="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
-                    <DollarSign className="h-6 w-6 text-orange-600" />
+              <Card className="border-4 border-orange-500 hover:shadow-xl transition-all bg-slate-50">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-semibold text-muted-foreground">Pending Invoices</CardTitle>
+                    <div className="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
+                      <DollarSign className="h-6 w-6 text-orange-600" />
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-4xl font-black mb-1">$284K</div>
-                <p className="text-xs text-muted-foreground">6 invoices</p>
-              </CardContent>
-            </Card>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-4xl font-black mb-1">{formatCurrency(summary.pendingAmount)}</div>
+                  <p className="text-xs text-muted-foreground">Invoices pending</p>
+                </CardContent>
+              </Card>
 
-            <Card className="border-4 border-green-500 hover:shadow-xl transition-all bg-slate-50">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-muted-foreground">Approved This Month</CardTitle>
-                  <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
-                    <CheckCircle2 className="h-6 w-6 text-green-600" />
+              <Card className="border-4 border-green-500 hover:shadow-xl transition-all bg-slate-50">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-semibold text-muted-foreground">Approved This Month</CardTitle>
+                    <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                      <CheckCircle2 className="h-6 w-6 text-green-600" />
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-4xl font-black mb-1">15</div>
-                <p className="text-xs text-green-600 font-semibold">$425K paid</p>
-              </CardContent>
-            </Card>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-4xl font-black mb-1">{summary.totalGain}</div>
+                  <p className="text-xs text-green-600 font-semibold">Total paid</p>
+                </CardContent>
+              </Card>
 
-            <Card className="border-4 border-[#E07A47] hover:shadow-xl transition-all bg-slate-50">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-muted-foreground">Awaiting Review</CardTitle>
-                  <div className="w-12 h-12 rounded-xl bg-[#E07A47]/10 flex items-center justify-center">
-                    <Clock className="h-6 w-6 text-[#E07A47]" />
+              <Card className="border-4 border-secondary hover:shadow-xl transition-all bg-slate-50">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-semibold text-muted-foreground">Awaiting Review</CardTitle>
+                    <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
+                      <Clock className="h-6 w-6 text-secondary" />
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-4xl font-black mb-1">3</div>
-                <p className="text-xs text-muted-foreground">In review queue</p>
-              </CardContent>
-            </Card>
-          </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-4xl font-black mb-1">{summary.properties}</div>
+                  <p className="text-xs text-muted-foreground">In review queue</p>
+                </CardContent>
+              </Card>
+            </div>
+          ) : null}
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
             <Card className="lg:col-span-2 border-4 border-[#56CCF2] bg-slate-50">
@@ -213,7 +250,7 @@ export default function ProviderDashboardPage() {
                 <CardContent className="space-y-4">
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">Avg Payment Time</p>
-                    <p className="text-3xl font-black text-[#56CCF2]">7 days</p>
+                    <p className="text-3xl font-black text-primary">7 days</p>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">Total Paid YTD</p>
@@ -275,7 +312,7 @@ export default function ProviderDashboardPage() {
                         </div>
                         <div className="h-3 bg-slate-200 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-[#56CCF2] to-[#E07A47]"
+                            className="h-full bg-linear-to-r from-primary to-secondary"
                             style={{ width: `${order.completion}%` }}
                           />
                         </div>
@@ -307,7 +344,7 @@ export default function ProviderDashboardPage() {
                   </div>
                   <div className="pt-4 border-t border-slate-200">
                     <p className="text-xs text-muted-foreground mb-1">Total Paid YTD</p>
-                    <p className="text-2xl font-black text-[#56CCF2]">$1.2M</p>
+                    <p className="text-2xl font-black text-primary">$1.2M</p>
                   </div>
                 </div>
               </CardContent>

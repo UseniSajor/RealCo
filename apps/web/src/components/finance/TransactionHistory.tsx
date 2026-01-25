@@ -6,72 +6,39 @@ import { Button } from "@/components/ui/button"
 import { Download, Filter, ArrowUpRight, ArrowDownRight, Clock, CheckCircle2, XCircle } from "lucide-react"
 import { format } from "date-fns"
 
-// Mock transaction data
-const mockTransactions = [
-  {
-    id: "txn_1",
-    type: "DEPOSIT",
-    amount: 250000,
-    status: "COMPLETED",
-    date: new Date("2026-01-20"),
-    description: "Investment in Sunset Apartments",
-    paymentMethod: "ACH",
-    from: "Chase Bank ••4242",
-    to: "Escrow Account"
-  },
-  {
-    id: "txn_2",
-    type: "DISTRIBUTION",
-    amount: 12500,
-    status: "COMPLETED",
-    date: new Date("2026-01-15"),
-    description: "Q4 2025 Distribution - Downtown Office Tower",
-    paymentMethod: "ACH",
-    from: "Escrow Account",
-    to: "Chase Bank ••4242"
-  },
-  {
-    id: "txn_3",
-    type: "DEPOSIT",
-    amount: 150000,
-    status: "PROCESSING",
-    date: new Date("2026-01-22"),
-    description: "Investment in Riverside Condos",
-    paymentMethod: "WIRE",
-    from: "Bank of America ••8765",
-    to: "Escrow Account"
-  },
-  {
-    id: "txn_4",
-    type: "DISTRIBUTION",
-    amount: 8750,
-    status: "COMPLETED",
-    date: new Date("2026-01-10"),
-    description: "Monthly Distribution - Sunset Apartments",
-    paymentMethod: "ACH",
-    from: "Escrow Account",
-    to: "Chase Bank ••4242"
-  },
-  {
-    id: "txn_5",
-    type: "PLATFORM_FEE",
-    amount: -500,
-    status: "COMPLETED",
-    date: new Date("2026-01-20"),
-    description: "Platform Fee - Sunset Apartments Investment",
-    paymentMethod: "ACH",
-    from: "Chase Bank ••4242",
-    to: "RealCo Platform"
-  }
-]
+
+import { useEffect } from "react"
+import { transactionsAPI, Transaction } from "@/lib/api/transactions.api"
+
 
 export function TransactionHistory() {
-  const [transactions] = useState(mockTransactions)
+  const [transactions, setTransactions] = useState<Transaction[]>([])
   const [filterType, setFilterType] = useState<string>("ALL")
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const filteredTransactions = filterType === "ALL" 
-    ? transactions 
-    : transactions.filter(t => t.type === filterType)
+  const fetchTransactions = (type?: string) => {
+    setLoading(true)
+    transactionsAPI.getTransactions(type && type !== "ALL" ? { type } : undefined)
+      .then(res => {
+        setTransactions(res.transactions)
+        setLoading(false)
+      })
+      .catch(e => {
+        setError(e.message || 'Failed to load transactions')
+        setLoading(false)
+      })
+  }
+
+  useEffect(() => {
+    fetchTransactions()
+  }, [])
+
+  useEffect(() => {
+    fetchTransactions(filterType)
+  }, [filterType])
+
+  const filteredTransactions = transactions
 
   const getStatusColor = (status: string) => {
     switch (status) {

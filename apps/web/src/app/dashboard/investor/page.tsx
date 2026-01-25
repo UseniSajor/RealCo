@@ -20,10 +20,40 @@ import {
   Building2,
   CheckCircle2
 } from "lucide-react"
+import { useEffect, useState } from "react"
+import { transactionsAPI } from "@/lib/api/transactions.api"
 import { useAuth } from "@/lib/auth-context"
 
-export default function InvestorDashboardPage() {
   const { user, logout } = useAuth()
+
+  const [summary, setSummary] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const data = await transactionsAPI.getTransactionSummary()
+        setSummary(data)
+        setLoading(false)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load investment summary')
+        setLoading(false)
+      }
+    }
+    fetchSummary()
+  }, [])
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value)
+  }
 
   const sidebarItems = [
     { title: "Dashboard", href: "/dashboard/investor", icon: Home },
@@ -91,96 +121,102 @@ export default function InvestorDashboardPage() {
             />
           </div>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card className="border-4 border-[#56CCF2] hover:shadow-xl transition-all bg-slate-50">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-muted-foreground">
-                    Total Invested
-                  </CardTitle>
-                  <div className="w-12 h-12 rounded-xl bg-[#56CCF2]/10 flex items-center justify-center">
-                    <DollarSign className="h-6 w-6 text-[#56CCF2]" />
+          {/* Stats Grid (Live Data) */}
+          {loading ? (
+            <div className="p-8 text-center text-lg">Loading investment summary...</div>
+          ) : error ? (
+            <div className="p-8 text-center text-red-600">{error}</div>
+          ) : summary ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <Card className="border-4 border-primary hover:shadow-xl transition-all bg-slate-50">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-semibold text-muted-foreground">
+                      Total Invested
+                    </CardTitle>
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <DollarSign className="h-6 w-6 text-primary" />
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-4xl font-black mb-1">$2.5M</div>
-                <p className="text-xs text-muted-foreground">Across 12 deals</p>
-                <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
-                  <div className="text-xs text-muted-foreground">
-                    First investment: Jan 2021
+                </CardHeader>
+                <CardContent>
+                  <div className="text-4xl font-black mb-1">{formatCurrency(summary.totalInvested)}</div>
+                  <p className="text-xs text-muted-foreground">{summary.transactionCount} transactions</p>
+                  <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                    <div className="text-xs text-muted-foreground">
+                      {/* Optionally add more info here */}
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            <Card className="border-4 border-green-500 hover:shadow-xl transition-all bg-slate-50">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-muted-foreground">
-                    Current Value
-                  </CardTitle>
-                  <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
-                    <TrendingUp className="h-6 w-6 text-green-600" />
+              <Card className="border-4 border-green-500 hover:shadow-xl transition-all bg-slate-50">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-semibold text-muted-foreground">
+                      Distributions
+                    </CardTitle>
+                    <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                      <TrendingUp className="h-6 w-6 text-green-600" />
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-4xl font-black mb-1">$3.2M</div>
-                <p className="text-xs text-green-600 dark:text-green-400 font-semibold">+28% unrealized gain</p>
-                <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
-                  <div className="text-xs text-green-600 dark:text-green-400 font-bold">
-                    +$700K total gain
+                </CardHeader>
+                <CardContent>
+                  <div className="text-4xl font-black mb-1">{formatCurrency(summary.totalDistributions)}</div>
+                  <p className="text-xs text-green-600 dark:text-green-400 font-semibold">Distributions paid</p>
+                  <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                    <div className="text-xs text-green-600 dark:text-green-400 font-bold">
+                      {/* Optionally add more info here */}
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            <Card className="border-4 border-[#E07A47] hover:shadow-xl transition-all bg-slate-50">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-muted-foreground">
-                    Distributions YTD
-                  </CardTitle>
-                  <div className="w-12 h-12 rounded-xl bg-[#E07A47]/10 flex items-center justify-center">
-                    <DollarSign className="h-6 w-6 text-[#E07A47]" />
+              <Card className="border-4 border-secondary hover:shadow-xl transition-all bg-slate-50">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-semibold text-muted-foreground">
+                      Total Fees
+                    </CardTitle>
+                    <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
+                      <DollarSign className="h-6 w-6 text-secondary" />
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-4xl font-black mb-1">$245K</div>
-                <p className="text-xs text-muted-foreground">Q4 2025</p>
-                <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
-                  <div className="text-xs text-[#E07A47] font-semibold">
-                    9.8% yield
+                </CardHeader>
+                <CardContent>
+                  <div className="text-4xl font-black mb-1">{formatCurrency(summary.totalFees)}</div>
+                  <p className="text-xs text-muted-foreground">Platform/processing fees</p>
+                  <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                    <div className="text-xs text-secondary font-semibold">
+                      {/* Optionally add more info here */}
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            <Card className="border-4 border-[#56CCF2] hover:shadow-xl transition-all">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold text-muted-foreground">
-                    Active Investments
-                  </CardTitle>
-                  <div className="w-12 h-12 rounded-xl bg-[#56CCF2]/10 flex items-center justify-center">
-                    <Building2 className="h-6 w-6 text-[#56CCF2]" />
+              <Card className="border-4 border-purple-500 hover:shadow-xl transition-all">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-semibold text-muted-foreground">
+                      Pending Amount
+                    </CardTitle>
+                    <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
+                      <Building2 className="h-6 w-6 text-purple-600" />
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-4xl font-black mb-1">12</div>
-                <p className="text-xs text-muted-foreground">8 properties, 4 funds</p>
-                <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
-                  <Button size="sm" variant="outline" className="w-full">
-                    View Portfolio
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-4xl font-black mb-1">{formatCurrency(summary.pendingAmount)}</div>
+                  <p className="text-xs text-muted-foreground">Awaiting completion</p>
+                  <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                    <Button size="sm" variant="outline" className="w-full">
+                      View Portfolio
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          ) : null}
 
           {/* Portfolio Overview */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
@@ -305,7 +341,7 @@ export default function InvestorDashboardPage() {
                 <CardDescription>Internal rate of return</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-5xl font-black text-[#56CCF2] mb-2">15.8%</div>
+                <div className="text-5xl font-black text-primary mb-2">15.8%</div>
                 <p className="text-sm text-muted-foreground mb-4">Since inception (Jan 2021)</p>
                 <div className="flex items-center gap-2 text-sm">
                   <div className="w-3 h-3 rounded-full bg-green-500"></div>
@@ -320,7 +356,7 @@ export default function InvestorDashboardPage() {
                 <CardDescription>Annual return</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-5xl font-black text-[#E07A47] mb-2">9.8%</div>
+                <div className="text-5xl font-black text-secondary mb-2">9.8%</div>
                 <p className="text-sm text-muted-foreground mb-4">Average across portfolio</p>
                 <div className="flex items-center gap-2 text-sm">
                   <div className="w-3 h-3 rounded-full bg-green-500"></div>
