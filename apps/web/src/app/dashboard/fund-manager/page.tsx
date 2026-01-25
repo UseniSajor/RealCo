@@ -84,7 +84,7 @@ export default function FundManagerDashboardPage() {
         onLogout={logout}
       />
 
-      <main className="flex-1 ml-20 bg-white">
+      <main className="flex-1 ml-24 bg-white">
         <div className="container max-w-7xl px-8 py-8 mx-auto">
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
@@ -289,7 +289,7 @@ export default function FundManagerDashboardPage() {
                     { name: "Harbor Plaza", location: "San Diego, CA", noi: "$3.2M", appreciation: "+22%", occupancy: "96%" },
                     { name: "Tech Hub Offices", location: "Austin, TX", noi: "$4.5M", appreciation: "+25%", occupancy: "100%" },
                   ].map((property, i) => (
-                    <div key={i} className="p-5 rounded-xl bg-white border-2 border-slate-200 hover:shadow-xl hover:border-purple-500 transition-all">
+                    <div key={i} className="p-5 rounded-xl bg-[#6b7280]/10 border-2 border-slate-300 hover:shadow-xl hover:border-purple-500 transition-all">
                       <div className="flex items-start justify-between mb-3">
                         <div>
                           <h4 className="font-black text-lg">{property.name}</h4>
@@ -421,7 +421,7 @@ export default function FundManagerDashboardPage() {
                     { type: "Distribution Notice", recipients: "245 investors", date: "Jan 15", status: "Sent" },
                     { type: "Portfolio Update", recipients: "1,247 investors", date: "Jan 10", status: "Sent" },
                   ].map((comm, i) => (
-                    <div key={i} className="p-4 rounded-xl bg-white border-2 border-slate-200 hover:border-purple-300 transition-all">
+                    <div key={i} className="p-4 rounded-xl bg-[#6b7280]/10 border-2 border-slate-300 hover:border-purple-300 transition-all">
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <h4 className="font-bold text-sm mb-1">{comm.type}</h4>
@@ -460,7 +460,7 @@ export default function FundManagerDashboardPage() {
                     { property: "Innovation Office Park", location: "Austin, TX", price: "$28.3M", status: "Due Diligence", daysRemaining: 18 },
                     { property: "Lakeside Retail Center", location: "Denver, CO", price: "$15.8M", status: "Inspection Period", daysRemaining: 8 },
                   ].map((acq, i) => (
-                    <div key={i} className="p-4 rounded-xl bg-white border-2 border-slate-200 hover:shadow-lg hover:border-[#E07A47] transition-all">
+                    <div key={i} className="p-4 rounded-xl bg-[#6b7280]/10 border-2 border-slate-300 hover:shadow-lg hover:border-[#E07A47] transition-all">
                       <div className="flex items-start justify-between mb-3">
                         <div>
                           <h4 className="font-bold mb-1">{acq.property}</h4>

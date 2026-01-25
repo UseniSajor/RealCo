@@ -71,7 +71,7 @@ export default function SponsorDashboardPage() {
       />
 
       {/* Main Content */}
-      <main className="flex-1 ml-20 bg-white">
+      <main className="flex-1 ml-24 bg-white">
         <div className="container max-w-7xl px-8 py-8 mx-auto">
           {/* Header */}
           <div className="mb-8">
@@ -322,7 +322,7 @@ export default function SponsorDashboardPage() {
                       updated: "5 hours ago"
                     },
                   ].map((deal, i) => (
-                    <div key={i} className="p-5 rounded-xl bg-white border-2 border-slate-200 hover:shadow-xl hover:border-[#E07A47] transition-all group cursor-pointer">
+                    <div key={i} className="p-5 rounded-xl bg-[#6b7280]/10 border-2 border-slate-300 hover:shadow-xl hover:border-[#E07A47] transition-all group cursor-pointer">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">

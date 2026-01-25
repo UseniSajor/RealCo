@@ -209,7 +209,7 @@ export default function PropertySearchPage() {
       />
 
       {/* Main Content */}
-      <main className="flex-1 ml-20 p-6">
+      <main className="flex-1 ml-24 p-6">
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Header */}
           <div className="flex items-center justify-between">

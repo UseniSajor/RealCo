@@ -274,7 +274,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 1rem 1.25rem;
   border-radius: 0.75rem;
   border: 2px solid #e2e8f0;
-  background: white;
+  background: rgba(107, 114, 128, 0.1); /* Smoke gray light */
   transition: all 0.3s ease;
 }
 
@@ -303,7 +303,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 1.5rem;
   border-radius: 1rem;
   border: 3px solid #E07A47;
-  background: white;
+  background: rgba(107, 114, 128, 0.1); /* Smoke gray light */
   overflow: hidden;
 }
 

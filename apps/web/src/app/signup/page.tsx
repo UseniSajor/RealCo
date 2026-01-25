@@ -132,7 +132,7 @@ function SignupContent() {
     <>
       <MarketingNav />
 
-      <section className="py-12 min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      <section className="py-12 min-h-screen bg-white dark:bg-slate-900">
         <div className="container max-w-6xl px-6 mx-auto">
           {/* Progress Indicator */}
           <div className="flex items-center justify-center gap-2 md:gap-4 mb-12">

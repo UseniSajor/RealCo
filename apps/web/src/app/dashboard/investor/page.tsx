@@ -88,7 +88,7 @@ export default function InvestorDashboardPage() {
       />
 
       {/* Main Content */}
-      <main className="flex-1 ml-20 bg-white">
+      <main className="flex-1 ml-24 bg-white">
         <div className="container max-w-7xl px-8 py-8 mx-auto">
           {/* Header */}
           <div className="mb-8">
@@ -304,7 +304,7 @@ export default function InvestorDashboardPage() {
                     { name: "Riverside Condos", location: "Portland, OR", invested: "$300K", value: "$378K", gain: "+26%", gainColor: "text-green-600", status: "Active" },
                     { name: "Tech Campus", location: "Seattle, WA", invested: "$400K", value: "$485K", gain: "+21%", gainColor: "text-green-600", status: "Active" },
                   ].map((investment, i) => (
-                    <div key={i} className="p-5 rounded-xl bg-white border-2 border-slate-200 hover:shadow-xl hover:border-[#56CCF2] transition-all cursor-pointer">
+                    <div key={i} className="p-5 rounded-xl bg-[#6b7280]/10 border-2 border-slate-300 hover:shadow-xl hover:border-[#56CCF2] transition-all cursor-pointer">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
                           <h4 className="font-black text-lg mb-1">{investment.name}</h4>

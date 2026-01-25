@@ -85,7 +85,7 @@ export default function ProviderDashboardPage() {
         onLogout={logout}
       />
 
-      <main className="flex-1 ml-20 bg-white">
+      <main className="flex-1 ml-24 bg-white">
         <div className="container max-w-7xl px-8 py-8 mx-auto">
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
@@ -289,7 +289,7 @@ export default function ProviderDashboardPage() {
                     { project: "Office Tower", invoice: "#INV-2398", amount: "$125,000", status: "Approved", statusColor: "bg-green-100 text-green-600", date: "Jan 18" },
                     { project: "Riverside Condos", invoice: "#INV-2395", amount: "$73,800", status: "Paid", statusColor: "bg-blue-100 text-blue-600", date: "Jan 15" },
                   ].map((invoice, i) => (
-                    <div key={i} className="p-5 rounded-xl bg-white border-2 border-slate-200 hover:shadow-xl hover:border-[#E07A47] transition-all">
+                    <div key={i} className="p-5 rounded-xl bg-[#6b7280]/10 border-2 border-slate-300 hover:shadow-xl hover:border-[#E07A47] transition-all">
                       <div className="flex items-start justify-between mb-3">
                         <div>
                           <h4 className="font-black text-lg">{invoice.project}</h4>
@@ -374,7 +374,7 @@ export default function ProviderDashboardPage() {
                     { project: "Riverside Condos", task: "Electrical Rough-In", dueDate: "Jan 30", completion: 90, budget: "$38,500", status: "Ready to Invoice" },
                     { project: "Tech Campus", task: "Foundation Pour", dueDate: "Feb 10", completion: 20, budget: "$95,000", status: "Scheduled" },
                   ].map((order, i) => (
-                    <div key={i} className="p-5 rounded-xl bg-white border-2 border-slate-200 hover:shadow-xl hover:border-[#E07A47] transition-all">
+                    <div key={i} className="p-5 rounded-xl bg-[#6b7280]/10 border-2 border-slate-300 hover:shadow-xl hover:border-[#E07A47] transition-all">
                       <div className="flex items-start justify-between mb-4">
                         <div>
                           <h4 className="font-black text-lg mb-1">{order.task}</h4>
@@ -459,7 +459,7 @@ export default function ProviderDashboardPage() {
                     { project: "University Housing", value: "$320K", deadline: "Feb 8", type: "Framing" },
                     { project: "Medical Center Expansion", value: "$275K", deadline: "Feb 12", type: "HVAC" },
                   ].map((opp, i) => (
-                    <div key={i} className="p-4 rounded-xl bg-white border-2 border-slate-200 hover:shadow-lg hover:border-[#E07A47] transition-all cursor-pointer">
+                    <div key={i} className="p-4 rounded-xl bg-[#6b7280]/10 border-2 border-slate-300 hover:shadow-lg hover:border-[#E07A47] transition-all cursor-pointer">
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex-1">
                           <h4 className="font-bold text-sm mb-1">{opp.project}</h4>

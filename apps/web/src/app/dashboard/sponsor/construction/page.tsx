@@ -163,29 +163,37 @@ export default function SponsorConstructionPage() {
     )
   }
 
-  // Error state
+  // Error state - show demo not available message
   if (error) {
     return (
       <div className="flex min-h-screen bg-white">
-        <aside className="fixed left-0 top-0 h-screen w-20 bg-gradient-to-b from-[#56CCF2] to-[#3BB5E0] border-r-4 border-[#E07A47] flex flex-col items-center py-6">
+        <aside className="fixed left-0 top-0 h-screen w-24 bg-gradient-to-b from-[#56CCF2] to-[#3BB5E0] border-r-4 border-[#E07A47] flex flex-col items-center py-6">
           <Button asChild size="icon" className="w-12 h-12 bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-xl">
             <Link href="/dashboard/sponsor">
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>
         </aside>
-        <main className="flex-1 ml-20 bg-white flex items-center justify-center">
-          <Card className="max-w-md border-4 border-red-500">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-red-600">
-                <XCircle className="h-6 w-6" />
-                Error Loading Data
-              </CardTitle>
+        <main className="flex-1 ml-24 bg-white flex items-center justify-center">
+          <Card className="max-w-md border-4 border-[#56CCF2]">
+            <CardHeader className="text-center">
+              <div className="w-20 h-20 rounded-full bg-[#56CCF2]/20 flex items-center justify-center mx-auto mb-4">
+                <Hammer className="h-10 w-10 text-[#56CCF2]" />
+              </div>
+              <CardTitle>Construction Hub</CardTitle>
+              <CardDescription>
+                Not available in demo mode
+              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-4">{error}</p>
-              <Button onClick={() => window.location.reload()} className="w-full">
-                Try Again
+            <CardContent className="text-center">
+              <p className="text-muted-foreground mb-6">
+                The Construction Hub requires an active project with construction data. In the live portal, you'll be able to track progress, manage budgets, and coordinate with your team.
+              </p>
+              <Button className="w-full bg-[#E07A47] hover:bg-[#D96835]" asChild>
+                <Link href="/dashboard/sponsor">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Return to Dashboard
+                </Link>
               </Button>
             </CardContent>
           </Card>
@@ -194,11 +202,11 @@ export default function SponsorConstructionPage() {
     )
   }
 
-  // Empty state - no projects
+  // Empty state - no projects (demo mode)
   if (!project) {
     return (
       <div className="flex min-h-screen bg-white">
-        <aside className="fixed left-0 top-0 h-screen w-20 bg-gradient-to-b from-[#56CCF2] to-[#3BB5E0] border-r-4 border-[#E07A47] flex flex-col items-center py-6 gap-4">
+        <aside className="fixed left-0 top-0 h-screen w-24 bg-gradient-to-b from-[#56CCF2] to-[#3BB5E0] border-r-4 border-[#E07A47] flex flex-col items-center py-6 gap-4">
           <Button asChild size="icon" className="w-12 h-12 bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-xl">
             <Link href="/dashboard/sponsor">
               <ArrowLeft className="h-5 w-5" />
@@ -208,21 +216,26 @@ export default function SponsorConstructionPage() {
             <Hammer className="h-6 w-6 text-white" />
           </div>
         </aside>
-        <main className="flex-1 ml-20 bg-white flex items-center justify-center">
+        <main className="flex-1 ml-24 bg-white flex items-center justify-center">
           <Card className="max-w-md border-4 border-[#56CCF2]">
             <CardHeader className="text-center">
               <div className="w-20 h-20 rounded-full bg-[#56CCF2]/20 flex items-center justify-center mx-auto mb-4">
                 <Hammer className="h-10 w-10 text-[#56CCF2]" />
               </div>
-              <CardTitle>No Construction Projects</CardTitle>
+              <CardTitle>Construction Hub</CardTitle>
               <CardDescription>
-                Create your first construction project to start tracking progress
+                Not available in demo mode
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <Button className="w-full bg-[#E07A47] hover:bg-[#D96835]">
-                <Plus className="mr-2 h-4 w-4" />
-                Create Project
+            <CardContent className="text-center">
+              <p className="text-muted-foreground mb-6">
+                The Construction Hub requires an active construction project. In the live portal, you'll manage daily logs, draw requests, RFIs, inspections, and more.
+              </p>
+              <Button className="w-full bg-[#E07A47] hover:bg-[#D96835]" asChild>
+                <Link href="/dashboard/sponsor">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Return to Dashboard
+                </Link>
               </Button>
             </CardContent>
           </Card>
@@ -292,7 +305,7 @@ export default function SponsorConstructionPage() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-20 bg-white">
+      <main className="flex-1 ml-64 bg-white">
         <div className="container max-w-7xl px-8 py-8 mx-auto">
           {/* Overview Section */}
           <div id="overview" className="mb-12">
@@ -446,7 +459,7 @@ export default function SponsorConstructionPage() {
                     {tasks.slice(0, 10).map((task) => (
                       <div
                         key={task.id}
-                        className="flex items-center gap-4 p-4 rounded-xl bg-white border-2 border-slate-200 hover:shadow-md transition-all cursor-pointer"
+                        className="flex items-center gap-4 p-4 rounded-xl bg-[#6b7280]/10 border-2 border-slate-300 hover:shadow-md transition-all cursor-pointer"
                         onClick={() => handleTaskEdit(task)}
                       >
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${

@@ -3,18 +3,20 @@
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
-  Building2, 
-  Plus, 
-  Check, 
-  Clock, 
+import {
+  Building2,
+  Plus,
+  Check,
+  Clock,
   Shield,
   CreditCard,
   Trash2,
   Star,
   AlertCircle,
-  Loader2
+  Loader2,
+  ArrowLeft
 } from 'lucide-react';
+import Link from 'next/link';
 import { bankingAPI, type BankAccount } from '@/lib/api/banking.api';
 import { usePlaidLink } from 'react-plaid-link';
 
@@ -175,6 +177,14 @@ export default function BankingPage() {
             </div>
           </Card>
         )}
+
+        {/* Back Button */}
+        <Button variant="ghost" asChild className="mb-2">
+          <Link href="/dashboard/investor">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Dashboard
+          </Link>
+        </Button>
 
         {/* Header */}
         <div className="flex items-center justify-between">

@@ -20,8 +20,8 @@ export default function InvestorsPage() {
       <Hero
         headline="Invest with clarity—documents, updates, distributions, and tax files in one portal."
         subheadline="Track opportunities and monitor performance with transparent reporting and streamlined funding workflows."
-        primaryCta={{ label: "Create Free Investor Account", href: "/signup" }}
-        secondaryCta={{ label: "See Sample Dashboard", href: "#sample" }}
+        primaryCta={{ label: "Create Free Investor Account", href: "/signup?role=investor" }}
+        secondaryCta={{ label: "See Sample Dashboard", href: "/dashboard/investor" }}
         tertiaryCta={{ label: "How It Works", href: "#how" }}
       />
 
