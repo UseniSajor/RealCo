@@ -3,23 +3,31 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import type { TierName } from './pricing-tiers'
+import { apiClient } from './api/client'
+
+// Set to true to use real backend API, false for demo mode
+const USE_REAL_API = process.env.NEXT_PUBLIC_USE_REAL_API === 'true'
 
 interface User {
+  id?: string
   email: string
   role: 'sponsor' | 'investor' | 'provider' | 'fund-manager'
   tier: TierName
   name?: string
   company?: string
   createdAt: string
+  orgId?: string
 }
 
 interface AuthContextType {
   user: User | null
   isAuthenticated: boolean
+  isLoading: boolean
   login: (email: string, password: string, role?: 'sponsor' | 'investor' | 'provider' | 'fund-manager') => Promise<void>
   signup: (email: string, password: string, role: 'sponsor' | 'investor' | 'provider' | 'fund-manager', tier?: TierName) => Promise<void>
   logout: () => void
   updateTier: (newTier: TierName) => void
+  apiLogin: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -27,22 +35,70 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
   // Load user from localStorage on mount
   useEffect(() => {
     const storedUser = localStorage.getItem('realco_user')
+    const storedToken = localStorage.getItem('realco_token')
+
     if (storedUser) {
       try {
         const userData = JSON.parse(storedUser)
         setUser(userData)
         setIsAuthenticated(true)
+
+        // Restore token to API client if exists
+        if (storedToken) {
+          apiClient.setToken(storedToken)
+        }
       } catch (e) {
         console.error('Error loading user:', e)
         localStorage.removeItem('realco_user')
+        localStorage.removeItem('realco_token')
       }
     }
+    setIsLoading(false)
   }, [])
+
+  // Real API login function
+  const apiLogin = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    setIsLoading(true)
+    try {
+      const result = await apiClient.login(email, password)
+
+      if (result.error) {
+        setIsLoading(false)
+        return { success: false, error: result.error.message }
+      }
+
+      if (result.data?.token) {
+        // Token is already saved by apiClient
+        // Create user from JWT payload (would decode in production)
+        const apiUser: User = {
+          email,
+          role: 'sponsor', // Default role, would come from JWT in production
+          tier: 'pro',
+          name: email.split('@')[0],
+          createdAt: new Date().toISOString(),
+        }
+
+        setUser(apiUser)
+        setIsAuthenticated(true)
+        localStorage.setItem('realco_user', JSON.stringify(apiUser))
+        setIsLoading(false)
+
+        return { success: true }
+      }
+
+      setIsLoading(false)
+      return { success: false, error: 'No token received' }
+    } catch (error) {
+      setIsLoading(false)
+      return { success: false, error: error instanceof Error ? error.message : 'Login failed' }
+    }
+  }
 
   const login = async (email: string, password: string, role?: 'sponsor' | 'investor' | 'provider' | 'fund-manager') => {
     // Temporary: Accept ANY username and password
@@ -163,6 +219,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
     setIsAuthenticated(false)
     localStorage.removeItem('realco_user')
+    localStorage.removeItem('realco_token')
+    apiClient.logout()
     router.push('/')
   }
 
@@ -182,7 +240,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, signup, logout, updateTier }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, signup, logout, updateTier, apiLogin }}>
       {children}
     </AuthContext.Provider>
   )
