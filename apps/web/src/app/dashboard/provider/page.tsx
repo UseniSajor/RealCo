@@ -69,10 +69,10 @@ export default function ProviderDashboardPage() {
     { title: "Dashboard", href: "/dashboard/provider", icon: Home },
     { title: "Work Orders", href: "/dashboard/provider/vendor-portal", icon: HardHat, badge: "3" },
     { title: "Submit Invoice", href: "/dashboard/provider/submit-invoice", icon: Upload },
-    { title: "Daily Logs", href: "/dashboard/provider/vendor-portal", icon: ClipboardList },
-    { title: "Inspections", href: "/dashboard/provider/vendor-portal", icon: CheckCircle2 },
+    { title: "Daily Logs", href: "/dashboard/provider/daily-logs", icon: ClipboardList },
+    { title: "Inspections", href: "/dashboard/provider/inspections", icon: CheckCircle2 },
     { title: "Transactions", href: "/dashboard/provider/transactions", icon: Receipt },
-    { title: "Safety Reports", href: "/dashboard/provider/vendor-portal", icon: AlertTriangle },
+    { title: "Safety", href: "/dashboard/provider/safety", icon: AlertTriangle },
     { title: "Documents", href: "/dashboard/provider/vendor-portal", icon: FileText },
     { title: "Messages", href: "/dashboard/provider/vendor-portal", icon: MessageSquare, badge: "2" },
   ]
