@@ -236,7 +236,7 @@ export default function PropertySearchPage() {
           </div>
 
           {/* AI Search Section */}
-          <Card className="border-4 border-[#56CCF2] bg-white">
+          <Card className="border-4 border-[#56CCF2] bg-[#6b7280]/10">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#56CCF2] to-[#E07A47] flex items-center justify-center">

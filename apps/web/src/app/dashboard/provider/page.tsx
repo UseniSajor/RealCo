@@ -27,7 +27,9 @@ import {
   HardHat,
   Calendar,
   Users,
-  ClipboardList
+  ClipboardList,
+  FileQuestion,
+  Camera
 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { portfolioAPI } from "@/lib/api/portfolio.api"
@@ -266,6 +268,39 @@ export default function ProviderDashboardPage() {
                 </Link>
               )
             })}
+          </div>
+
+          {/* Construction Management Hub */}
+          <div className="mb-8">
+            <div className="section-header mb-4">
+              <h2 className="text-2xl font-black">Construction Management Hub</h2>
+              <p className="text-muted-foreground">Quick access to all construction operations</p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {[
+                { title: "Daily Logs", href: "/dashboard/provider/daily-logs", icon: ClipboardList, count: "Today", color: "bg-[#56CCF2]" },
+                { title: "Draw Requests", href: "/dashboard/provider/draw-request", icon: Receipt, count: "3 Pending", color: "bg-[#E07A47]" },
+                { title: "RFIs", href: "/dashboard/provider/rfis", icon: FileQuestion, count: "5 Open", color: "bg-purple-500" },
+                { title: "Submittals", href: "/dashboard/provider/submittals", icon: FileText, count: "8 Review", color: "bg-teal-500" },
+                { title: "Photo Gallery", href: "/dashboard/provider/photos", icon: Camera, count: "156 Photos", color: "bg-blue-500" },
+                { title: "Punch List", href: "/dashboard/provider/punch-list", icon: CheckCircle2, count: "12 Items", color: "bg-green-500" },
+              ].map((item, i) => {
+                const Icon = item.icon
+                return (
+                  <Link key={i} href={item.href}>
+                    <Card className="border-3 border-[#E07A47] hover:shadow-xl hover:scale-105 transition-all cursor-pointer h-full">
+                      <CardContent className="p-4 text-center">
+                        <div className={`w-12 h-12 mx-auto rounded-xl ${item.color} flex items-center justify-center mb-3`}>
+                          <Icon className="h-6 w-6 text-white" />
+                        </div>
+                        <h4 className="font-bold text-sm mb-1">{item.title}</h4>
+                        <p className="text-xs text-muted-foreground">{item.count}</p>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                )
+              })}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
