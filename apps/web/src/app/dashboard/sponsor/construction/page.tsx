@@ -298,7 +298,7 @@ export default function SponsorConstructionPage() {
             size="sm"
             onClick={logout}
           >
-            Exit Demo
+            Sign Out
           </Button>
         </div>
       </aside>
