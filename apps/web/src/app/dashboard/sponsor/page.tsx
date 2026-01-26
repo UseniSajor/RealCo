@@ -191,27 +191,27 @@ export default function SponsorDashboardPage() {
       />
 
       {/* Main Content */}
-      <main className="flex-1 ml-24 bg-white">
-        <div className="container max-w-7xl px-8 py-8 mx-auto">
+      <main className="flex-1 ml-20 bg-white">
+        <div className="container max-w-6xl px-6 py-6 mx-auto">
           {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-3">
               <div>
-                <h1 className="text-4xl font-black mb-2">Welcome Back, Sponsor!</h1>
-                <p className="text-lg text-muted-foreground">
+                <h1 className="text-2xl font-black mb-1">Welcome Back, Sponsor!</h1>
+                <p className="text-sm text-muted-foreground">
                   Here's what's happening with your projects today
                 </p>
               </div>
-              <div className="flex gap-3">
-                <Button variant="outline" asChild>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" asChild>
                   <Link href="/dashboard/sponsor/deal-pipeline">
-                    <Target className="mr-2 h-4 w-4" />
+                    <Target className="mr-1.5 h-3.5 w-3.5" />
                     Pipeline
                   </Link>
                 </Button>
-                <Button className="bg-[#E07A47] hover:bg-[#D96835]" asChild>
+                <Button size="sm" className="bg-[#E07A47] hover:bg-[#D96835]" asChild>
                   <Link href="/dashboard/sponsor/construction">
-                    <HardHat className="mr-2 h-4 w-4" />
+                    <HardHat className="mr-1.5 h-3.5 w-3.5" />
                     Construction Hub
                   </Link>
                 </Button>
@@ -219,27 +219,27 @@ export default function SponsorDashboardPage() {
             </div>
 
             {/* Quick Workflow Actions */}
-            <div className="bg-gradient-to-r from-[#56CCF2]/5 via-white to-[#E07A47]/5 border-2 border-[#E07A47] rounded-xl p-5">
+            <div className="bg-gradient-to-r from-[#56CCF2]/5 via-white to-[#E07A47]/5 border-2 border-[#E07A47] rounded-lg p-3">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#56CCF2] to-[#E07A47] flex items-center justify-center">
-                    <Workflow className="h-6 w-6 text-white" />
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#56CCF2] to-[#E07A47] flex items-center justify-center">
+                    <Workflow className="h-4 w-4 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-black text-lg">Automated Workflows Active</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <h3 className="font-black text-sm">Automated Workflows Active</h3>
+                    <p className="text-xs text-muted-foreground">
                       {activeDeals.length} deals in progress {urgentDeals.length > 0 && `• ${urgentDeals.length} need attention`}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="automation-badge">
-                    <Zap className="h-3 w-3" />
+                <div className="flex items-center gap-2">
+                  <span className="automation-badge text-[10px] px-2 py-0.5">
+                    <Zap className="h-2.5 w-2.5" />
                     Auto-Processing
                   </span>
-                  <Button variant="outline" size="sm">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Manage Workflows
+                  <Button variant="outline" size="sm" className="text-xs h-7">
+                    <Settings className="mr-1.5 h-3 w-3" />
+                    Manage
                   </Button>
                 </div>
               </div>
@@ -247,7 +247,7 @@ export default function SponsorDashboardPage() {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {metricsLoading ? (
               <>
                 <StatCardSkeleton />
@@ -257,26 +257,26 @@ export default function SponsorDashboardPage() {
               </>
             ) : (
               <>
-                <Card className="border-4 border-[#E07A47] hover:shadow-xl transition-all stat-card">
-                  <CardHeader className="pb-3">
+                <Card className="border-2 border-[#E07A47] hover:shadow-lg transition-all stat-card">
+                  <CardHeader className="pb-2 pt-3 px-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm font-semibold text-muted-foreground">
+                      <CardTitle className="text-xs font-semibold text-muted-foreground">
                         Active Projects
                       </CardTitle>
-                      <div className="w-12 h-12 rounded-xl bg-[#E07A47]/10 flex items-center justify-center">
-                        <Building2 className="h-6 w-6 text-[#E07A47]" />
+                      <div className="w-8 h-8 rounded-lg bg-[#E07A47]/10 flex items-center justify-center">
+                        <Building2 className="h-4 w-4 text-[#E07A47]" />
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="text-4xl font-black mb-1">{metrics?.active_projects || 0}</div>
-                    <p className="text-xs text-muted-foreground">
+                  <CardContent className="px-3 pb-3">
+                    <div className="text-2xl font-black mb-0.5">{metrics?.active_projects || 0}</div>
+                    <p className="text-[10px] text-muted-foreground">
                       {offerings?.filter(o => o.status === 'active').length || 0} raising, {projects?.length || 0} in construction
                     </p>
-                    <div className="mt-3 pt-3 border-t border-slate-200">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-green-500 status-dot"></div>
-                        <span className="text-xs text-green-600 font-semibold">
+                    <div className="mt-2 pt-2 border-t border-slate-200">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 status-dot"></div>
+                        <span className="text-[10px] text-green-600 font-semibold">
                           {metrics?.active_projects ? 'Active' : 'No active projects'}
                         </span>
                       </div>
@@ -284,34 +284,34 @@ export default function SponsorDashboardPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-4 border-[#56CCF2] hover:shadow-xl transition-all stat-card">
-                  <CardHeader className="pb-3">
+                <Card className="border-2 border-[#56CCF2] hover:shadow-lg transition-all stat-card">
+                  <CardHeader className="pb-2 pt-3 px-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm font-semibold text-muted-foreground">
+                      <CardTitle className="text-xs font-semibold text-muted-foreground">
                         Capital Raised
                       </CardTitle>
-                      <div className="w-12 h-12 rounded-xl bg-[#56CCF2]/10 flex items-center justify-center">
-                        <DollarSign className="h-6 w-6 text-[#56CCF2]" />
+                      <div className="w-8 h-8 rounded-lg bg-[#56CCF2]/10 flex items-center justify-center">
+                        <DollarSign className="h-4 w-4 text-[#56CCF2]" />
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="text-4xl font-black mb-1">{formatCurrency(metrics?.total_invested || 0)}</div>
-                    <p className="text-xs text-muted-foreground">
+                  <CardContent className="px-3 pb-3">
+                    <div className="text-2xl font-black mb-0.5">{formatCurrency(metrics?.total_invested || 0)}</div>
+                    <p className="text-[10px] text-muted-foreground">
                       Target: {formatCurrency(offerings?.reduce((sum, o) => sum + (o.target_raise || 0), 0) || 0)}
                     </p>
-                    <div className="mt-3 pt-3 border-t border-slate-200">
+                    <div className="mt-2 pt-2 border-t border-slate-200">
                       {(() => {
                         const totalTarget = offerings?.reduce((sum, o) => sum + (o.target_raise || 0), 0) || 0
                         const percentComplete = totalTarget > 0 ? Math.round((metrics?.total_invested || 0) / totalTarget * 100) : 0
                         const remaining = totalTarget - (metrics?.total_invested || 0)
                         return (
                           <>
-                            <div className="flex justify-between items-center mb-1">
-                              <span className="text-xs font-semibold">{percentComplete}% Complete</span>
-                              <span className="text-xs text-muted-foreground">{formatCurrency(Math.max(0, remaining))} to go</span>
+                            <div className="flex justify-between items-center mb-0.5">
+                              <span className="text-[10px] font-semibold">{percentComplete}% Complete</span>
+                              <span className="text-[10px] text-muted-foreground">{formatCurrency(Math.max(0, remaining))} to go</span>
                             </div>
-                            <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                            <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
                               <div className="h-full progress-gradient" style={{ width: `${Math.min(100, percentComplete)}%` }} />
                             </div>
                           </>
@@ -321,28 +321,28 @@ export default function SponsorDashboardPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-4 border-[#56CCF2] hover:shadow-xl transition-all stat-card">
-                  <CardHeader className="pb-3">
+                <Card className="border-2 border-[#56CCF2] hover:shadow-lg transition-all stat-card">
+                  <CardHeader className="pb-2 pt-3 px-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm font-semibold text-muted-foreground">
+                      <CardTitle className="text-xs font-semibold text-muted-foreground">
                         Total Investors
                       </CardTitle>
-                      <div className="w-12 h-12 rounded-xl bg-[#56CCF2]/10 flex items-center justify-center">
-                        <Users className="h-6 w-6 text-[#56CCF2]" />
+                      <div className="w-8 h-8 rounded-lg bg-[#56CCF2]/10 flex items-center justify-center">
+                        <Users className="h-4 w-4 text-[#56CCF2]" />
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="text-4xl font-black mb-1">{totalInvestors}</div>
-                    <p className="text-xs text-muted-foreground">
+                  <CardContent className="px-3 pb-3">
+                    <div className="text-2xl font-black mb-0.5">{totalInvestors}</div>
+                    <p className="text-[10px] text-muted-foreground">
                       Across {offerings?.length || 0} offerings
                     </p>
-                    <div className="mt-3 pt-3 border-t border-slate-200">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-[#E07A47]"></div>
-                        <span className="text-xs text-[#E07A47] font-semibold">
+                    <div className="mt-2 pt-2 border-t border-slate-200">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#E07A47]"></div>
+                        <span className="text-[10px] text-[#E07A47] font-semibold">
                           {totalInvestors > 0 && (metrics?.total_invested || 0) > 0
-                            ? `Avg investment: ${formatCurrency((metrics?.total_invested || 0) / totalInvestors)}`
+                            ? `Avg: ${formatCurrency((metrics?.total_invested || 0) / totalInvestors)}`
                             : 'No investments yet'}
                         </span>
                       </div>
@@ -350,26 +350,26 @@ export default function SponsorDashboardPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-4 border-[#E07A47] hover:shadow-xl transition-all stat-card">
-                  <CardHeader className="pb-3">
+                <Card className="border-2 border-[#E07A47] hover:shadow-lg transition-all stat-card">
+                  <CardHeader className="pb-2 pt-3 px-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm font-semibold text-muted-foreground">
+                      <CardTitle className="text-xs font-semibold text-muted-foreground">
                         Total Deals
                       </CardTitle>
-                      <div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center">
-                        <Target className="h-6 w-6 text-red-600" />
+                      <div className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
+                        <Target className="h-4 w-4 text-red-600" />
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="text-4xl font-black mb-1">{metrics?.active_deals || 0}</div>
-                    <p className="text-xs text-muted-foreground">
+                  <CardContent className="px-3 pb-3">
+                    <div className="text-2xl font-black mb-0.5">{metrics?.active_deals || 0}</div>
+                    <p className="text-[10px] text-muted-foreground">
                       {activeDeals.length} active, {(metrics?.active_deals || 0) - activeDeals.length} closed/passed
                     </p>
-                    <div className="mt-3 pt-3 border-t border-slate-200">
-                      <Button size="sm" variant="outline" className="w-full" asChild>
+                    <div className="mt-2 pt-2 border-t border-slate-200">
+                      <Button size="sm" variant="outline" className="w-full h-6 text-[10px]" asChild>
                         <Link href="/dashboard/sponsor/deal-pipeline">
-                          <Target className="mr-2 h-4 w-4" />
+                          <Target className="mr-1 h-3 w-3" />
                           View Pipeline
                         </Link>
                       </Button>
@@ -381,27 +381,27 @@ export default function SponsorDashboardPage() {
           </div>
 
           {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
             {/* Active Deals */}
-            <Card className="lg:col-span-2 border-4 border-[#E07A47]">
-              <CardHeader>
+            <Card className="lg:col-span-2 border-2 border-[#E07A47]">
+              <CardHeader className="py-3 px-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <Building2 className="h-5 w-5" />
+                    <CardTitle className="flex items-center gap-1.5 text-sm">
+                      <Building2 className="h-4 w-4" />
                       Your Deals in Progress
                     </CardTitle>
-                    <CardDescription>Capital raising and construction projects</CardDescription>
+                    <CardDescription className="text-xs">Capital raising and construction projects</CardDescription>
                   </div>
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" size="sm" className="h-7 text-xs" asChild>
                     <Link href="/dashboard/sponsor/deal-pipeline">
                       View All
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                      <ArrowRight className="ml-1 h-3 w-3" />
                     </Link>
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-4 pb-4">
                 {dealsLoading ? (
                   <div className="space-y-4">
                     <DealCardSkeleton />
@@ -416,45 +416,45 @@ export default function SponsorDashboardPage() {
                     action={{ label: "Start a Deal", href: "/dashboard/sponsor/deal-pipeline" }}
                   />
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {activeDeals.slice(0, 5).map((deal) => {
                       const statusDisplay = getDealStatusDisplay(deal.stage)
                       const probability = deal.probability || 0
 
                       return (
-                        <div key={deal.id} className="p-5 rounded-xl border-2 border-[#56CCF2] hover:shadow-xl hover:border-[#E07A47] transition-all group cursor-pointer">
-                          <div className="flex items-start justify-between mb-4">
+                        <div key={deal.id} className="p-3 rounded-lg border-2 border-[#56CCF2] hover:shadow-lg hover:border-[#E07A47] transition-all group cursor-pointer">
+                          <div className="flex items-start justify-between mb-2">
                             <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h4 className="font-black text-xl">{deal.name}</h4>
+                              <div className="flex items-center gap-1.5 mb-0.5">
+                                <h4 className="font-bold text-sm">{deal.name}</h4>
                                 {deal.tags && deal.tags.length > 0 && (
-                                  <span className="text-xs px-2 py-0.5 rounded-full bg-slate-200 text-slate-600">
+                                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-200 text-slate-600">
                                     {deal.tags[0]}
                                   </span>
                                 )}
                               </div>
-                              <p className="text-sm text-muted-foreground flex items-center gap-2">
-                                <Clock className="h-4 w-4" />
+                              <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
                                 {deal.expected_close_date
-                                  ? `Expected close: ${new Date(deal.expected_close_date).toLocaleDateString()}`
-                                  : 'No close date set'}
+                                  ? `Close: ${new Date(deal.expected_close_date).toLocaleDateString()}`
+                                  : 'No close date'}
                               </p>
                             </div>
-                            <span className={`px-3 py-1.5 rounded-full text-xs font-bold ${statusDisplay.colorClass}`}>
+                            <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${statusDisplay.colorClass}`}>
                               {statusDisplay.label}
                             </span>
                           </div>
 
-                          <div className="space-y-3">
+                          <div className="space-y-2">
                             <div>
-                              <div className="flex justify-between text-sm mb-2">
-                                <span className="font-bold text-lg">
+                              <div className="flex justify-between text-xs mb-1">
+                                <span className="font-bold text-sm">
                                   {formatCurrency(deal.value)}
-                                  <span className="text-sm text-muted-foreground font-normal"> deal value</span>
+                                  <span className="text-[10px] text-muted-foreground font-normal"> value</span>
                                 </span>
-                                <span className="text-[#56CCF2] font-black text-lg">{probability}%</span>
+                                <span className="text-[#56CCF2] font-black text-sm">{probability}%</span>
                               </div>
-                              <div className="h-3 bg-slate-200 rounded-full overflow-hidden">
+                              <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
                                 <div
                                   className="h-full progress-gradient transition-all"
                                   style={{ width: `${probability}%` }}
@@ -462,24 +462,24 @@ export default function SponsorDashboardPage() {
                               </div>
                             </div>
 
-                            <div className="flex items-center justify-between pt-3 border-t border-slate-200">
-                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <Target className="h-4 w-4" />
-                                <span className="font-semibold">{probability}%</span> probability
+                            <div className="flex items-center justify-between pt-2 border-t border-slate-200">
+                              <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                                <Target className="h-3 w-3" />
+                                <span className="font-semibold">{probability}%</span> prob
                               </div>
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                <Clock className="h-3 w-3" />
-                                Updated {formatRelativeTime(deal.updated_at)}
+                              <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                                <Clock className="h-2.5 w-2.5" />
+                                {formatRelativeTime(deal.updated_at)}
                               </div>
                             </div>
 
-                            <div className="flex gap-2 pt-2">
-                              <Button size="sm" className="flex-1" variant="outline">
-                                <FileText className="mr-2 h-4 w-4" />
-                                View Details
+                            <div className="flex gap-2 pt-1">
+                              <Button size="sm" className="flex-1 h-7 text-xs" variant="outline">
+                                <FileText className="mr-1 h-3 w-3" />
+                                Details
                               </Button>
-                              <Button size="sm" className="flex-1 bg-[#E07A47] hover:bg-[#E07A47]/90">
-                                <TrendingUp className="mr-2 h-4 w-4" />
+                              <Button size="sm" className="flex-1 h-7 text-xs bg-[#E07A47] hover:bg-[#E07A47]/90">
+                                <TrendingUp className="mr-1 h-3 w-3" />
                                 Manage
                               </Button>
                             </div>
@@ -493,17 +493,17 @@ export default function SponsorDashboardPage() {
             </Card>
 
             {/* Quick Stats & Info */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               {/* Urgent Tasks / Deals needing attention */}
-              <Card className="border-4 border-[#E07A47]">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertCircle className="h-5 w-5" />
+              <Card className="border-2 border-[#E07A47]">
+                <CardHeader className="py-3 px-4">
+                  <CardTitle className="flex items-center gap-1.5 text-sm">
+                    <AlertCircle className="h-4 w-4" />
                     Urgent Tasks
                   </CardTitle>
-                  <CardDescription>Requires immediate attention</CardDescription>
+                  <CardDescription className="text-xs">Requires immediate attention</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="px-4 pb-4">
                   {dealsLoading || leadsLoading ? (
                     <div className="space-y-3">
                       {[1, 2, 3].map((i) => (
@@ -571,15 +571,15 @@ export default function SponsorDashboardPage() {
               </Card>
 
               {/* Recent Activity */}
-              <Card className="border-4 border-[#56CCF2]">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Clock className="h-5 w-5" />
+              <Card className="border-2 border-[#56CCF2]">
+                <CardHeader className="py-3 px-4">
+                  <CardTitle className="flex items-center gap-1.5 text-sm">
+                    <Clock className="h-4 w-4" />
                     Recent Activity
                   </CardTitle>
-                  <CardDescription>Last 24 hours</CardDescription>
+                  <CardDescription className="text-xs">Last 24 hours</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="px-4 pb-4">
                   {isLoading ? (
                     <div className="space-y-3">
                       {[1, 2, 3, 4].map((i) => (
@@ -652,27 +652,27 @@ export default function SponsorDashboardPage() {
           </div>
 
           {/* Service Offerings Section */}
-          <div className="mb-8">
-            <div className="section-header mb-6">
-              <h2 className="text-2xl font-black">Platform Services</h2>
-              <p className="text-muted-foreground">Everything you need to succeed</p>
+          <div className="mb-6">
+            <div className="section-header mb-4">
+              <h2 className="text-lg font-black">Platform Services</h2>
+              <p className="text-xs text-muted-foreground">Everything you need to succeed</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
-                { title: "Capital Raise", description: "Streamlined fundraising with investor CRM", icon: TrendingUp, color: "text-[#56CCF2]", href: "/dashboard/sponsor/capital-raised" },
-                { title: "Construction Mgmt", description: "Full project tracking & documentation", icon: HardHat, color: "text-[#E07A47]", href: "/dashboard/sponsor/construction" },
-                { title: "Investor Relations", description: "Automated updates & communications", icon: Users, color: "text-purple-500", href: "/dashboard/sponsor/team" },
-                { title: "Compliance & Docs", description: "SEC-ready documentation & audit trail", icon: Shield, color: "text-green-500", href: "/dashboard/sponsor/analytics" },
+                { title: "Capital Raise", description: "Streamlined fundraising with investor CRM", icon: TrendingUp, color: "text-[#56CCF2]", bgColor: "bg-[#56CCF2]/10", href: "/dashboard/sponsor/capital-raised" },
+                { title: "Construction Mgmt", description: "Full project tracking & documentation", icon: HardHat, color: "text-[#E07A47]", bgColor: "bg-[#E07A47]/10", href: "/dashboard/sponsor/construction" },
+                { title: "Investor Relations", description: "Automated updates & communications", icon: Users, color: "text-purple-500", bgColor: "bg-purple-100", href: "/dashboard/sponsor/team" },
+                { title: "Compliance & Docs", description: "SEC-ready documentation & audit trail", icon: Shield, color: "text-green-500", bgColor: "bg-green-100", href: "/dashboard/sponsor/analytics" },
               ].map((service, i) => {
                 const Icon = service.icon
                 return (
                   <Link key={i} href={service.href}>
-                    <Card className="service-card h-full hover:shadow-xl transition-all cursor-pointer">
-                      <div className={`w-14 h-14 rounded-xl bg-slate-100 flex items-center justify-center mb-4 ${service.color}`}>
-                        <Icon className="h-7 w-7" />
+                    <Card className="service-card h-full hover:shadow-lg transition-all cursor-pointer border-2 border-[#E07A47] bg-gradient-to-br from-white to-slate-50">
+                      <div className={`w-10 h-10 rounded-lg ${service.bgColor} flex items-center justify-center mb-3 ${service.color}`}>
+                        <Icon className="h-5 w-5" />
                       </div>
-                      <h3 className="font-black text-lg mb-2">{service.title}</h3>
-                      <p className="text-sm text-muted-foreground">{service.description}</p>
+                      <h3 className="font-bold text-sm mb-1 text-slate-800">{service.title}</h3>
+                      <p className="text-[10px] text-slate-600 leading-tight">{service.description}</p>
                     </Card>
                   </Link>
                 )
@@ -681,30 +681,30 @@ export default function SponsorDashboardPage() {
           </div>
 
           {/* Performance Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="border-4 border-[#56CCF2]">
-              <CardHeader>
-                <CardTitle className="text-lg">Portfolio IRR</CardTitle>
-                <CardDescription>Internal rate of return</CardDescription>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="border-2 border-[#56CCF2]">
+              <CardHeader className="py-3 px-4">
+                <CardTitle className="text-sm">Portfolio IRR</CardTitle>
+                <CardDescription className="text-xs">Internal rate of return</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-4 pb-4">
                 {metricsLoading ? (
                   <div className="animate-pulse">
-                    <div className="h-12 w-24 bg-slate-200 rounded mb-2"></div>
-                    <div className="h-4 w-32 bg-slate-200 rounded"></div>
+                    <div className="h-8 w-16 bg-slate-200 rounded mb-1"></div>
+                    <div className="h-3 w-24 bg-slate-200 rounded"></div>
                   </div>
                 ) : (
                   <>
-                    <div className="text-5xl font-black metric-value-primary mb-2">
+                    <div className="text-3xl font-black metric-value-primary mb-1">
                       {offerings && offerings.length > 0
                         ? `${offerings.filter(o => o.target_return).length > 0
                             ? offerings.filter(o => o.target_return)[0]?.target_return || '--'
                             : '--'}`
                         : '--'}
                     </div>
-                    <p className="text-sm text-muted-foreground mb-4">Target: 12-15% annually</p>
-                    <div className="flex items-center gap-2 text-sm">
-                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    <p className="text-[10px] text-muted-foreground mb-2">Target: 12-15% annually</p>
+                    <div className="flex items-center gap-1.5 text-xs">
+                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
                       <span className="text-green-600 font-semibold">
                         {offerings && offerings.length > 0 ? 'On track' : 'No data yet'}
                       </span>
@@ -714,29 +714,29 @@ export default function SponsorDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-4 border-[#E07A47]">
-              <CardHeader>
-                <CardTitle className="text-lg">Avg Hold Period</CardTitle>
-                <CardDescription>Time to exit</CardDescription>
+            <Card className="border-2 border-[#E07A47]">
+              <CardHeader className="py-3 px-4">
+                <CardTitle className="text-sm">Avg Hold Period</CardTitle>
+                <CardDescription className="text-xs">Time to exit</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-4 pb-4">
                 {metricsLoading ? (
                   <div className="animate-pulse">
-                    <div className="h-12 w-24 bg-slate-200 rounded mb-2"></div>
-                    <div className="h-4 w-32 bg-slate-200 rounded"></div>
+                    <div className="h-8 w-16 bg-slate-200 rounded mb-1"></div>
+                    <div className="h-3 w-24 bg-slate-200 rounded"></div>
                   </div>
                 ) : (
                   <>
-                    <div className="text-5xl font-black metric-value-secondary mb-2">
+                    <div className="text-3xl font-black metric-value-secondary mb-1">
                       {offerings && offerings.filter(o => o.hold_period).length > 0
                         ? offerings.filter(o => o.hold_period)[0]?.hold_period || '--'
                         : '--'}
                     </div>
-                    <p className="text-sm text-muted-foreground mb-4">Target: 3-5 years</p>
-                    <div className="flex items-center gap-2 text-sm">
-                      <div className="w-3 h-3 rounded-full bg-[#56CCF2]"></div>
+                    <p className="text-[10px] text-muted-foreground mb-2">Target: 3-5 years</p>
+                    <div className="flex items-center gap-1.5 text-xs">
+                      <div className="w-2 h-2 rounded-full bg-[#56CCF2]"></div>
                       <span className="text-[#56CCF2] font-semibold">
-                        {offerings && offerings.length > 0 ? 'Within target range' : 'No data yet'}
+                        {offerings && offerings.length > 0 ? 'Within range' : 'No data yet'}
                       </span>
                     </div>
                   </>
@@ -744,16 +744,16 @@ export default function SponsorDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-4 border-[#56CCF2]">
-              <CardHeader>
-                <CardTitle className="text-lg">Success Rate</CardTitle>
-                <CardDescription>Profitable exits</CardDescription>
+            <Card className="border-2 border-[#56CCF2]">
+              <CardHeader className="py-3 px-4">
+                <CardTitle className="text-sm">Success Rate</CardTitle>
+                <CardDescription className="text-xs">Profitable exits</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-4 pb-4">
                 {metricsLoading ? (
                   <div className="animate-pulse">
-                    <div className="h-12 w-24 bg-slate-200 rounded mb-2"></div>
-                    <div className="h-4 w-32 bg-slate-200 rounded"></div>
+                    <div className="h-8 w-16 bg-slate-200 rounded mb-1"></div>
+                    <div className="h-3 w-24 bg-slate-200 rounded"></div>
                   </div>
                 ) : (
                   <>
@@ -765,18 +765,18 @@ export default function SponsorDashboardPage() {
 
                       return (
                         <>
-                          <div className="text-5xl font-black text-green-600 mb-2">
+                          <div className="text-3xl font-black text-green-600 mb-1">
                             {totalCompleted > 0 ? `${successRate}%` : '--'}
                           </div>
-                          <p className="text-sm text-muted-foreground mb-4">
+                          <p className="text-[10px] text-muted-foreground mb-2">
                             {totalCompleted > 0
-                              ? `${closedDeals} of ${totalCompleted} deals successful`
-                              : 'No completed deals yet'}
+                              ? `${closedDeals}/${totalCompleted} successful`
+                              : 'No completed deals'}
                           </p>
-                          <div className="flex items-center gap-2 text-sm">
-                            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                          <div className="flex items-center gap-1.5 text-xs">
+                            <div className="w-2 h-2 rounded-full bg-green-500"></div>
                             <span className="text-green-600 font-semibold">
-                              {successRate >= 90 ? 'Industry leading' : successRate >= 70 ? 'Above average' : totalCompleted > 0 ? 'Building track record' : 'No data yet'}
+                              {successRate >= 90 ? 'Industry leading' : successRate >= 70 ? 'Above average' : totalCompleted > 0 ? 'Building' : 'No data'}
                             </span>
                           </div>
                         </>

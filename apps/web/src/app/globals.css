@@ -309,11 +309,20 @@ h1, h2, h3, h4, h5, h6 {
 /* Service Offering Cards */
 .service-card {
   position: relative;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  border: 3px solid #E07A47;
-  background: rgba(107, 114, 128, 0.1); /* Smoke gray light */
+  padding: 1.125rem;
+  border-radius: 0.75rem;
+  border: 2px solid #E07A47;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   overflow: hidden;
+  color: #2C3E50;
+}
+
+.service-card h3 {
+  color: #2C3E50 !important;
+}
+
+.service-card p {
+  color: #5A6C7D !important;
 }
 
 .service-card::after {
@@ -325,6 +334,30 @@ h1, h2, h3, h4, h5, h6 {
   height: 100%;
   background: radial-gradient(circle, rgba(86, 204, 242, 0.1) 0%, transparent 70%);
   pointer-events: none;
+}
+
+/* Compact UI Scale - 25% reduction */
+.compact-ui {
+  font-size: 0.875rem;
+}
+
+.compact-ui h1 { font-size: 2.25rem; }
+.compact-ui h2 { font-size: 1.5rem; }
+.compact-ui h3 { font-size: 1.125rem; }
+.compact-ui h4 { font-size: 1rem; }
+
+.compact-card {
+  padding: 0.75rem !important;
+}
+
+.compact-icon {
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+}
+
+.compact-icon svg {
+  width: 1.125rem !important;
+  height: 1.125rem !important;
 }
 
 /* Data Table Enhancements */
