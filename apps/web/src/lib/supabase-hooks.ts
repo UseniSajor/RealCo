@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from 'react'
-import { useAuth } from '../auth-context'
+import { useAuth } from './auth-context'
 import {
   supabaseData,
   type Organization,
@@ -16,10 +16,17 @@ import {
   type Distribution,
   type Investment,
   type PropertyStatus,
+  type PropertyType,
   type LeadStatus,
   type DealStage,
   type TaskStatus,
   type TaskPriority,
+  type OfferingStatus,
+  type ProjectPhase,
+  type TransactionType,
+  type TransactionStatus,
+  type DistributionType,
+  type DistributionStatus,
   type CreatePropertyData,
   type UpdatePropertyData,
   type CreateLeadData,
@@ -53,10 +60,17 @@ export type {
   Distribution,
   Investment,
   PropertyStatus,
+  PropertyType,
   LeadStatus,
   DealStage,
   TaskStatus,
   TaskPriority,
+  OfferingStatus,
+  ProjectPhase,
+  TransactionType,
+  TransactionStatus,
+  DistributionType,
+  DistributionStatus,
   CreatePropertyData,
   UpdatePropertyData,
   CreateLeadData,
@@ -102,7 +116,7 @@ function useOrgId(): string | null {
 
 export function useProperties(options?: {
   status?: PropertyStatus
-  type?: string
+  type?: PropertyType
   search?: string
   limit?: number
   offset?: number
@@ -487,7 +501,7 @@ export function useDealMutations() {
 // ========== OFFERINGS ==========
 
 export function useOfferings(options?: {
-  status?: string
+  status?: OfferingStatus | OfferingStatus[]
   search?: string
   limit?: number
 }): UseListState<Offering> {
@@ -575,7 +589,7 @@ export function useOfferingMutations() {
 // ========== PROJECTS ==========
 
 export function useProjects(options?: {
-  phase?: string
+  phase?: ProjectPhase | ProjectPhase[]
   search?: string
   limit?: number
 }): UseListState<Project> {
@@ -653,7 +667,7 @@ export function useProjectMutations() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const createProject = async (data: Omit<CreateProjectData, 'org_id'>): Promise<Project | null> => {
+  const createProject = async (data: CreateProjectData): Promise<Project | null> => {
     if (!orgId) {
       setError('Not authenticated')
       return null
@@ -662,7 +676,7 @@ export function useProjectMutations() {
     setIsLoading(true)
     setError(null)
 
-    const result = await supabaseData.createProject({ ...data, org_id: orgId })
+    const result = await supabaseData.createProject(data)
 
     setIsLoading(false)
 
@@ -870,13 +884,13 @@ export function useDailyLogMutations() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const createDailyLog = async (data: Omit<CreateDailyLogData, 'created_by'>): Promise<DailyLog | null> => {
+  const createDailyLog = async (data: Omit<CreateDailyLogData, 'created_by_id'>): Promise<DailyLog | null> => {
     setIsLoading(true)
     setError(null)
 
     const result = await supabaseData.createDailyLog({
       ...data,
-      created_by: user?.id,
+      created_by_id: user?.id,
     })
 
     setIsLoading(false)
@@ -911,8 +925,8 @@ export function useDailyLogMutations() {
 // ========== TRANSACTIONS ==========
 
 export function useTransactions(options?: {
-  type?: string
-  status?: string
+  type?: TransactionType | TransactionType[]
+  status?: TransactionStatus | TransactionStatus[]
   limit?: number
 }): UseListState<Transaction> {
   const orgId = useOrgId()
@@ -954,7 +968,7 @@ export function useTransactions(options?: {
 // ========== DISTRIBUTIONS ==========
 
 export function useDistributions(offeringId: string, options?: {
-  status?: string
+  status?: DistributionStatus | DistributionStatus[]
   limit?: number
 }): UseListState<Distribution> {
   const [data, setData] = useState<Distribution[]>([])
@@ -1032,20 +1046,9 @@ export function useInvestors(offeringId: string): UseListState<Investment> {
 
 // ========== DASHBOARD METRICS ==========
 
-interface DashboardMetrics {
-  totalProperties: number
-  totalLeads: number
-  totalDeals: number
-  totalOfferings: number
-  activeProjects: number
-  totalTransactions: number
-  capitalRaised: number
-  capitalDeployed: number
-}
-
-export function useDashboardMetrics(): UseDataState<DashboardMetrics> {
+export function useDashboardMetrics() {
   const orgId = useOrgId()
-  const [data, setData] = useState<DashboardMetrics | null>(null)
+  const [data, setData] = useState<Awaited<ReturnType<typeof supabaseData.getDashboardMetrics>>['data']>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -1064,7 +1067,7 @@ export function useDashboardMetrics(): UseDataState<DashboardMetrics> {
       setError(result.error.message)
       setData(null)
     } else {
-      setData(result.data as DashboardMetrics || null)
+      setData(result.data || null)
     }
 
     setIsLoading(false)
@@ -1079,24 +1082,9 @@ export function useDashboardMetrics(): UseDataState<DashboardMetrics> {
 
 // ========== PORTFOLIO SUMMARY ==========
 
-interface PortfolioSummary {
-  totalAUM: number
-  totalInvestors: number
-  totalDistributions: number
-  avgIRR: number
-  offerings: Array<{
-    id: string
-    name: string
-    status: string
-    raisedAmount: number
-    targetRaise: number
-    investorCount: number
-  }>
-}
-
-export function usePortfolioSummary(): UseDataState<PortfolioSummary> {
+export function usePortfolioSummary() {
   const orgId = useOrgId()
-  const [data, setData] = useState<PortfolioSummary | null>(null)
+  const [data, setData] = useState<Awaited<ReturnType<typeof supabaseData.getPortfolioSummary>>['data']>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -1115,7 +1103,7 @@ export function usePortfolioSummary(): UseDataState<PortfolioSummary> {
       setError(result.error.message)
       setData(null)
     } else {
-      setData(result.data as PortfolioSummary || null)
+      setData(result.data || null)
     }
 
     setIsLoading(false)
@@ -1148,16 +1136,22 @@ export function useGlobalSearch(query: string): UseListState<{ type: string; id:
     setIsLoading(true)
     setError(null)
 
-    const result = await supabaseData.globalSearch(orgId, query)
+    try {
+      const result = await supabaseData.globalSearch(orgId, query)
 
-    if (result.error) {
-      setError(result.error.message)
-      setData([])
-      setCount(0)
-    } else {
-      const items = result.data as Array<{ type: string; id: string; name: string; subtitle?: string }> || []
+      // Transform results into a unified format
+      const items: Array<{ type: string; id: string; name: string; subtitle?: string }> = [
+        ...result.properties.map(p => ({ type: 'property', id: p.id, name: p.name || 'Property', subtitle: p.address })),
+        ...result.leads.map(l => ({ type: 'lead', id: l.id, name: l.property_name || 'Lead', subtitle: l.property_address })),
+        ...result.deals.map(d => ({ type: 'deal', id: d.id, name: d.name || 'Deal', subtitle: d.stage })),
+        ...result.offerings.map(o => ({ type: 'offering', id: o.id, name: o.name, subtitle: o.regulation_mode })),
+      ]
       setData(items)
       setCount(items.length)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Search failed')
+      setData([])
+      setCount(0)
     }
 
     setIsLoading(false)

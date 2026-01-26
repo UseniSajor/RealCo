@@ -269,7 +269,7 @@ export default function SponsorDashboardPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-4xl font-black mb-1">{metrics?.activeProjects || 0}</div>
+                    <div className="text-4xl font-black mb-1">{metrics?.active_projects || 0}</div>
                     <p className="text-xs text-muted-foreground">
                       {offerings?.filter(o => o.status === 'active').length || 0} raising, {projects?.length || 0} in construction
                     </p>
@@ -277,7 +277,7 @@ export default function SponsorDashboardPage() {
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-green-500 status-dot"></div>
                         <span className="text-xs text-green-600 font-semibold">
-                          {metrics?.activeProjects ? 'Active' : 'No active projects'}
+                          {metrics?.active_projects ? 'Active' : 'No active projects'}
                         </span>
                       </div>
                     </div>
@@ -296,15 +296,15 @@ export default function SponsorDashboardPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-4xl font-black mb-1">{formatCurrency(metrics?.capitalRaised || 0)}</div>
+                    <div className="text-4xl font-black mb-1">{formatCurrency(metrics?.total_invested || 0)}</div>
                     <p className="text-xs text-muted-foreground">
                       Target: {formatCurrency(offerings?.reduce((sum, o) => sum + (o.target_raise || 0), 0) || 0)}
                     </p>
                     <div className="mt-3 pt-3 border-t border-slate-200">
                       {(() => {
                         const totalTarget = offerings?.reduce((sum, o) => sum + (o.target_raise || 0), 0) || 0
-                        const percentComplete = totalTarget > 0 ? Math.round((metrics?.capitalRaised || 0) / totalTarget * 100) : 0
-                        const remaining = totalTarget - (metrics?.capitalRaised || 0)
+                        const percentComplete = totalTarget > 0 ? Math.round((metrics?.total_invested || 0) / totalTarget * 100) : 0
+                        const remaining = totalTarget - (metrics?.total_invested || 0)
                         return (
                           <>
                             <div className="flex justify-between items-center mb-1">
@@ -341,8 +341,8 @@ export default function SponsorDashboardPage() {
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-[#E07A47]"></div>
                         <span className="text-xs text-[#E07A47] font-semibold">
-                          {totalInvestors > 0 && (metrics?.capitalRaised || 0) > 0
-                            ? `Avg investment: ${formatCurrency((metrics?.capitalRaised || 0) / totalInvestors)}`
+                          {totalInvestors > 0 && (metrics?.total_invested || 0) > 0
+                            ? `Avg investment: ${formatCurrency((metrics?.total_invested || 0) / totalInvestors)}`
                             : 'No investments yet'}
                         </span>
                       </div>
@@ -362,9 +362,9 @@ export default function SponsorDashboardPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-4xl font-black mb-1">{metrics?.totalDeals || 0}</div>
+                    <div className="text-4xl font-black mb-1">{metrics?.active_deals || 0}</div>
                     <p className="text-xs text-muted-foreground">
-                      {activeDeals.length} active, {(metrics?.totalDeals || 0) - activeDeals.length} closed/passed
+                      {activeDeals.length} active, {(metrics?.active_deals || 0) - activeDeals.length} closed/passed
                     </p>
                     <div className="mt-3 pt-3 border-t border-slate-200">
                       <Button size="sm" variant="outline" className="w-full" asChild>

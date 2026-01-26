@@ -55,7 +55,7 @@ import {
   Settings2,
   LogOut
 } from "lucide-react"
-import { useProperties, usePropertyMutations, type Property, type PropertyStatus } from "@/lib/supabase-hooks"
+import { useProperties, usePropertyMutations, type Property, type PropertyStatus, type PropertyType } from "@/lib/supabase-hooks"
 
 // Sidebar items for sponsor
 const sidebarItems = [
@@ -94,7 +94,7 @@ export default function PropertySearchPage() {
   const [yearBuiltMin, setYearBuiltMin] = useState("")
 
   // Supabase hooks for real data
-  const [filters, setFilters] = useState<{ status?: PropertyStatus; type?: string; search?: string }>({
+  const [filters, setFilters] = useState<{ status?: PropertyStatus; type?: PropertyType; search?: string }>({
     status: undefined,
     type: undefined,
     search: ''
@@ -104,10 +104,10 @@ export default function PropertySearchPage() {
 
   // Update filters when filter UI changes
   useEffect(() => {
-    const newFilters: { status?: PropertyStatus; type?: string; search?: string } = {}
+    const newFilters: { status?: PropertyStatus; type?: PropertyType; search?: string } = {}
 
     if (propertyType !== 'all') {
-      newFilters.type = propertyType.toUpperCase()
+      newFilters.type = propertyType.toUpperCase() as PropertyType
     }
 
     if (searchQuery) {

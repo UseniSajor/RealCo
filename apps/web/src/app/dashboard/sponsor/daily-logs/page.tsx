@@ -57,7 +57,7 @@ export default function SponsorDailyLogsPage() {
   const [editingLog, setEditingLog] = useState<DailyLog | null>(null)
   const [newLog, setNewLog] = useState({
     date: new Date().toISOString().split('T')[0],
-    weather: 'SUNNY' as 'SUNNY' | 'CLOUDY' | 'RAINY' | 'SNOWY' | 'PARTLY_CLOUDY' | 'WINDY',
+    weather: 'CLEAR' as 'CLEAR' | 'CLOUDY' | 'RAIN' | 'SNOW' | 'WIND' | 'EXTREME_HEAT' | 'EXTREME_COLD' | 'OTHER',
     temperature: 72,
     crewSize: 0,
     workPerformed: '',
@@ -78,20 +78,22 @@ export default function SponsorDailyLogsPage() {
 
   const getWeatherIcon = (weather: string | null | undefined) => {
     switch(weather) {
-      case 'SUNNY': return <Sun className="h-5 w-5 text-yellow-500" />
+      case 'CLEAR': return <Sun className="h-5 w-5 text-yellow-500" />
       case 'CLOUDY': return <Cloud className="h-5 w-5 text-slate-500" />
-      case 'RAINY': return <CloudRain className="h-5 w-5 text-blue-500" />
-      case 'SNOWY': return <Snowflake className="h-5 w-5 text-blue-300" />
+      case 'RAIN': return <CloudRain className="h-5 w-5 text-blue-500" />
+      case 'SNOW': return <Snowflake className="h-5 w-5 text-blue-300" />
+      case 'WIND': return <Cloud className="h-5 w-5 text-slate-400" />
       default: return <Sun className="h-5 w-5 text-yellow-500" />
     }
   }
 
   const getWeatherColor = (weather: string | null | undefined) => {
     switch(weather) {
-      case 'SUNNY': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-950 dark:text-yellow-200'
+      case 'CLEAR': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-950 dark:text-yellow-200'
       case 'CLOUDY': return 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200'
-      case 'RAINY': return 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200'
-      case 'SNOWY': return 'bg-blue-50 text-blue-700 dark:bg-blue-900 dark:text-blue-100'
+      case 'RAIN': return 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200'
+      case 'SNOW': return 'bg-blue-50 text-blue-700 dark:bg-blue-900 dark:text-blue-100'
+      case 'WIND': return 'bg-slate-100 text-slate-700'
       default: return 'bg-slate-100 text-slate-800'
     }
   }
@@ -134,7 +136,7 @@ export default function SponsorDailyLogsPage() {
     setEditingLog(null)
     setNewLog({
       date: new Date().toISOString().split('T')[0],
-      weather: 'SUNNY',
+      weather: 'CLEAR',
       temperature: 72,
       crewSize: 0,
       workPerformed: '',
@@ -150,7 +152,7 @@ export default function SponsorDailyLogsPage() {
     setEditingLog(log)
     setNewLog({
       date: log.log_date,
-      weather: (log.weather as any) || 'SUNNY',
+      weather: (log.weather as any) || 'CLEAR',
       temperature: log.temperature || 72,
       crewSize: getCrewSize(log),
       workPerformed: log.work_completed || '',
@@ -216,7 +218,7 @@ export default function SponsorDailyLogsPage() {
                   <option value="">-- Select a project --</option>
                   {projects?.map((project) => (
                     <option key={project.id} value={project.id}>
-                      {project.name}
+                      {project.project_code}
                     </option>
                   ))}
                 </select>
@@ -354,12 +356,14 @@ export default function SponsorDailyLogsPage() {
                         onChange={(e) => setNewLog({...newLog, weather: e.target.value as any})}
                         className="w-full px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-slate-800 text-sm"
                       >
-                        <option value="SUNNY">Sunny</option>
+                        <option value="CLEAR">Clear / Sunny</option>
                         <option value="CLOUDY">Cloudy</option>
-                        <option value="PARTLY_CLOUDY">Partly Cloudy</option>
-                        <option value="RAINY">Rainy</option>
-                        <option value="SNOWY">Snowy</option>
-                        <option value="WINDY">Windy</option>
+                        <option value="RAIN">Rain</option>
+                        <option value="SNOW">Snow</option>
+                        <option value="WIND">Windy</option>
+                        <option value="EXTREME_HEAT">Extreme Heat</option>
+                        <option value="EXTREME_COLD">Extreme Cold</option>
+                        <option value="OTHER">Other</option>
                       </select>
                     </div>
                     <div>

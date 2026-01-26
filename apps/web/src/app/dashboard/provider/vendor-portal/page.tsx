@@ -121,7 +121,7 @@ export default function VendorPortalPage() {
           <div className="max-w-7xl px-6 py-8 mx-auto">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-4">
-                <BackButton href="/dashboard/provider" variant="ghost" className="bg-white/10 hover:bg-white/20 text-white border-white/30" />
+                <BackButton href="/dashboard/provider" />
                 <div>
                   <h1 className="text-4xl font-black">Vendor Portal</h1>
                   <p className="text-white/80">Manage contracts and service agreements</p>

@@ -33,6 +33,35 @@ import { useAuth } from "@/lib/auth-context"
 import { useProjects, useTasks, useDailyLogs, type Project, type Task, type DailyLog } from "@/lib/supabase-hooks"
 import { useState } from "react"
 import { TaskModal } from "@/components/construction/TaskModal"
+import { type Task as TaskModalTask } from "@/lib/api/construction.api"
+
+// Convert snake_case Task from Supabase to camelCase TaskModalTask
+function toTaskModalTask(task: Task): TaskModalTask {
+  return {
+    id: task.id,
+    projectId: task.project_id,
+    parentId: task.parent_id || null,
+    title: task.title,
+    description: task.description || null,
+    status: task.status,
+    priority: task.priority,
+    percentComplete: task.percent_complete,
+    plannedStartDate: task.planned_start_date || null,
+    plannedEndDate: task.planned_end_date || null,
+    actualStartDate: task.actual_start_date || null,
+    actualEndDate: task.actual_end_date || null,
+    durationDays: task.duration_days || null,
+    predecessorTaskIds: task.predecessor_task_ids || [],
+    lagDays: task.lag_days || 0,
+    isCriticalPath: task.is_critical_path || false,
+    budgetAmount: task.budget_amount || null,
+    actualCost: task.actual_cost || null,
+    assignedToId: task.assigned_to_id || null,
+    attachmentUrls: task.attachment_urls || [],
+    createdAt: task.created_at,
+    updatedAt: task.updated_at,
+  }
+}
 import { DailyLogModal } from "@/components/construction/DailyLogModal"
 import { RFIModal } from "@/components/construction/RFIModal"
 import { SubmittalModal } from "@/components/construction/SubmittalModal"
@@ -637,7 +666,7 @@ export default function SponsorConstructionPage() {
         <>
           <TaskModal
             projectId={project.id}
-            task={selectedTask}
+            task={selectedTask ? toTaskModalTask(selectedTask) : null}
             open={taskModalOpen}
             onOpenChange={setTaskModalOpen}
             onSuccess={handleModalSuccess}
