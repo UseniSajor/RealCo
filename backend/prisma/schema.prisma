@@ -169,6 +169,7 @@ model Project {
   submittals            Submittal[]
   inspections           Inspection[]
   safetyIncidents       SafetyIncident[]
+  operatingStatements   OperatingStatement[]
 
   @@index([developmentProjectId])
   @@index([phase])
