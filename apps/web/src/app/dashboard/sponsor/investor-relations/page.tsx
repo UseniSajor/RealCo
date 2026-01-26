@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { BackButton } from "@/components/ui/back-button"
 import { useAuth } from "@/lib/auth-context"
+import { useOfferings, useInvestors, useDistributions, type Offering, type Investment, type Distribution } from "@/lib/supabase-hooks"
 import Link from "next/link"
 import {
   Building2,
@@ -46,135 +47,20 @@ import {
   Wallet,
   HandshakeIcon,
   Award,
-  Megaphone
+  Megaphone,
+  Loader2
 } from "lucide-react"
-
-// Mock investor data
-const MOCK_INVESTORS = [
-  {
-    id: "inv_001",
-    name: "Sarah Chen",
-    email: "sarah.chen@investment.com",
-    phone: "(512) 555-0123",
-    type: "Accredited Individual",
-    status: "active",
-    totalInvested: 2500000,
-    activeDeals: 3,
-    avgInvestment: 833333,
-    joinDate: "2022-03-15",
-    lastActivity: "2024-01-22",
-    commitments: [
-      { deal: "Sunset Apartments", amount: 500000, status: "funded" },
-      { deal: "Downtown Office Tower", amount: 1000000, status: "funded" },
-      { deal: "Riverside Condos", amount: 1000000, status: "committed" }
-    ],
-    tags: ["Repeat Investor", "High Net Worth", "Quick Decisions"],
-    relationship: "Strong"
-  },
-  {
-    id: "inv_002",
-    name: "Capital Partners Fund III",
-    email: "investments@capitalpartners.com",
-    phone: "(214) 555-0456",
-    type: "Family Office",
-    status: "active",
-    totalInvested: 8500000,
-    activeDeals: 5,
-    avgInvestment: 1700000,
-    joinDate: "2021-06-20",
-    lastActivity: "2024-01-23",
-    commitments: [
-      { deal: "Industrial Portfolio", amount: 3000000, status: "funded" },
-      { deal: "Sunset Apartments", amount: 2500000, status: "funded" },
-      { deal: "Retail Center", amount: 1500000, status: "committed" },
-      { deal: "Student Housing", amount: 1500000, status: "pending" }
-    ],
-    tags: ["Institutional", "Long-term Partner", "Multi-deal"],
-    relationship: "Strategic Partner"
-  },
-  {
-    id: "inv_003",
-    name: "Michael Thompson",
-    email: "m.thompson@gmail.com",
-    phone: "(713) 555-0789",
-    type: "Accredited Individual",
-    status: "pending",
-    totalInvested: 0,
-    activeDeals: 0,
-    avgInvestment: 0,
-    joinDate: "2024-01-15",
-    lastActivity: "2024-01-20",
-    commitments: [],
-    tags: ["New Lead", "Referral"],
-    relationship: "Prospect"
-  },
-  {
-    id: "inv_004",
-    name: "Horizon Wealth Advisors",
-    email: "deals@horizonwealth.com",
-    phone: "(210) 555-0321",
-    type: "RIA/Wealth Manager",
-    status: "active",
-    totalInvested: 4200000,
-    activeDeals: 4,
-    avgInvestment: 350000,
-    joinDate: "2022-09-10",
-    lastActivity: "2024-01-21",
-    commitments: [
-      { deal: "Sunset Apartments", amount: 1200000, status: "funded" },
-      { deal: "Downtown Office Tower", amount: 1500000, status: "funded" },
-      { deal: "Riverside Condos", amount: 750000, status: "committed" },
-      { deal: "Medical Office", amount: 750000, status: "pending" }
-    ],
-    tags: ["Channel Partner", "Multiple Clients", "Quarterly Updates"],
-    relationship: "Strong"
-  }
-]
-
-const MOCK_ACTIVE_RAISES = [
-  {
-    id: "raise_001",
-    dealName: "Sunset Apartments Phase 2",
-    location: "Austin, TX",
-    targetRaise: 10000000,
-    currentRaise: 8500000,
-    minInvestment: 100000,
-    investors: 127,
-    softCircle: 1200000,
-    hardClose: "2024-02-28",
-    status: "active",
-    projectedIRR: "18.5%",
-    equityMultiple: "2.1x",
-    holdPeriod: "4 years"
-  },
-  {
-    id: "raise_002",
-    dealName: "Riverside Condos",
-    location: "Portland, OR",
-    targetRaise: 8000000,
-    currentRaise: 6200000,
-    minInvestment: 50000,
-    investors: 89,
-    softCircle: 800000,
-    hardClose: "2024-03-15",
-    status: "active",
-    projectedIRR: "16.2%",
-    equityMultiple: "1.9x",
-    holdPeriod: "3 years"
-  }
-]
-
-const MOCK_COMMUNICATIONS = [
-  { id: "comm_001", type: "Quarterly Update", deal: "Downtown Office Tower", date: "2024-01-15", recipients: 183, openRate: "78%" },
-  { id: "comm_002", type: "Distribution Notice", deal: "Industrial Portfolio", date: "2024-01-10", recipients: 156, openRate: "92%" },
-  { id: "comm_003", type: "New Opportunity", deal: "Medical Office Building", date: "2024-01-08", recipients: 342, openRate: "65%" },
-  { id: "comm_004", type: "K-1 Notification", deal: "All Active Deals", date: "2024-01-05", recipients: 342, openRate: "88%" }
-]
 
 export default function InvestorRelationsPage() {
   const { user, logout } = useAuth()
   const [activeTab, setActiveTab] = useState<"investors" | "raises" | "communications" | "documents">("investors")
   const [investorFilter, setInvestorFilter] = useState("all")
+
+  // Supabase hooks
+  const { data: offerings, isLoading: offeringsLoading } = useOfferings()
+  const [selectedOfferingId, setSelectedOfferingId] = useState<string | null>(null)
+  const { data: investors, isLoading: investorsLoading } = useInvestors(selectedOfferingId || '')
+  const { data: distributions, isLoading: distributionsLoading } = useDistributions(selectedOfferingId || '')
 
   const sidebarItems = [
     { title: "Dashboard", href: "/dashboard/sponsor", icon: Home },
@@ -202,13 +88,34 @@ export default function InvestorRelationsPage() {
     }).format(value)
   }
 
+  // Filter investors based on status
   const filteredInvestors = investorFilter === "all"
-    ? MOCK_INVESTORS
-    : MOCK_INVESTORS.filter(inv => inv.status === investorFilter)
+    ? investors
+    : investors.filter(inv => inv.status.toLowerCase() === investorFilter)
 
-  const totalAUM = MOCK_INVESTORS.reduce((sum, inv) => sum + inv.totalInvested, 0)
-  const activeInvestors = MOCK_INVESTORS.filter(inv => inv.status === "active").length
-  const pendingCommitments = MOCK_ACTIVE_RAISES.reduce((sum, r) => sum + r.softCircle, 0)
+  // Calculate metrics from real data
+  const totalAUM = investors.reduce((sum, inv) => sum + (inv.investment_amount || 0), 0)
+  const activeInvestors = investors.filter(inv => inv.status === "ACTIVE").length
+  const activeOfferings = offerings.filter(o => o.status === "active")
+  const currentRaise = activeOfferings.reduce((sum, o) => sum + (o.current_raised || 0), 0)
+  const targetRaise = activeOfferings.reduce((sum, o) => sum + (o.target_raise || 0), 0)
+  const pendingCommitments = investors.filter(inv => inv.status === "PENDING").reduce((sum, inv) => sum + inv.investment_amount, 0)
+
+  // Loading component
+  const LoadingSpinner = () => (
+    <div className="flex items-center justify-center py-12">
+      <Loader2 className="h-8 w-8 animate-spin text-[#E07A47]" />
+      <span className="ml-2 text-muted-foreground">Loading...</span>
+    </div>
+  )
+
+  // Empty state component
+  const EmptyState = ({ message, icon: Icon }: { message: string; icon: React.ElementType }) => (
+    <div className="flex flex-col items-center justify-center py-12 text-center">
+      <Icon className="h-12 w-12 text-muted-foreground/50 mb-4" />
+      <p className="text-muted-foreground">{message}</p>
+    </div>
+  )
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -250,8 +157,14 @@ export default function InvestorRelationsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">Total AUM</p>
-                    <p className="text-2xl font-black">{formatCurrency(totalAUM)}</p>
-                    <p className="text-xs text-green-600">+12% YoY</p>
+                    {offeringsLoading || investorsLoading ? (
+                      <Loader2 className="h-6 w-6 animate-spin text-[#E07A47]" />
+                    ) : (
+                      <>
+                        <p className="text-2xl font-black">{formatCurrency(totalAUM)}</p>
+                        <p className="text-xs text-green-600">+12% YoY</p>
+                      </>
+                    )}
                   </div>
                   <Wallet className="h-8 w-8 text-[#E07A47]" />
                 </div>
@@ -263,8 +176,14 @@ export default function InvestorRelationsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">Active Investors</p>
-                    <p className="text-2xl font-black">{activeInvestors}</p>
-                    <p className="text-xs text-muted-foreground">of {MOCK_INVESTORS.length} total</p>
+                    {investorsLoading ? (
+                      <Loader2 className="h-6 w-6 animate-spin text-[#56CCF2]" />
+                    ) : (
+                      <>
+                        <p className="text-2xl font-black">{activeInvestors}</p>
+                        <p className="text-xs text-muted-foreground">of {investors.length} total</p>
+                      </>
+                    )}
                   </div>
                   <Users className="h-8 w-8 text-[#56CCF2]" />
                 </div>
@@ -276,8 +195,14 @@ export default function InvestorRelationsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">Current Raise</p>
-                    <p className="text-2xl font-black">{formatCurrency(14700000)}</p>
-                    <p className="text-xs text-muted-foreground">of $18M target</p>
+                    {offeringsLoading ? (
+                      <Loader2 className="h-6 w-6 animate-spin text-green-500" />
+                    ) : (
+                      <>
+                        <p className="text-2xl font-black">{formatCurrency(currentRaise)}</p>
+                        <p className="text-xs text-muted-foreground">of {formatCurrency(targetRaise)} target</p>
+                      </>
+                    )}
                   </div>
                   <TrendingUp className="h-8 w-8 text-green-500" />
                 </div>
@@ -288,9 +213,15 @@ export default function InvestorRelationsPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">Soft Circle</p>
-                    <p className="text-2xl font-black">{formatCurrency(pendingCommitments)}</p>
-                    <p className="text-xs text-yellow-600">Pending close</p>
+                    <p className="text-sm text-muted-foreground">Pending</p>
+                    {investorsLoading ? (
+                      <Loader2 className="h-6 w-6 animate-spin text-purple-500" />
+                    ) : (
+                      <>
+                        <p className="text-2xl font-black">{formatCurrency(pendingCommitments)}</p>
+                        <p className="text-xs text-yellow-600">Pending close</p>
+                      </>
+                    )}
                   </div>
                   <HandshakeIcon className="h-8 w-8 text-purple-500" />
                 </div>
@@ -301,9 +232,15 @@ export default function InvestorRelationsPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">Avg Repeat Rate</p>
-                    <p className="text-2xl font-black">72%</p>
-                    <p className="text-xs text-green-600">Industry leading</p>
+                    <p className="text-sm text-muted-foreground">Active Offerings</p>
+                    {offeringsLoading ? (
+                      <Loader2 className="h-6 w-6 animate-spin text-yellow-500" />
+                    ) : (
+                      <>
+                        <p className="text-2xl font-black">{activeOfferings.length}</p>
+                        <p className="text-xs text-green-600">Raising capital</p>
+                      </>
+                    )}
                   </div>
                   <Award className="h-8 w-8 text-yellow-500" />
                 </div>
@@ -337,9 +274,30 @@ export default function InvestorRelationsPage() {
           {/* Investor CRM Tab */}
           {activeTab === "investors" && (
             <div className="space-y-6">
+              {/* Offering Selector */}
+              <Card className="border-2 border-slate-200">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-4">
+                    <label className="text-sm font-semibold">Select Offering:</label>
+                    <select
+                      className="flex-1 p-2 border-2 rounded-lg"
+                      value={selectedOfferingId || ''}
+                      onChange={(e) => setSelectedOfferingId(e.target.value || null)}
+                    >
+                      <option value="">-- Select an offering to view investors --</option>
+                      {offerings.map((offering) => (
+                        <option key={offering.id} value={offering.id}>
+                          {offering.name} ({offering.status})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Filters */}
               <div className="flex gap-2">
-                {["all", "active", "pending"].map(filter => (
+                {["all", "active", "pending", "completed"].map(filter => (
                   <Button
                     key={filter}
                     size="sm"
@@ -355,119 +313,116 @@ export default function InvestorRelationsPage() {
               </div>
 
               {/* Investor Cards */}
-              <div className="space-y-4">
-                {filteredInvestors.map(investor => (
-                  <Card key={investor.id} className="border-4 border-slate-300 hover:border-[#E07A47] transition-all">
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-3">
-                            <div className="w-12 h-12 rounded-full bg-[#E07A47]/10 flex items-center justify-center">
-                              <Users className="h-6 w-6 text-[#E07A47]" />
-                            </div>
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <h3 className="font-black text-xl">{investor.name}</h3>
-                                <Badge className={investor.status === "active" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}>
-                                  {investor.status}
-                                </Badge>
-                                <Badge variant="outline" className="border-2">{investor.type}</Badge>
+              {!selectedOfferingId ? (
+                <EmptyState message="Select an offering to view its investors" icon={Users} />
+              ) : investorsLoading ? (
+                <LoadingSpinner />
+              ) : filteredInvestors.length === 0 ? (
+                <EmptyState message="No investors found for this offering" icon={Users} />
+              ) : (
+                <div className="space-y-4">
+                  {filteredInvestors.map(investor => (
+                    <Card key={investor.id} className="border-4 border-slate-300 hover:border-[#E07A47] transition-all">
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-3">
+                              <div className="w-12 h-12 rounded-full bg-[#E07A47]/10 flex items-center justify-center">
+                                <Users className="h-6 w-6 text-[#E07A47]" />
                               </div>
-                              <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
-                                <span className="flex items-center gap-1">
-                                  <Mail className="h-3 w-3" />
-                                  {investor.email}
-                                </span>
-                                <span className="flex items-center gap-1">
-                                  <Phone className="h-3 w-3" />
-                                  {investor.phone}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Tags */}
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {investor.tags.map((tag, idx) => (
-                              <Badge key={idx} className="bg-purple-100 text-purple-700">{tag}</Badge>
-                            ))}
-                            <Badge className={
-                              investor.relationship === "Strategic Partner" ? "bg-[#E07A47]/20 text-[#E07A47]" :
-                              investor.relationship === "Strong" ? "bg-green-100 text-green-700" :
-                              "bg-blue-100 text-blue-700"
-                            }>
-                              <Star className="h-3 w-3 mr-1" />
-                              {investor.relationship}
-                            </Badge>
-                          </div>
-
-                          {/* Metrics */}
-                          <div className="grid grid-cols-5 gap-4 p-4 bg-[#6b7280]/10 rounded-xl">
-                            <div>
-                              <p className="text-xs text-muted-foreground">Total Invested</p>
-                              <p className="font-black text-lg text-[#56CCF2]">{formatCurrency(investor.totalInvested)}</p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-muted-foreground">Active Deals</p>
-                              <p className="font-black text-lg">{investor.activeDeals}</p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-muted-foreground">Avg Investment</p>
-                              <p className="font-black text-lg">{investor.avgInvestment > 0 ? formatCurrency(investor.avgInvestment) : "N/A"}</p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-muted-foreground">Member Since</p>
-                              <p className="font-bold text-sm">{new Date(investor.joinDate).toLocaleDateString()}</p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-muted-foreground">Last Activity</p>
-                              <p className="font-bold text-sm">{new Date(investor.lastActivity).toLocaleDateString()}</p>
-                            </div>
-                          </div>
-
-                          {/* Commitments */}
-                          {investor.commitments.length > 0 && (
-                            <div className="mt-4">
-                              <p className="text-sm font-semibold mb-2">Active Commitments:</p>
-                              <div className="flex flex-wrap gap-2">
-                                {investor.commitments.map((c, idx) => (
-                                  <Badge key={idx} variant="outline" className={`border-2 ${
-                                    c.status === "funded" ? "border-green-500 text-green-700" :
-                                    c.status === "committed" ? "border-blue-500 text-blue-700" :
-                                    "border-yellow-500 text-yellow-700"
-                                  }`}>
-                                    {c.deal}: {formatCurrency(c.amount)} ({c.status})
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <h3 className="font-black text-xl">Investor #{investor.investor_id.slice(0, 8)}</h3>
+                                  <Badge className={
+                                    investor.status === "ACTIVE" ? "bg-green-100 text-green-700" :
+                                    investor.status === "PENDING" ? "bg-yellow-100 text-yellow-700" :
+                                    investor.status === "COMPLETED" ? "bg-blue-100 text-blue-700" :
+                                    "bg-red-100 text-red-700"
+                                  }>
+                                    {investor.status}
                                   </Badge>
-                                ))}
+                                </div>
+                                <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+                                  <span className="flex items-center gap-1">
+                                    <Calendar className="h-3 w-3" />
+                                    Joined {new Date(investor.created_at).toLocaleDateString()}
+                                  </span>
+                                  {investor.funded_at && (
+                                    <span className="flex items-center gap-1">
+                                      <CheckCircle2 className="h-3 w-3 text-green-500" />
+                                      Funded {new Date(investor.funded_at).toLocaleDateString()}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
                             </div>
-                          )}
-                        </div>
 
-                        {/* Actions */}
-                        <div className="flex flex-col gap-2 ml-4">
-                          <Button size="sm" className="bg-[#E07A47] hover:bg-[#D96835]">
-                            <Eye className="mr-2 h-4 w-4" />
-                            View Profile
-                          </Button>
-                          <Button size="sm" variant="outline" className="border-2">
-                            <Mail className="mr-2 h-4 w-4" />
-                            Email
-                          </Button>
-                          <Button size="sm" variant="outline" className="border-2">
-                            <Phone className="mr-2 h-4 w-4" />
-                            Call
-                          </Button>
-                          <Button size="sm" variant="outline" className="border-2 border-[#56CCF2] text-[#56CCF2]">
-                            <Plus className="mr-2 h-4 w-4" />
-                            New Deal
-                          </Button>
+                            {/* Metrics */}
+                            <div className="grid grid-cols-5 gap-4 p-4 bg-[#6b7280]/10 rounded-xl">
+                              <div>
+                                <p className="text-xs text-muted-foreground">Investment Amount</p>
+                                <p className="font-black text-lg text-[#56CCF2]">{formatCurrency(investor.investment_amount)}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-muted-foreground">Current Balance</p>
+                                <p className="font-black text-lg">{formatCurrency(investor.current_balance)}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-muted-foreground">Returned Capital</p>
+                                <p className="font-black text-lg">{formatCurrency(investor.returned_capital)}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-muted-foreground">Preferred Return</p>
+                                <p className="font-bold text-sm">{(investor.preferred_return_rate * 100).toFixed(1)}%</p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-muted-foreground">Ownership</p>
+                                <p className="font-bold text-sm">{investor.ownership_percentage ? `${(investor.ownership_percentage * 100).toFixed(2)}%` : "N/A"}</p>
+                              </div>
+                            </div>
+
+                            {/* Distribution Info */}
+                            <div className="mt-4 grid grid-cols-3 gap-4">
+                              <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                                <p className="text-xs text-muted-foreground">Preferred Return Paid</p>
+                                <p className="font-bold text-green-700">{formatCurrency(investor.preferred_return_paid)}</p>
+                              </div>
+                              <div className="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                                <p className="text-xs text-muted-foreground">Preferred Return Owed</p>
+                                <p className="font-bold text-yellow-700">{formatCurrency(investor.preferred_return_owed)}</p>
+                              </div>
+                              <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                <p className="text-xs text-muted-foreground">Profits Paid</p>
+                                <p className="font-bold text-blue-700">{formatCurrency(investor.profits_paid)}</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex flex-col gap-2 ml-4">
+                            <Button size="sm" className="bg-[#E07A47] hover:bg-[#D96835]">
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Profile
+                            </Button>
+                            <Button size="sm" variant="outline" className="border-2">
+                              <Mail className="mr-2 h-4 w-4" />
+                              Email
+                            </Button>
+                            <Button size="sm" variant="outline" className="border-2">
+                              <FileText className="mr-2 h-4 w-4" />
+                              Documents
+                            </Button>
+                            <Button size="sm" variant="outline" className="border-2 border-[#56CCF2] text-[#56CCF2]">
+                              <DollarSign className="mr-2 h-4 w-4" />
+                              Distribution
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -482,107 +437,119 @@ export default function InvestorRelationsPage() {
                 </Button>
               </div>
 
-              <div className="grid grid-cols-1 gap-6">
-                {MOCK_ACTIVE_RAISES.map(raise => {
-                  const progress = (raise.currentRaise / raise.targetRaise) * 100
-                  return (
-                    <Card key={raise.id} className="border-4 border-[#E07A47]">
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between mb-4">
-                          <div>
-                            <div className="flex items-center gap-3 mb-2">
-                              <h3 className="text-2xl font-black">{raise.dealName}</h3>
-                              <Badge className="bg-green-100 text-green-700 border-2 border-green-300">
-                                Active Raise
-                              </Badge>
+              {offeringsLoading ? (
+                <LoadingSpinner />
+              ) : activeOfferings.length === 0 ? (
+                <EmptyState message="No active raises found. Create a new offering to start raising capital." icon={TrendingUp} />
+              ) : (
+                <div className="grid grid-cols-1 gap-6">
+                  {activeOfferings.map(offering => {
+                    const progress = offering.target_raise ? ((offering.current_raised || 0) / offering.target_raise) * 100 : 0
+                    return (
+                      <Card key={offering.id} className="border-4 border-[#E07A47]">
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between mb-4">
+                            <div>
+                              <div className="flex items-center gap-3 mb-2">
+                                <h3 className="text-2xl font-black">{offering.name}</h3>
+                                <Badge className="bg-green-100 text-green-700 border-2 border-green-300">
+                                  Active Raise
+                                </Badge>
+                                <Badge variant="outline" className="border-2">
+                                  {offering.regulation_mode.toUpperCase()}
+                                </Badge>
+                              </div>
+                              {offering.location && (
+                                <p className="text-muted-foreground flex items-center gap-2">
+                                  <MapPin className="h-4 w-4" />
+                                  {offering.location}
+                                </p>
+                              )}
                             </div>
-                            <p className="text-muted-foreground flex items-center gap-2">
-                              <MapPin className="h-4 w-4" />
-                              {raise.location}
-                            </p>
+                            <div className="text-right">
+                              <p className="text-sm text-muted-foreground">Asset Type</p>
+                              <p className="font-bold text-lg text-[#E07A47]">{offering.asset_type || "Real Estate"}</p>
+                            </div>
                           </div>
-                          <div className="text-right">
-                            <p className="text-sm text-muted-foreground">Hard Close Date</p>
-                            <p className="font-bold text-lg text-[#E07A47]">{new Date(raise.hardClose).toLocaleDateString()}</p>
-                          </div>
-                        </div>
 
-                        {/* Progress */}
-                        <div className="mb-6">
-                          <div className="flex justify-between mb-2">
-                            <span className="font-black text-2xl text-[#56CCF2]">{formatCurrency(raise.currentRaise)}</span>
-                            <span className="text-muted-foreground">of {formatCurrency(raise.targetRaise)}</span>
+                          {/* Progress */}
+                          <div className="mb-6">
+                            <div className="flex justify-between mb-2">
+                              <span className="font-black text-2xl text-[#56CCF2]">{formatCurrency(offering.current_raised || 0)}</span>
+                              <span className="text-muted-foreground">of {formatCurrency(offering.target_raise || 0)}</span>
+                            </div>
+                            <div className="h-4 bg-slate-200 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-gradient-to-r from-[#56CCF2] to-[#E07A47]"
+                                style={{ width: `${Math.min(progress, 100)}%` }}
+                              />
+                            </div>
+                            <div className="flex justify-between mt-2 text-sm">
+                              <span className="text-green-600 font-semibold">{progress.toFixed(0)}% Funded</span>
+                              <span className="text-muted-foreground">
+                                {formatCurrency((offering.target_raise || 0) - (offering.current_raised || 0))} remaining
+                              </span>
+                            </div>
                           </div>
-                          <div className="h-4 bg-slate-200 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-gradient-to-r from-[#56CCF2] to-[#E07A47]"
-                              style={{ width: `${progress}%` }}
-                            />
-                          </div>
-                          <div className="flex justify-between mt-2 text-sm">
-                            <span className="text-green-600 font-semibold">{progress.toFixed(0)}% Funded</span>
-                            <span className="text-yellow-600">Soft Circle: {formatCurrency(raise.softCircle)}</span>
-                          </div>
-                        </div>
 
-                        {/* Metrics Grid */}
-                        <div className="grid grid-cols-6 gap-4 p-4 bg-[#6b7280]/10 rounded-xl mb-4">
-                          <div className="text-center">
-                            <p className="text-xs text-muted-foreground">Investors</p>
-                            <p className="font-black text-xl">{raise.investors}</p>
+                          {/* Metrics Grid */}
+                          <div className="grid grid-cols-5 gap-4 p-4 bg-[#6b7280]/10 rounded-xl mb-4">
+                            <div className="text-center">
+                              <p className="text-xs text-muted-foreground">Investors</p>
+                              <p className="font-black text-xl">{offering.investor_count || 0}</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-xs text-muted-foreground">Min Investment</p>
+                              <p className="font-black text-xl">{formatCurrency(offering.minimum_investment || 0)}</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-xs text-muted-foreground">Target Return</p>
+                              <p className="font-black text-xl text-green-600">{offering.target_return || "N/A"}</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-xs text-muted-foreground">Hold Period</p>
+                              <p className="font-black text-xl">{offering.hold_period || "N/A"}</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-xs text-muted-foreground">Remaining</p>
+                              <p className="font-black text-xl text-[#E07A47]">{formatCurrency((offering.target_raise || 0) - (offering.current_raised || 0))}</p>
+                            </div>
                           </div>
-                          <div className="text-center">
-                            <p className="text-xs text-muted-foreground">Min Investment</p>
-                            <p className="font-black text-xl">{formatCurrency(raise.minInvestment)}</p>
-                          </div>
-                          <div className="text-center">
-                            <p className="text-xs text-muted-foreground">Projected IRR</p>
-                            <p className="font-black text-xl text-green-600">{raise.projectedIRR}</p>
-                          </div>
-                          <div className="text-center">
-                            <p className="text-xs text-muted-foreground">Equity Multiple</p>
-                            <p className="font-black text-xl text-[#56CCF2]">{raise.equityMultiple}</p>
-                          </div>
-                          <div className="text-center">
-                            <p className="text-xs text-muted-foreground">Hold Period</p>
-                            <p className="font-black text-xl">{raise.holdPeriod}</p>
-                          </div>
-                          <div className="text-center">
-                            <p className="text-xs text-muted-foreground">Remaining</p>
-                            <p className="font-black text-xl text-[#E07A47]">{formatCurrency(raise.targetRaise - raise.currentRaise)}</p>
-                          </div>
-                        </div>
 
-                        {/* Actions */}
-                        <div className="flex gap-3">
-                          <Button className="bg-[#56CCF2] hover:bg-[#56CCF2]/90">
-                            <Eye className="mr-2 h-4 w-4" />
-                            View Details
-                          </Button>
-                          <Button variant="outline" className="border-2 border-[#E07A47]">
-                            <Send className="mr-2 h-4 w-4" />
-                            Send to Investors
-                          </Button>
-                          <Button variant="outline" className="border-2">
-                            <FileText className="mr-2 h-4 w-4" />
-                            Investment Memo
-                          </Button>
-                          <Button variant="outline" className="border-2">
-                            <Video className="mr-2 h-4 w-4" />
-                            Schedule Webinar
-                          </Button>
-                          <Button variant="outline" className="border-2">
-                            <FileSpreadsheet className="mr-2 h-4 w-4" />
-                            Cap Table
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )
-                })}
-              </div>
+                          {/* Actions */}
+                          <div className="flex gap-3">
+                            <Button
+                              className="bg-[#56CCF2] hover:bg-[#56CCF2]/90"
+                              onClick={() => setSelectedOfferingId(offering.id)}
+                            >
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Investors
+                            </Button>
+                            <Button variant="outline" className="border-2 border-[#E07A47]">
+                              <Send className="mr-2 h-4 w-4" />
+                              Send to Investors
+                            </Button>
+                            <Button variant="outline" className="border-2">
+                              <FileText className="mr-2 h-4 w-4" />
+                              Investment Memo
+                            </Button>
+                            <Button variant="outline" className="border-2">
+                              <Video className="mr-2 h-4 w-4" />
+                              Schedule Webinar
+                            </Button>
+                            <Button variant="outline" className="border-2">
+                              <FileSpreadsheet className="mr-2 h-4 w-4" />
+                              Cap Table
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )
+                  })}
+                </div>
+              )}
 
-              {/* Raise Pipeline */}
+              {/* All Offerings Summary */}
               <Card className="border-4 border-[#56CCF2]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -591,28 +558,40 @@ export default function InvestorRelationsPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-4 gap-6">
-                    <div className="text-center p-4 rounded-xl bg-purple-50 border-2 border-purple-200">
-                      <p className="text-sm text-muted-foreground mb-1">In Preparation</p>
-                      <p className="text-2xl font-black">2</p>
-                      <p className="text-sm text-purple-600">$24M Total</p>
+                  {offeringsLoading ? (
+                    <LoadingSpinner />
+                  ) : (
+                    <div className="grid grid-cols-4 gap-6">
+                      <div className="text-center p-4 rounded-xl bg-purple-50 border-2 border-purple-200">
+                        <p className="text-sm text-muted-foreground mb-1">Draft</p>
+                        <p className="text-2xl font-black">{offerings.filter(o => o.status === "draft").length}</p>
+                        <p className="text-sm text-purple-600">
+                          {formatCurrency(offerings.filter(o => o.status === "draft").reduce((sum, o) => sum + (o.target_raise || 0), 0))}
+                        </p>
+                      </div>
+                      <div className="text-center p-4 rounded-xl bg-green-50 border-2 border-green-200">
+                        <p className="text-sm text-muted-foreground mb-1">Active</p>
+                        <p className="text-2xl font-black">{offerings.filter(o => o.status === "active").length}</p>
+                        <p className="text-sm text-green-600">
+                          {formatCurrency(offerings.filter(o => o.status === "active").reduce((sum, o) => sum + (o.target_raise || 0), 0))}
+                        </p>
+                      </div>
+                      <div className="text-center p-4 rounded-xl bg-blue-50 border-2 border-blue-200">
+                        <p className="text-sm text-muted-foreground mb-1">Funded</p>
+                        <p className="text-2xl font-black">{offerings.filter(o => o.status === "funded").length}</p>
+                        <p className="text-sm text-blue-600">
+                          {formatCurrency(offerings.filter(o => o.status === "funded").reduce((sum, o) => sum + (o.current_raised || 0), 0))}
+                        </p>
+                      </div>
+                      <div className="text-center p-4 rounded-xl bg-slate-50 border-2 border-slate-200">
+                        <p className="text-sm text-muted-foreground mb-1">Closed</p>
+                        <p className="text-2xl font-black">{offerings.filter(o => o.status === "closed").length}</p>
+                        <p className="text-sm text-slate-600">
+                          {formatCurrency(offerings.filter(o => o.status === "closed").reduce((sum, o) => sum + (o.current_raised || 0), 0))}
+                        </p>
+                      </div>
                     </div>
-                    <div className="text-center p-4 rounded-xl bg-yellow-50 border-2 border-yellow-200">
-                      <p className="text-sm text-muted-foreground mb-1">Soft Launch</p>
-                      <p className="text-2xl font-black">1</p>
-                      <p className="text-sm text-yellow-600">$12M Total</p>
-                    </div>
-                    <div className="text-center p-4 rounded-xl bg-green-50 border-2 border-green-200">
-                      <p className="text-sm text-muted-foreground mb-1">Active Raise</p>
-                      <p className="text-2xl font-black">2</p>
-                      <p className="text-sm text-green-600">$18M Total</p>
-                    </div>
-                    <div className="text-center p-4 rounded-xl bg-blue-50 border-2 border-blue-200">
-                      <p className="text-sm text-muted-foreground mb-1">Closing</p>
-                      <p className="text-2xl font-black">1</p>
-                      <p className="text-sm text-blue-600">$8M Total</p>
-                    </div>
-                  </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -626,7 +605,7 @@ export default function InvestorRelationsPage() {
                 <div className="flex gap-3">
                   <Button variant="outline" className="border-2">
                     <Bell className="mr-2 h-4 w-4" />
-                    Scheduled (3)
+                    Scheduled
                   </Button>
                   <Button className="bg-[#E07A47] hover:bg-[#D96835]">
                     <Megaphone className="mr-2 h-4 w-4" />
@@ -656,44 +635,82 @@ export default function InvestorRelationsPage() {
                 })}
               </div>
 
-              {/* Recent Communications */}
+              {/* Recent Distributions as Communications */}
               <Card className="border-4 border-slate-300">
                 <CardHeader>
-                  <CardTitle>Recent Communications</CardTitle>
-                  <CardDescription>Track delivery and engagement</CardDescription>
+                  <CardTitle>Recent Distributions</CardTitle>
+                  <CardDescription>Track distribution notices and payments</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    {MOCK_COMMUNICATIONS.map(comm => (
-                      <div key={comm.id} className="flex items-center justify-between p-4 rounded-xl bg-[#6b7280]/10 border-2 border-slate-200 hover:border-[#E07A47] transition-all">
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-full bg-[#56CCF2]/10 flex items-center justify-center">
-                            <Send className="h-5 w-5 text-[#56CCF2]" />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-bold">{comm.type}</span>
-                              <Badge variant="outline">{comm.deal}</Badge>
-                            </div>
-                            <p className="text-sm text-muted-foreground">{new Date(comm.date).toLocaleDateString()}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-6">
-                          <div className="text-center">
-                            <p className="text-sm text-muted-foreground">Recipients</p>
-                            <p className="font-bold">{comm.recipients}</p>
-                          </div>
-                          <div className="text-center">
-                            <p className="text-sm text-muted-foreground">Open Rate</p>
-                            <p className="font-bold text-green-600">{comm.openRate}</p>
-                          </div>
-                          <Button size="sm" variant="outline">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
+                  {/* Offering Selector for Distributions */}
+                  <div className="mb-4">
+                    <select
+                      className="w-full p-2 border-2 rounded-lg"
+                      value={selectedOfferingId || ''}
+                      onChange={(e) => setSelectedOfferingId(e.target.value || null)}
+                    >
+                      <option value="">-- Select an offering to view distributions --</option>
+                      {offerings.map((offering) => (
+                        <option key={offering.id} value={offering.id}>
+                          {offering.name} ({offering.status})
+                        </option>
+                      ))}
+                    </select>
                   </div>
+
+                  {!selectedOfferingId ? (
+                    <EmptyState message="Select an offering to view its distributions" icon={DollarSign} />
+                  ) : distributionsLoading ? (
+                    <LoadingSpinner />
+                  ) : distributions.length === 0 ? (
+                    <EmptyState message="No distributions found for this offering" icon={DollarSign} />
+                  ) : (
+                    <div className="space-y-3">
+                      {distributions.map(dist => (
+                        <div key={dist.id} className="flex items-center justify-between p-4 rounded-xl bg-[#6b7280]/10 border-2 border-slate-200 hover:border-[#E07A47] transition-all">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-full bg-[#56CCF2]/10 flex items-center justify-center">
+                              <DollarSign className="h-5 w-5 text-[#56CCF2]" />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold">{dist.distribution_type.replace(/_/g, ' ')}</span>
+                                <Badge className={
+                                  dist.status === "COMPLETED" ? "bg-green-100 text-green-700" :
+                                  dist.status === "PROCESSING" ? "bg-blue-100 text-blue-700" :
+                                  dist.status === "PENDING_APPROVAL" ? "bg-yellow-100 text-yellow-700" :
+                                  "bg-slate-100 text-slate-700"
+                                }>
+                                  {dist.status}
+                                </Badge>
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                {new Date(dist.distribution_date).toLocaleDateString()}
+                                {dist.period_start && dist.period_end && (
+                                  <span className="ml-2">
+                                    (Period: {new Date(dist.period_start).toLocaleDateString()} - {new Date(dist.period_end).toLocaleDateString()})
+                                  </span>
+                                )}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-6">
+                            <div className="text-center">
+                              <p className="text-sm text-muted-foreground">Amount</p>
+                              <p className="font-bold text-green-600">{formatCurrency(dist.total_amount)}</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-sm text-muted-foreground">Notified</p>
+                              <p className="font-bold">{dist.notification_sent ? "Yes" : "No"}</p>
+                            </div>
+                            <Button size="sm" variant="outline">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -713,12 +730,12 @@ export default function InvestorRelationsPage() {
               <div className="grid grid-cols-3 gap-6">
                 {/* Document Categories */}
                 {[
-                  { title: "Investment Memos", count: 8, icon: FileText, color: "border-[#E07A47]" },
-                  { title: "PPM Documents", count: 6, icon: Briefcase, color: "border-purple-500" },
-                  { title: "Subscription Docs", count: 24, icon: CheckCircle2, color: "border-green-500" },
-                  { title: "Quarterly Reports", count: 16, icon: PieChart, color: "border-blue-500" },
-                  { title: "Tax Documents", count: 12, icon: FileSpreadsheet, color: "border-yellow-500" },
-                  { title: "Legal Agreements", count: 18, icon: FileText, color: "border-slate-500" }
+                  { title: "Investment Memos", count: offerings.length, icon: FileText, color: "border-[#E07A47]" },
+                  { title: "PPM Documents", count: offerings.filter(o => o.status !== "draft").length, icon: Briefcase, color: "border-purple-500" },
+                  { title: "Subscription Docs", count: investors.length, icon: CheckCircle2, color: "border-green-500" },
+                  { title: "Quarterly Reports", count: distributions.length, icon: PieChart, color: "border-blue-500" },
+                  { title: "Tax Documents", count: Math.floor(investors.length / 2), icon: FileSpreadsheet, color: "border-yellow-500" },
+                  { title: "Legal Agreements", count: offerings.length * 2, icon: FileText, color: "border-slate-500" }
                 ].map((category, i) => {
                   const Icon = category.icon
                   return (
@@ -751,8 +768,10 @@ export default function InvestorRelationsPage() {
                 <CardContent>
                   <div className="flex items-center justify-between p-4 bg-[#56CCF2]/10 rounded-xl">
                     <div>
-                      <p className="font-bold">Active Data Rooms: 3</p>
-                      <p className="text-sm text-muted-foreground">Sunset Apartments, Riverside Condos, Industrial Portfolio</p>
+                      <p className="font-bold">Active Data Rooms: {activeOfferings.length}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {activeOfferings.map(o => o.name).join(", ") || "No active offerings"}
+                      </p>
                     </div>
                     <div className="flex gap-3">
                       <Button variant="outline" className="border-2">
