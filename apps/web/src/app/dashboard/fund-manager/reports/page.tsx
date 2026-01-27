@@ -15,9 +15,32 @@ import {
   Send,
   Eye,
   CheckCircle2,
+  Home,
+  Building2,
+  DollarSign,
+  Receipt,
+  Calculator,
+  BarChart3,
+  MessageSquare,
+  Building,
 } from "lucide-react"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
+import { useAuth } from "@/lib/auth-context"
+
+const sidebarItems = [
+  { title: "Dashboard", href: "/dashboard/fund-manager", icon: Home },
+  { title: "Properties", href: "/dashboard/fund-manager/properties", icon: Building2 },
+  { title: "Investors", href: "/dashboard/fund-manager/investors", icon: Users },
+  { title: "Capital Accounts", href: "/dashboard/fund-manager/capital-accounts", icon: DollarSign },
+  { title: "Distributions", href: "/dashboard/fund-manager/distributions", icon: Receipt },
+  { title: "Financials", href: "/dashboard/fund-manager/financials", icon: Calculator },
+  { title: "Analytics", href: "/dashboard/fund-manager/analytics", icon: BarChart3 },
+  { title: "Reports", href: "/dashboard/fund-manager/reports", icon: FileText },
+  { title: "Communications", href: "/dashboard/fund-manager/communications", icon: MessageSquare },
+]
 
 export default function ReportsPage() {
+  const { user, logout } = useAuth()
   const [typeFilter, setTypeFilter] = useState<'all' | 'quarterly' | 'annual'>('all')
 
   // Mock investor reports
@@ -128,7 +151,15 @@ export default function ReportsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="flex min-h-screen bg-white">
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Fund Manager Portal"
+        roleIcon={Building}
+        userName={user?.name || "Fund Manager"}
+        onLogout={logout}
+      />
+      <main className="flex-1 ml-24 bg-white">
       {/* Header */}
       <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
         <div className="container max-w-7xl px-6 py-8 mx-auto">
@@ -216,13 +247,13 @@ export default function ReportsPage() {
         {/* Reports Grid */}
         <div className="grid gap-6">
           {filteredReports.map((report) => (
-            <Card key={report.id} className="border-4 border-[#E07A47] dark:bg-[#6b7280] hover:shadow-lg transition-shadow">
+            <Card key={report.id} className="border-4 border-[#E07A47] bg-white hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <div className="grid lg:grid-cols-12 gap-6">
                   {/* Report Info */}
                   <div className="lg:col-span-4">
                     <div className="mb-4">
-                      <h3 className="text-2xl font-black mb-2 dark:text-white">{report.offering}</h3>
+                      <h3 className="text-2xl font-black mb-2 text-slate-900">{report.offering}</h3>
                       <div className="flex gap-2 mb-3">
                         <Badge className="bg-[#56CCF2] text-white">
                           {report.reportType} Report
@@ -236,21 +267,21 @@ export default function ReportsPage() {
 
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Period End:</span>
-                        <span className="font-bold dark:text-white">{new Date(report.quarterEnd).toLocaleDateString()}</span>
+                        <span className="text-muted-foreground text-slate-900/70">Period End:</span>
+                        <span className="font-bold text-slate-900">{new Date(report.quarterEnd).toLocaleDateString()}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Investors:</span>
-                        <span className="font-bold dark:text-white">{report.investorCount}</span>
+                        <span className="text-muted-foreground text-slate-900/70">Investors:</span>
+                        <span className="font-bold text-slate-900">{report.investorCount}</span>
                       </div>
                       {report.sentDate && (
                         <>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground dark:text-white/70">Sent Date:</span>
+                            <span className="text-muted-foreground text-slate-900/70">Sent Date:</span>
                             <span className="font-bold text-green-600">{new Date(report.sentDate).toLocaleDateString()}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground dark:text-white/70">Open Rate:</span>
+                            <span className="text-muted-foreground text-slate-900/70">Open Rate:</span>
                             <span className="font-bold text-blue-600">{report.openRate}%</span>
                           </div>
                         </>
@@ -260,33 +291,33 @@ export default function ReportsPage() {
 
                   {/* Performance Summary */}
                   <div className="lg:col-span-4 grid grid-cols-2 gap-4">
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Period Return</p>
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                      <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">Period Return</p>
                       <p className="text-2xl font-black text-[#56CCF2]">{report.performance.periodReturn}%</p>
                     </div>
 
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Inception IRR</p>
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                      <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">Inception IRR</p>
                       <p className="text-2xl font-black text-green-600">{report.performance.inceptionIRR}%</p>
                     </div>
 
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Occupancy</p>
-                      <p className="text-2xl font-black dark:text-white">{report.performance.occupancy}%</p>
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                      <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">Occupancy</p>
+                      <p className="text-2xl font-black text-slate-900">{report.performance.occupancy}%</p>
                     </div>
 
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Period NOI</p>
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                      <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">Period NOI</p>
                       <p className="text-xl font-black text-[#E07A47]">${(report.performance.noi / 1000).toFixed(0)}K</p>
                     </div>
 
-                    <div className="col-span-2 bg-slate-50 dark:bg-slate-700 rounded-lg p-3">
-                      <p className="text-xs font-bold text-muted-foreground dark:text-white/70 mb-2">Report Highlights:</p>
+                    <div className="col-span-2 bg-slate-50 bg-slate-50 rounded-lg p-3">
+                      <p className="text-xs font-bold text-muted-foreground text-slate-900/70 mb-2">Report Highlights:</p>
                       <ul className="space-y-1">
                         {report.highlights.map((highlight, i) => (
                           <li key={i} className="flex items-start gap-2">
                             <CheckCircle2 className="h-3 w-3 text-green-600 shrink-0 mt-0.5" />
-                            <span className="text-xs dark:text-white">{highlight}</span>
+                            <span className="text-xs text-slate-900">{highlight}</span>
                           </li>
                         ))}
                       </ul>
@@ -296,24 +327,24 @@ export default function ReportsPage() {
                   {/* Actions */}
                   <div className="lg:col-span-4 flex flex-col justify-between">
                     {report.status === 'draft' && (
-                      <div className="bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-400 rounded-lg p-3 mb-4">
-                        <p className="text-xs font-semibold text-yellow-800 dark:text-yellow-200">
+                      <div className="bg-yellow-50 bg-yellow-50 border-2 border-yellow-400 rounded-lg p-3 mb-4">
+                        <p className="text-xs font-semibold text-yellow-800 text-yellow-800">
                           📝 Draft report ready for review
                         </p>
                       </div>
                     )}
 
                     {report.status === 'sent' && (
-                      <div className="bg-green-50 dark:bg-green-900/20 border-2 border-green-500 rounded-lg p-3 mb-4">
+                      <div className="bg-green-50 bg-green-50 border-2 border-green-500 rounded-lg p-3 mb-4">
                         <div className="flex items-center gap-2 mb-2">
                           <CheckCircle2 className="h-4 w-4 text-green-600" />
-                          <p className="text-xs font-semibold text-green-800 dark:text-green-200">
+                          <p className="text-xs font-semibold text-green-800 text-green-800">
                             Sent to {report.investorCount} investors
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
                           <Eye className="h-3 w-3 text-blue-600" />
-                          <p className="text-xs text-muted-foreground dark:text-white/70">
+                          <p className="text-xs text-muted-foreground text-slate-900/70">
                             {Math.round((report.openRate / 100) * report.investorCount)} opened ({report.openRate}%)
                           </p>
                         </div>
@@ -328,7 +359,7 @@ export default function ReportsPage() {
                         </Link>
                       </Button>
 
-                      <Button variant="outline" className="w-full border-2 border-slate-300 dark:border-slate-600">
+                      <Button variant="outline" className="w-full border-2 border-slate-300 border-slate-200">
                         <Download className="h-4 w-4 mr-2" />
                         Download PDF
                       </Button>
@@ -365,15 +396,15 @@ export default function ReportsPage() {
         </div>
 
         {/* Report Template Info */}
-        <Card className="border-4 border-[#56CCF2] dark:bg-[#6b7280] mt-8">
+        <Card className="border-4 border-[#56CCF2] bg-white mt-8">
           <CardHeader>
-            <CardTitle className="text-2xl dark:text-white">Quarterly Report Sections</CardTitle>
+            <CardTitle className="text-2xl text-slate-900">Quarterly Report Sections</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-3 gap-6">
               <div>
-                <h4 className="font-bold mb-2 dark:text-white">Performance Summary</h4>
-                <ul className="text-sm text-muted-foreground dark:text-white/70 space-y-1">
+                <h4 className="font-bold mb-2 text-slate-900">Performance Summary</h4>
+                <ul className="text-sm text-muted-foreground text-slate-900/70 space-y-1">
                   <li>• Period & inception returns</li>
                   <li>• Occupancy trends</li>
                   <li>• NOI performance</li>
@@ -381,8 +412,8 @@ export default function ReportsPage() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-bold mb-2 dark:text-white">Property Updates</h4>
-                <ul className="text-sm text-muted-foreground dark:text-white/70 space-y-1">
+                <h4 className="font-bold mb-2 text-slate-900">Property Updates</h4>
+                <ul className="text-sm text-muted-foreground text-slate-900/70 space-y-1">
                   <li>• Leasing activity</li>
                   <li>• Capital improvements</li>
                   <li>• Maintenance highlights</li>
@@ -390,8 +421,8 @@ export default function ReportsPage() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-bold mb-2 dark:text-white">Financial Details</h4>
-                <ul className="text-sm text-muted-foreground dark:text-white/70 space-y-1">
+                <h4 className="font-bold mb-2 text-slate-900">Financial Details</h4>
+                <ul className="text-sm text-muted-foreground text-slate-900/70 space-y-1">
                   <li>• Operating statement</li>
                   <li>• Distribution details</li>
                   <li>• Budget variance analysis</li>
@@ -402,6 +433,7 @@ export default function ReportsPage() {
           </CardContent>
         </Card>
       </div>
+      </main>
     </div>
   )
 }

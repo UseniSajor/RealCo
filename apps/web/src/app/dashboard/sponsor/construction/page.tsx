@@ -1,5 +1,6 @@
 "use client"
 
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -19,23 +20,83 @@ import {
   CheckCircle,
   Clock,
   XCircle,
+  Building2,
+  Search,
+  UserPlus,
+  MapPin,
+  Target,
+  Calculator,
+  BarChart3,
+  TrendingUp,
 } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
-import { constructionAPI, type ConstructionProject, type Task } from "@/lib/api/construction.api"
-import { useEffect, useState } from "react"
+import { useProjects, useTasks, useDailyLogs, type Project, type Task, type DailyLog } from "@/lib/supabase-hooks"
+import { useState } from "react"
 import { TaskModal } from "@/components/construction/TaskModal"
+import { type Task as TaskModalTask } from "@/lib/api/construction.api"
+
+// Convert snake_case Task from Supabase to camelCase TaskModalTask
+function toTaskModalTask(task: Task): TaskModalTask {
+  return {
+    id: task.id,
+    projectId: task.project_id,
+    parentId: task.parent_id || null,
+    title: task.title,
+    description: task.description || null,
+    status: task.status,
+    priority: task.priority,
+    percentComplete: task.percent_complete,
+    plannedStartDate: task.planned_start_date || null,
+    plannedEndDate: task.planned_end_date || null,
+    actualStartDate: task.actual_start_date || null,
+    actualEndDate: task.actual_end_date || null,
+    durationDays: task.duration_days || null,
+    predecessorTaskIds: task.predecessor_task_ids || [],
+    lagDays: task.lag_days || 0,
+    isCriticalPath: task.is_critical_path || false,
+    budgetAmount: task.budget_amount || null,
+    actualCost: task.actual_cost || null,
+    assignedToId: task.assigned_to_id || null,
+    attachmentUrls: task.attachment_urls || [],
+    createdAt: task.created_at,
+    updatedAt: task.updated_at,
+  }
+}
 import { DailyLogModal } from "@/components/construction/DailyLogModal"
 import { RFIModal } from "@/components/construction/RFIModal"
 import { SubmittalModal } from "@/components/construction/SubmittalModal"
 import { InspectionModal } from "@/components/construction/InspectionModal"
 import { SafetyIncidentModal } from "@/components/construction/SafetyIncidentModal"
 
+const sidebarItems = [
+  { title: "Dashboard", href: "/dashboard/sponsor", icon: Home },
+  { title: "Property Search", href: "/dashboard/sponsor/property-search", icon: Search },
+  { title: "Leads", href: "/dashboard/sponsor/leads", icon: UserPlus },
+  { title: "Market Research", href: "/dashboard/sponsor/market-research", icon: MapPin },
+  { title: "Deal Pipeline", href: "/dashboard/sponsor/deal-pipeline", icon: Target },
+  { title: "Underwriting", href: "/dashboard/sponsor/underwriting", icon: Calculator },
+  { title: "Analytics", href: "/dashboard/sponsor/analytics", icon: BarChart3 },
+  { title: "Capital Raise", href: "/dashboard/sponsor/investor-relations", icon: TrendingUp },
+  { title: "Distributions", href: "/dashboard/sponsor/distributions", icon: DollarSign },
+]
+
 export default function SponsorConstructionPage() {
-  const { logout } = useAuth()
-  const [project, setProject] = useState<ConstructionProject | null>(null)
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { user, logout } = useAuth()
+
+  // Fetch projects using Supabase hook
+  const { data: projects, isLoading: projectsLoading, error: projectsError } = useProjects()
+
+  // State for selected project
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
+
+  // Get the currently selected project or the first one
+  const currentProject = selectedProjectId
+    ? projects.find(p => p.id === selectedProjectId)
+    : projects[0]
+
+  // Fetch tasks and daily logs for the selected project
+  const { data: tasks, isLoading: tasksLoading } = useTasks(currentProject?.id || '')
+  const { data: dailyLogs, isLoading: logsLoading } = useDailyLogs(currentProject?.id || '')
 
   // Modal states
   const [taskModalOpen, setTaskModalOpen] = useState(false)
@@ -46,45 +107,10 @@ export default function SponsorConstructionPage() {
   const [safetyIncidentModalOpen, setSafetyIncidentModalOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
 
-  // Fetch project data
-  const fetchProjectData = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-
-      // Get all projects for the organization
-      const { projects } = await constructionAPI.getProjects()
-
-      if (projects.length === 0) {
-        // No projects yet - show empty state
-        setLoading(false)
-        return
-      }
-
-      // Use the first project (or we could add project selection later)
-      const firstProject = projects[0]
-      setProject(firstProject)
-
-      // Fetch tasks for this project
-      const { tasks: projectTasks } = await constructionAPI.getTasks(firstProject.id)
-      setTasks(projectTasks)
-
-      setLoading(false)
-    } catch (err) {
-      console.error('Failed to fetch construction data:', err)
-      setError(err instanceof Error ? err.message : 'Failed to load construction data')
-      setLoading(false)
-    }
-  }
-
-  // Fetch on mount
-  useEffect(() => {
-    fetchProjectData()
-  }, [])
-
-  // Handler for modal success - refresh data
+  // Handler for modal success - refetch data
   const handleModalSuccess = () => {
-    fetchProjectData()
+    // The hooks will automatically refetch when their dependencies change
+    // For manual refetch, we would need to add refetch to the hooks
   }
 
   // Handler for task edit
@@ -98,19 +124,6 @@ export default function SponsorConstructionPage() {
     setSelectedTask(null)
     setTaskModalOpen(true)
   }
-
-  // Page-specific sidebar for construction tools
-  const constructionSidebarItems = [
-    { title: "Overview", href: "#overview", icon: Home },
-    { title: "Timeline", href: "#timeline", icon: Calendar },
-    { title: "Budget", href: "#budget", icon: DollarSign },
-    { title: "Tasks", href: "#tasks", icon: List },
-    { title: "Documents", href: "#documents", icon: FileText },
-    { title: "Photos", href: "#photos", icon: ImageIcon },
-    { title: "Inspections", href: "#inspections", icon: CheckCircle },
-    { title: "Issues", href: "#issues", icon: AlertTriangle },
-    { title: "Team", href: "#team", icon: Users },
-  ]
 
   // Helper function to get phase display name
   const getPhaseDisplay = (phase: string) => {
@@ -150,45 +163,59 @@ export default function SponsorConstructionPage() {
   }
 
   // Loading state
-  if (loading) {
+  if (projectsLoading) {
     return (
-      <div className="flex min-h-screen bg-white items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#E07A47] to-[#56CCF2] flex items-center justify-center mx-auto mb-4 animate-pulse">
-            <Hammer className="h-8 w-8 text-white" />
+      <div className="flex min-h-screen bg-white">
+        <DashboardSidebar
+          items={sidebarItems}
+          role="Sponsor"
+          roleIcon={Building2}
+          userName={user?.email || "Sponsor User"}
+          onLogout={logout}
+        />
+        <main className="flex-1 ml-24 bg-white flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#E07A47] to-[#56CCF2] flex items-center justify-center mx-auto mb-4 animate-pulse">
+              <Hammer className="h-8 w-8 text-white" />
+            </div>
+            <p className="text-lg font-semibold text-muted-foreground">Loading construction data...</p>
           </div>
-          <p className="text-lg font-semibold text-muted-foreground">Loading construction data...</p>
-        </div>
+        </main>
       </div>
     )
   }
 
   // Error state
-  if (error) {
+  if (projectsError) {
     return (
       <div className="flex min-h-screen bg-white">
-        <aside className="fixed left-0 top-0 h-screen w-64 bg-[#56CCF2] border-r border-[#56CCF2] flex flex-col">
-          <div className="p-6 border-b border-white/20">
-            <Button asChild className="w-full mb-4 bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-full">
-              <Link href="/dashboard/sponsor">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Return to Dashboard
-              </Link>
-            </Button>
-          </div>
-        </aside>
-        <main className="flex-1 ml-64 bg-white flex items-center justify-center">
-          <Card className="max-w-md border-4 border-red-500">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-red-600">
-                <XCircle className="h-6 w-6" />
-                Error Loading Data
-              </CardTitle>
+        <DashboardSidebar
+          items={sidebarItems}
+          role="Sponsor"
+          roleIcon={Building2}
+          userName={user?.email || "Sponsor User"}
+          onLogout={logout}
+        />
+        <main className="flex-1 ml-24 bg-white flex items-center justify-center">
+          <Card className="max-w-md border-4 border-[#56CCF2]">
+            <CardHeader className="text-center">
+              <div className="w-20 h-20 rounded-full bg-[#56CCF2]/20 flex items-center justify-center mx-auto mb-4">
+                <Hammer className="h-10 w-10 text-[#56CCF2]" />
+              </div>
+              <CardTitle>Construction Hub</CardTitle>
+              <CardDescription>
+                Unable to load data
+              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-4">{error}</p>
-              <Button onClick={() => window.location.reload()} className="w-full">
-                Try Again
+            <CardContent className="text-center">
+              <p className="text-muted-foreground mb-6">
+                {projectsError}
+              </p>
+              <Button className="w-full bg-[#E07A47] hover:bg-[#D96835]" asChild>
+                <Link href="/dashboard/sponsor">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Return to Dashboard
+                </Link>
               </Button>
             </CardContent>
           </Card>
@@ -198,43 +225,36 @@ export default function SponsorConstructionPage() {
   }
 
   // Empty state - no projects
-  if (!project) {
+  if (!projects || projects.length === 0) {
     return (
       <div className="flex min-h-screen bg-white">
-        <aside className="fixed left-0 top-0 h-screen w-64 bg-[#56CCF2] border-r border-[#56CCF2] flex flex-col">
-          <div className="p-6 border-b border-white/20">
-            <Button asChild className="w-full mb-4 bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-full">
-              <Link href="/dashboard/sponsor">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Return to Dashboard
-              </Link>
-            </Button>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#E07A47] to-[#56CCF2] flex items-center justify-center">
-                <Hammer className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h2 className="font-black text-white text-lg">Construction</h2>
-                <p className="text-xs text-white/70">No Projects</p>
-              </div>
-            </div>
-          </div>
-        </aside>
-        <main className="flex-1 ml-64 bg-white flex items-center justify-center">
+        <DashboardSidebar
+          items={sidebarItems}
+          role="Sponsor"
+          roleIcon={Building2}
+          userName={user?.email || "Sponsor User"}
+          onLogout={logout}
+        />
+        <main className="flex-1 ml-24 bg-white flex items-center justify-center">
           <Card className="max-w-md border-4 border-[#56CCF2]">
             <CardHeader className="text-center">
               <div className="w-20 h-20 rounded-full bg-[#56CCF2]/20 flex items-center justify-center mx-auto mb-4">
                 <Hammer className="h-10 w-10 text-[#56CCF2]" />
               </div>
-              <CardTitle>No Construction Projects</CardTitle>
+              <CardTitle>Construction Hub</CardTitle>
               <CardDescription>
-                Create your first construction project to start tracking progress
+                No active projects
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <Button className="w-full bg-[#E07A47] hover:bg-[#D96835]">
-                <Plus className="mr-2 h-4 w-4" />
-                Create Project
+            <CardContent className="text-center">
+              <p className="text-muted-foreground mb-6">
+                You don't have any construction projects yet. Create a development project to get started with construction management.
+              </p>
+              <Button className="w-full bg-[#E07A47] hover:bg-[#D96835]" asChild>
+                <Link href="/dashboard/sponsor">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Return to Dashboard
+                </Link>
               </Button>
             </CardContent>
           </Card>
@@ -243,81 +263,68 @@ export default function SponsorConstructionPage() {
     )
   }
 
-  // Calculate project stats
-  const totalBudget = project.totalBudget || 0
-  const spentToDate = project.spentToDate || 0
-  const percentComplete = project.percentComplete || 0
+  // Use the current project
+  const project = currentProject!
+
+  // Calculate project stats using snake_case field names from Supabase
+  const totalBudget = project.total_budget || 0
+  const spentToDate = project.spent_to_date || 0
+  const percentComplete = project.percent_complete || 0
   const remainingBudget = totalBudget - spentToDate
 
   return (
     <div className="flex min-h-screen bg-white">
-      {/* Page-Specific Sidebar */}
-      <aside className="fixed left-0 top-0 h-screen w-64 bg-[#56CCF2] border-r border-[#56CCF2] flex flex-col overflow-y-auto">
-        {/* Header with Return to Dashboard */}
-        <div className="p-6 border-b border-white/20">
-          <Button asChild className="w-full mb-4 bg-[#E07A47] hover:bg-[#D96835] text-white font-bold rounded-full">
-            <Link href="/dashboard/sponsor">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Return to Dashboard
-            </Link>
-          </Button>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#E07A47] to-[#56CCF2] flex items-center justify-center">
-              <Hammer className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h2 className="font-black text-white text-lg">Construction</h2>
-              <p className="text-xs text-white/70">{project.developmentProject?.name || project.projectCode}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1">
-          {constructionSidebarItems.map((item) => {
-            const Icon = item.icon
-            return (
-              <a key={item.href} href={item.href} className="block">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-3 h-12 text-white hover:bg-white/20 hover:text-white"
-                >
-                  <Icon className="h-5 w-5" />
-                  <span className="flex-1 text-left">{item.title}</span>
-                </Button>
-              </a>
-            )
-          })}
-        </nav>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-white/20">
-          <Button
-            variant="ghost"
-            className="w-full text-white hover:bg-white/20 hover:text-white"
-            size="sm"
-            onClick={logout}
-          >
-            Exit Demo
-          </Button>
-        </div>
-      </aside>
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Sponsor"
+        roleIcon={Building2}
+        userName={user?.email || "Sponsor User"}
+        onLogout={logout}
+      />
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 bg-white">
+      <main className="flex-1 ml-24 bg-white">
         <div className="container max-w-7xl px-8 py-8 mx-auto">
+          {/* Project Selector (if multiple projects) */}
+          {projects.length > 1 && (
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
+                Select Project
+              </label>
+              <select
+                value={selectedProjectId || project.id}
+                onChange={(e) => setSelectedProjectId(e.target.value)}
+                className="w-full max-w-md px-4 py-2 border-2 border-slate-300 rounded-lg focus:border-[#E07A47] focus:outline-none"
+              >
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.development_project?.name || p.project_code}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/* Overview Section */}
           <div id="overview" className="mb-12">
             <div className="flex items-center justify-between mb-2">
-              <h1 className="text-4xl font-black">
-                {project.developmentProject?.name || project.projectCode}
-              </h1>
+              <div className="flex items-center gap-4">
+                <Button asChild variant="outline" size="sm" className="border-2 border-[#E07A47]">
+                  <Link href="/dashboard/sponsor">
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Back to Dashboard
+                  </Link>
+                </Button>
+                <h1 className="text-4xl font-black">
+                  {project.development_project?.name || project.project_code}
+                </h1>
+              </div>
               <Badge className="bg-[#56CCF2] text-white text-sm px-4 py-1">
                 {getPhaseDisplay(project.phase)}
               </Badge>
             </div>
             <p className="text-lg text-muted-foreground mb-8">
-              {project.developmentProject?.address || 'Construction Progress & Management'}
+              {project.development_project?.address || 'Construction Progress & Management'}
             </p>
 
             {/* Stats Grid */}
@@ -365,9 +372,9 @@ export default function SponsorConstructionPage() {
                   <CardTitle className="text-sm text-muted-foreground">Project Code</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-black mb-1">{project.projectCode}</div>
+                  <div className="text-2xl font-black mb-1">{project.project_code}</div>
                   <p className="text-xs text-muted-foreground">
-                    Started {project.actualStartDate ? new Date(project.actualStartDate).toLocaleDateString() : 'TBD'}
+                    Started {project.actual_start_date ? new Date(project.actual_start_date).toLocaleDateString() : 'TBD'}
                   </p>
                 </CardContent>
               </Card>
@@ -412,19 +419,19 @@ export default function SponsorConstructionPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-center mb-6">
-                    <div className={`text-5xl font-black mb-2 ${project.costVariance && project.costVariance < 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      {project.costVariance ? (project.costVariance > 0 ? '+' : '') + (project.costVariance / 1000).toFixed(0) + 'K' : '$0'}
+                    <div className={`text-5xl font-black mb-2 ${project.cost_variance && project.cost_variance < 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {project.cost_variance ? (project.cost_variance > 0 ? '+' : '') + (project.cost_variance / 1000).toFixed(0) + 'K' : '$0'}
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      {project.costVariance && project.costVariance < 0 ? 'Under budget' : project.costVariance && project.costVariance > 0 ? 'Over budget' : 'On budget'}
+                      {project.cost_variance && project.cost_variance < 0 ? 'Under budget' : project.cost_variance && project.cost_variance > 0 ? 'Over budget' : 'On budget'}
                     </p>
                   </div>
-                  {project.scheduleVarianceDays !== null && (
+                  {project.schedule_variance_days !== null && project.schedule_variance_days !== undefined && (
                     <div className="mt-4 p-4 rounded-lg bg-white">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-semibold">Schedule Variance:</span>
-                        <span className={`font-bold ${project.scheduleVarianceDays > 0 ? 'text-green-600' : project.scheduleVarianceDays < 0 ? 'text-red-600' : 'text-slate-600'}`}>
-                          {project.scheduleVarianceDays > 0 ? '+' : ''}{project.scheduleVarianceDays} days
+                        <span className={`font-bold ${project.schedule_variance_days > 0 ? 'text-green-600' : project.schedule_variance_days < 0 ? 'text-red-600' : 'text-slate-600'}`}>
+                          {project.schedule_variance_days > 0 ? '+' : ''}{project.schedule_variance_days} days
                         </span>
                       </div>
                     </div>
@@ -448,7 +455,14 @@ export default function SponsorConstructionPage() {
             </div>
             <Card className="border-4 border-[#E07A47] bg-slate-50">
               <CardContent className="p-6">
-                {tasks.length === 0 ? (
+                {tasksLoading ? (
+                  <div className="text-center py-12">
+                    <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center mx-auto mb-4 animate-pulse">
+                      <List className="h-6 w-6 text-slate-400" />
+                    </div>
+                    <p className="text-muted-foreground">Loading tasks...</p>
+                  </div>
+                ) : tasks.length === 0 ? (
                   <div className="text-center py-12">
                     <List className="h-16 w-16 text-slate-300 mx-auto mb-4" />
                     <p className="text-muted-foreground">No tasks yet. Create your first task to get started.</p>
@@ -458,7 +472,7 @@ export default function SponsorConstructionPage() {
                     {tasks.slice(0, 10).map((task) => (
                       <div
                         key={task.id}
-                        className="flex items-center gap-4 p-4 rounded-xl bg-white border-2 border-slate-200 hover:shadow-md transition-all cursor-pointer"
+                        className="flex items-center gap-4 p-4 rounded-xl bg-slate-100 border-2 border-slate-300 hover:shadow-md transition-all cursor-pointer"
                         onClick={() => handleTaskEdit(task)}
                       >
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
@@ -478,8 +492,8 @@ export default function SponsorConstructionPage() {
                         <div className="flex-1">
                           <h4 className="font-bold">{task.title}</h4>
                           <p className="text-sm text-muted-foreground">
-                            {task.percentComplete}% Complete
-                            {task.assignedTo && ` • ${task.assignedTo.email}`}
+                            {task.percent_complete}% Complete
+                            {task.description && ` - ${task.description.slice(0, 50)}${task.description.length > 50 ? '...' : ''}`}
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
@@ -508,13 +522,13 @@ export default function SponsorConstructionPage() {
                     <div className="p-4 rounded-lg bg-white">
                       <div className="text-sm text-muted-foreground mb-1">Planned Start</div>
                       <div className="font-bold">
-                        {project.plannedStartDate ? new Date(project.plannedStartDate).toLocaleDateString() : 'Not set'}
+                        {project.planned_start_date ? new Date(project.planned_start_date).toLocaleDateString() : 'Not set'}
                       </div>
                     </div>
                     <div className="p-4 rounded-lg bg-white">
                       <div className="text-sm text-muted-foreground mb-1">Actual Start</div>
                       <div className="font-bold">
-                        {project.actualStartDate ? new Date(project.actualStartDate).toLocaleDateString() : 'Not started'}
+                        {project.actual_start_date ? new Date(project.actual_start_date).toLocaleDateString() : 'Not started'}
                       </div>
                     </div>
                   </div>
@@ -522,13 +536,13 @@ export default function SponsorConstructionPage() {
                     <div className="p-4 rounded-lg bg-white">
                       <div className="text-sm text-muted-foreground mb-1">Planned End</div>
                       <div className="font-bold">
-                        {project.plannedEndDate ? new Date(project.plannedEndDate).toLocaleDateString() : 'Not set'}
+                        {project.planned_end_date ? new Date(project.planned_end_date).toLocaleDateString() : 'Not set'}
                       </div>
                     </div>
                     <div className="p-4 rounded-lg bg-white">
                       <div className="text-sm text-muted-foreground mb-1">Actual End</div>
                       <div className="font-bold">
-                        {project.actualEndDate ? new Date(project.actualEndDate).toLocaleDateString() : 'In progress'}
+                        {project.actual_end_date ? new Date(project.actual_end_date).toLocaleDateString() : 'In progress'}
                       </div>
                     </div>
                   </div>
@@ -541,9 +555,6 @@ export default function SponsorConstructionPage() {
           <div id="documents" className="mb-12">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-black">Documents & Submittals</h2>
-              <Badge className="bg-[#56CCF2]">
-                {project._count?.submittals || 0} Submittals
-              </Badge>
             </div>
             <Card className="border-4 border-[#56CCF2] bg-slate-50">
               <CardContent className="p-12 text-center">
@@ -570,20 +581,31 @@ export default function SponsorConstructionPage() {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-black">Progress Photos</h2>
               <Badge className="bg-[#56CCF2]">
-                {project._count?.dailyLogs || 0} Daily Logs
+                {dailyLogs.length} Daily Logs
               </Badge>
             </div>
             <Card className="border-4 border-[#E07A47] bg-slate-50">
               <CardContent className="p-12 text-center">
-                <ImageIcon className="h-16 w-16 text-slate-300 mx-auto mb-4" />
-                <p className="text-muted-foreground mb-4">Site photos and visual progress tracking</p>
-                <Button
-                  className="bg-[#E07A47] hover:bg-[#D96835]"
-                  onClick={() => setDailyLogModalOpen(true)}
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create Daily Log
-                </Button>
+                {logsLoading ? (
+                  <div>
+                    <div className="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center mx-auto mb-4 animate-pulse">
+                      <ImageIcon className="h-8 w-8 text-slate-400" />
+                    </div>
+                    <p className="text-muted-foreground">Loading daily logs...</p>
+                  </div>
+                ) : (
+                  <>
+                    <ImageIcon className="h-16 w-16 text-slate-300 mx-auto mb-4" />
+                    <p className="text-muted-foreground mb-4">Site photos and visual progress tracking</p>
+                    <Button
+                      className="bg-[#E07A47] hover:bg-[#D96835]"
+                      onClick={() => setDailyLogModalOpen(true)}
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Create Daily Log
+                    </Button>
+                  </>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -592,9 +614,6 @@ export default function SponsorConstructionPage() {
           <div id="inspections" className="mb-12">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-black">Inspections</h2>
-              <Badge className="bg-green-500">
-                {project._count?.inspections || 0} Scheduled
-              </Badge>
             </div>
             <Card className="border-4 border-green-500 bg-slate-50">
               <CardContent className="p-12 text-center">
@@ -615,14 +634,6 @@ export default function SponsorConstructionPage() {
           <div id="issues" className="mb-12">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-black">Issues & Safety</h2>
-              <div className="flex gap-2">
-                <Badge className="bg-yellow-500">
-                  {project._count?.rfis || 0} RFIs
-                </Badge>
-                <Badge className="bg-red-500">
-                  {project._count?.safetyIncidents || 0} Safety Reports
-                </Badge>
-              </div>
             </div>
             <Card className="border-4 border-red-500 bg-slate-50">
               <CardContent className="p-12 text-center">
@@ -655,7 +666,7 @@ export default function SponsorConstructionPage() {
         <>
           <TaskModal
             projectId={project.id}
-            task={selectedTask}
+            task={selectedTask ? toTaskModalTask(selectedTask) : null}
             open={taskModalOpen}
             onOpenChange={setTaskModalOpen}
             onSuccess={handleModalSuccess}

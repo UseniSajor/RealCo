@@ -1,32 +1,55 @@
 "use client"
 
-import { MarketingNav } from "@/components/marketing/marketing-nav"
-import { MarketingFooter } from "@/components/marketing/marketing-footer"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
+import { useAuth } from "@/lib/auth-context"
 import { BankAccountManager } from "@/components/finance/BankAccountManager"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import { BackButton } from "@/components/ui/back-button"
+import {
+  Wrench,
+  Home,
+  Upload,
+  Receipt,
+  CreditCard,
+  Target,
+  ClipboardList,
+  CheckCircle2,
+  Shield
+} from "lucide-react"
+
+const sidebarItems = [
+  { title: "Dashboard", href: "/dashboard/provider", icon: Home },
+  { title: "Submit Invoice", href: "/dashboard/provider/submit-invoice", icon: Upload },
+  { title: "Transactions", href: "/dashboard/provider/transactions", icon: Receipt },
+  { title: "Banking", href: "/dashboard/provider/banking", icon: CreditCard },
+  { title: "Vendor Portal", href: "/dashboard/provider/vendor-portal", icon: Target },
+  { title: "Daily Logs", href: "/dashboard/provider/daily-logs", icon: ClipboardList },
+  { title: "Inspections", href: "/dashboard/provider/inspections", icon: CheckCircle2 },
+  { title: "Safety", href: "/dashboard/provider/safety", icon: Shield },
+]
 
 export default function ProviderBankingPage() {
+  const { user, logout } = useAuth()
+
   return (
-    <>
-      <MarketingNav />
-      
-      <section className="py-12 min-h-screen bg-muted/30">
-        <div className="container max-w-6xl px-6 mx-auto">
-          {/* Back Button */}
-          <Button variant="ghost" asChild className="mb-6">
-            <Link href="/dashboard/provider">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Dashboard
-            </Link>
-          </Button>
+    <div className="flex min-h-screen bg-white">
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Service Provider"
+        roleIcon={Wrench}
+        userName={user?.name || "BuildRight Construction"}
+        onLogout={logout}
+      />
+
+      <main className="flex-1 ml-24 p-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center gap-4 mb-6">
+            <BackButton href="/dashboard/provider" />
+            <h1 className="text-3xl font-black">Banking</h1>
+          </div>
 
           <BankAccountManager />
         </div>
-      </section>
-
-      <MarketingFooter />
-    </>
+      </main>
+    </div>
   )
 }

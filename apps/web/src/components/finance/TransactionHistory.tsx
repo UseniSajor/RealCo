@@ -149,11 +149,11 @@ export function TransactionHistory() {
                       </span>
                     </div>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span>{format(transaction.date, "MMM dd, yyyy")}</span>
+                      <span>{format(new Date(transaction.initiatedAt), "MMM dd, yyyy")}</span>
                       <span>•</span>
                       <span>{transaction.paymentMethod}</span>
                       <span>•</span>
-                      <span>{transaction.from} → {transaction.to}</span>
+                      <span>{transaction.fromUserId || 'N/A'} → {transaction.toUserId || 'N/A'}</span>
                     </div>
                   </div>
                 </div>
@@ -186,11 +186,11 @@ export function TransactionHistory() {
         <CardContent className="pt-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Total Deposits</p>
+              <p className="text-sm text-muted-foreground mb-1">Total Investments</p>
               <p className="text-2xl font-black text-green-600">
                 {formatAmount(
                   transactions
-                    .filter(t => t.type === "DEPOSIT" && t.status === "COMPLETED")
+                    .filter(t => t.type === "INVESTMENT" && t.status === "COMPLETED")
                     .reduce((sum, t) => sum + t.amount, 0)
                 )}
               </p>
@@ -210,7 +210,7 @@ export function TransactionHistory() {
               <p className="text-2xl font-black text-[#E07A47]">
                 {formatAmount(
                   Math.abs(transactions
-                    .filter(t => t.type === "PLATFORM_FEE" && t.status === "COMPLETED")
+                    .filter(t => t.type === "FEE" && t.status === "COMPLETED")
                     .reduce((sum, t) => sum + t.amount, 0))
                 )}
               </p>

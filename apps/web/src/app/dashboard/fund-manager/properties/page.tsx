@@ -19,9 +19,29 @@ import {
   Plus,
   Search,
   Filter,
+  Receipt,
+  Calculator,
+  FileText,
+  MessageSquare,
+  Building,
 } from "lucide-react"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
+import { useAuth } from "@/lib/auth-context"
+
+const sidebarItems = [
+  { title: "Dashboard", href: "/dashboard/fund-manager", icon: Home },
+  { title: "Properties", href: "/dashboard/fund-manager/properties", icon: Building2 },
+  { title: "Investors", href: "/dashboard/fund-manager/investors", icon: Users },
+  { title: "Capital Accounts", href: "/dashboard/fund-manager/capital-accounts", icon: DollarSign },
+  { title: "Distributions", href: "/dashboard/fund-manager/distributions", icon: Receipt },
+  { title: "Financials", href: "/dashboard/fund-manager/financials", icon: Calculator },
+  { title: "Analytics", href: "/dashboard/fund-manager/analytics", icon: BarChart3 },
+  { title: "Reports", href: "/dashboard/fund-manager/reports", icon: FileText },
+  { title: "Communications", href: "/dashboard/fund-manager/communications", icon: MessageSquare },
+]
 
 export default function PropertiesPage() {
+  const { user, logout } = useAuth()
   const [filter, setFilter] = useState<'all' | 'multifamily' | 'commercial' | 'industrial'>('all')
   const [sortBy, setSortBy] = useState<'noi' | 'occupancy' | 'name'>('noi')
 
@@ -134,7 +154,15 @@ export default function PropertiesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="flex min-h-screen bg-white">
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Fund Manager Portal"
+        roleIcon={Building}
+        userName={user?.name || "Fund Manager"}
+        onLogout={logout}
+      />
+      <main className="flex-1 ml-24 bg-white">
       {/* Header */}
       <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
         <div className="container max-w-7xl px-6 py-8 mx-auto">
@@ -209,7 +237,7 @@ export default function PropertiesPage() {
             <input
               type="text"
               placeholder="Search properties..."
-              className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white"
+              className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-slate-200 border-slate-200 focus:border-[#56CCF2] focus:outline-none bg-white bg-white text-slate-900"
             />
           </div>
           <div className="flex gap-2">
@@ -250,15 +278,15 @@ export default function PropertiesPage() {
         {/* Properties Grid */}
         <div className="grid gap-6">
           {sortedProperties.map((property) => (
-            <Card key={property.id} className="border-4 border-[#E07A47] dark:bg-[#6b7280] hover:shadow-lg transition-shadow">
+            <Card key={property.id} className="border-4 border-[#E07A47] bg-white hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <div className="grid lg:grid-cols-12 gap-6">
                   {/* Property Info (Left) */}
                   <div className="lg:col-span-4">
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <h3 className="text-2xl font-black mb-2 dark:text-white">{property.name}</h3>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-white/70 mb-2">
+                        <h3 className="text-2xl font-black mb-2 text-slate-900">{property.name}</h3>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground text-slate-900/70 mb-2">
                           <MapPin className="h-4 w-4" />
                           {property.address}
                         </div>
@@ -278,22 +306,22 @@ export default function PropertiesPage() {
                     </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Units:</span>
-                        <span className="font-bold dark:text-white">{property.units}</span>
+                        <span className="text-muted-foreground text-slate-900/70">Units:</span>
+                        <span className="font-bold text-slate-900">{property.units}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Acquired:</span>
-                        <span className="font-bold dark:text-white">{new Date(property.acquisitionDate).toLocaleDateString()}</span>
+                        <span className="text-muted-foreground text-slate-900/70">Acquired:</span>
+                        <span className="font-bold text-slate-900">{new Date(property.acquisitionDate).toLocaleDateString()}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Performance Metrics (Middle) */}
                   <div className="lg:col-span-5 grid grid-cols-2 gap-4">
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Occupancy</p>
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                      <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">Occupancy</p>
                       <div className="flex items-baseline gap-2">
-                        <p className="text-2xl font-black dark:text-white">{property.occupancy}%</p>
+                        <p className="text-2xl font-black text-slate-900">{property.occupancy}%</p>
                         <div className={`flex items-center text-xs ${property.occupancyChange > 0 ? 'text-green-600' : 'text-red-600'}`}>
                           {property.occupancyChange > 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
                           <span className="ml-1">{Math.abs(property.occupancyChange)}%</span>
@@ -301,25 +329,25 @@ export default function PropertiesPage() {
                       </div>
                     </div>
 
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">YTD NOI</p>
-                      <p className="text-2xl font-black dark:text-white">${(property.ytdNOI / 1000).toFixed(0)}K</p>
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                      <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">YTD NOI</p>
+                      <p className="text-2xl font-black text-slate-900">${(property.ytdNOI / 1000).toFixed(0)}K</p>
                       <p className={`text-xs ${property.budgetVariance > 0 ? 'text-green-600' : 'text-red-600'}`}>
                         {property.budgetVariance > 0 ? '+' : ''}{property.budgetVariance}% vs budget
                       </p>
                     </div>
 
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Avg Rent</p>
-                      <p className="text-2xl font-black dark:text-white">${property.currentRent}</p>
-                      <p className="text-xs text-muted-foreground dark:text-white/70">
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                      <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">Avg Rent</p>
+                      <p className="text-2xl font-black text-slate-900">${property.currentRent}</p>
+                      <p className="text-xs text-muted-foreground text-slate-900/70">
                         Market: ${property.marketRent}
                       </p>
                     </div>
 
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">MTD NOI</p>
-                      <p className="text-2xl font-black dark:text-white">${(property.mtdNOI / 1000).toFixed(0)}K</p>
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                      <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">MTD NOI</p>
+                      <p className="text-2xl font-black text-slate-900">${(property.mtdNOI / 1000).toFixed(0)}K</p>
                     </div>
                   </div>
 
@@ -327,15 +355,15 @@ export default function PropertiesPage() {
                   <div className="lg:col-span-3 flex flex-col justify-between">
                     <div className="space-y-2 mb-4">
                       {property.leaseExpirations > 0 && (
-                        <div className="bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-400 rounded-lg p-2">
-                          <p className="text-xs font-semibold text-yellow-800 dark:text-yellow-200">
+                        <div className="bg-yellow-50 bg-yellow-50 border-2 border-yellow-400 rounded-lg p-2">
+                          <p className="text-xs font-semibold text-yellow-800 text-yellow-800">
                             {property.leaseExpirations} leases expiring soon
                           </p>
                         </div>
                       )}
                       {property.maintenanceOpen > 0 && (
-                        <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-400 rounded-lg p-2">
-                          <p className="text-xs font-semibold text-blue-800 dark:text-blue-200">
+                        <div className="bg-blue-50 bg-blue-50 border-2 border-blue-400 rounded-lg p-2">
+                          <p className="text-xs font-semibold text-blue-800 text-blue-800">
                             {property.maintenanceOpen} open maintenance requests
                           </p>
                         </div>
@@ -361,6 +389,7 @@ export default function PropertiesPage() {
           ))}
         </div>
       </div>
+      </main>
     </div>
   )
 }

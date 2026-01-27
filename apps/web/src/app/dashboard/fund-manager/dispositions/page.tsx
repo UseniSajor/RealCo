@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
+import { useAuth } from "@/lib/auth-context"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -10,15 +12,34 @@ import {
   TrendingUp,
   DollarSign,
   Calendar,
+  Building,
   Building2,
-  ArrowLeft,
   Plus,
   FileText,
   CheckCircle2,
   Clock,
+  Users,
+  Home,
+  Receipt,
+  Calculator,
+  BarChart3,
+  MessageSquare,
 } from "lucide-react"
 
+const sidebarItems = [
+  { title: "Dashboard", href: "/dashboard/fund-manager", icon: Home },
+  { title: "Properties", href: "/dashboard/fund-manager/properties", icon: Building2 },
+  { title: "Investors", href: "/dashboard/fund-manager/investors", icon: Users },
+  { title: "Capital Accounts", href: "/dashboard/fund-manager/capital-accounts", icon: DollarSign },
+  { title: "Distributions", href: "/dashboard/fund-manager/distributions", icon: Receipt },
+  { title: "Financials", href: "/dashboard/fund-manager/financials", icon: Calculator },
+  { title: "Analytics", href: "/dashboard/fund-manager/analytics", icon: BarChart3 },
+  { title: "Reports", href: "/dashboard/fund-manager/reports", icon: FileText },
+  { title: "Communications", href: "/dashboard/fund-manager/communications", icon: MessageSquare },
+]
+
 export default function DispositionsPage() {
+  const { user, logout } = useAuth()
   const [statusFilter, setStatusFilter] = useState<'all' | 'planning' | 'listed' | 'under_contract' | 'sold'>('all')
 
   // Mock disposition data
@@ -108,7 +129,7 @@ export default function DispositionsPage() {
     },
   ]
 
-  const filteredDispositions = dispositions.filter(d => 
+  const filteredDispositions = dispositions.filter(d =>
     statusFilter === 'all' || d.status === statusFilter
   )
 
@@ -140,302 +161,304 @@ export default function DispositionsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      {/* Header */}
-      <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
-        <div className="container max-w-7xl px-6 py-8 mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Button asChild variant="outline" size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/30">
-                <Link href="/dashboard/fund-manager">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Dashboard
-                </Link>
-              </Button>
+    <div className="flex min-h-screen bg-white">
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Fund Manager Portal"
+        roleIcon={Building}
+        userName={user?.name || "Fund Manager"}
+        onLogout={logout}
+      />
+
+      <main className="flex-1 ml-24 bg-white">
+        {/* Header */}
+        <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
+          <div className="container max-w-7xl px-6 py-8 mx-auto">
+            <div className="flex items-center justify-between mb-6">
               <div>
                 <h1 className="text-4xl font-black">Disposition & Exit Management</h1>
                 <p className="text-white/80">Track property sales and execute successful exits</p>
               </div>
+              <Button asChild className="bg-[#56CCF2] hover:bg-[#56CCF2]/90">
+                <Link href="/dashboard/fund-manager/dispositions/new">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Plan Disposition
+                </Link>
+              </Button>
             </div>
-            <Button asChild className="bg-[#56CCF2] hover:bg-[#56CCF2]/90">
-              <Link href="/dashboard/fund-manager/dispositions/new">
-                <Plus className="h-4 w-4 mr-2" />
-                Plan Disposition
-              </Link>
-            </Button>
-          </div>
 
-          {/* Summary Metrics */}
-          <div className="grid grid-cols-4 gap-4">
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/70 text-sm mb-1">Total Exits</p>
-                  <p className="text-3xl font-black">{metrics.totalDispositions}</p>
+            {/* Summary Metrics */}
+            <div className="grid grid-cols-4 gap-4">
+              <div className="bg-white/10 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm mb-1">Total Exits</p>
+                    <p className="text-3xl font-black">{metrics.totalDispositions}</p>
+                  </div>
+                  <Target className="h-10 w-10 text-white/50" />
                 </div>
-                <Target className="h-10 w-10 text-white/50" />
               </div>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/70 text-sm mb-1">Listed</p>
-                  <p className="text-3xl font-black">{metrics.activeListed}</p>
+              <div className="bg-white/10 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm mb-1">Listed</p>
+                    <p className="text-3xl font-black">{metrics.activeListed}</p>
+                  </div>
+                  <FileText className="h-10 w-10 text-blue-400" />
                 </div>
-                <FileText className="h-10 w-10 text-blue-400" />
               </div>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/70 text-sm mb-1">Under Contract</p>
-                  <p className="text-3xl font-black">{metrics.underContract}</p>
+              <div className="bg-white/10 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm mb-1">Under Contract</p>
+                    <p className="text-3xl font-black">{metrics.underContract}</p>
+                  </div>
+                  <Calendar className="h-10 w-10 text-purple-400" />
                 </div>
-                <Calendar className="h-10 w-10 text-purple-400" />
               </div>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/70 text-sm mb-1">Total Value</p>
-                  <p className="text-2xl font-black">${(metrics.totalValue / 1000000).toFixed(1)}M</p>
+              <div className="bg-white/10 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm mb-1">Total Value</p>
+                    <p className="text-2xl font-black">${(metrics.totalValue / 1000000).toFixed(1)}M</p>
+                  </div>
+                  <DollarSign className="h-10 w-10 text-green-400" />
                 </div>
-                <DollarSign className="h-10 w-10 text-green-400" />
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="container max-w-7xl px-6 py-8 mx-auto">
-        {/* Filters */}
-        <div className="flex items-center gap-4 mb-6">
-          <div className="flex gap-2">
-            {(['all', 'planning', 'listed', 'under_contract', 'sold'] as const).map((status) => (
-              <Button
-                key={status}
-                variant={statusFilter === status ? "default" : "outline"}
-                size="sm"
-                onClick={() => setStatusFilter(status)}
-                className={statusFilter === status ? "bg-[#56CCF2] hover:bg-[#56CCF2]/90" : "border-2 border-[#E07A47]"}
-              >
-                {status === 'all' ? 'All' : status.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
-              </Button>
+        <div className="container max-w-7xl px-6 py-8 mx-auto">
+          {/* Filters */}
+          <div className="flex items-center gap-4 mb-6">
+            <div className="flex gap-2">
+              {(['all', 'planning', 'listed', 'under_contract', 'sold'] as const).map((status) => (
+                <Button
+                  key={status}
+                  variant={statusFilter === status ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setStatusFilter(status)}
+                  className={statusFilter === status ? "bg-[#56CCF2] hover:bg-[#56CCF2]/90" : "border-2 border-[#E07A47]"}
+                >
+                  {status === 'all' ? 'All' : status.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Dispositions Grid */}
+          <div className="grid gap-6">
+            {filteredDispositions.map((disposition) => (
+              <Card key={disposition.id} className="border-4 border-[#E07A47] bg-white hover:shadow-lg transition-shadow">
+                <CardContent className="p-6">
+                  <div className="grid lg:grid-cols-12 gap-6">
+                    {/* Property Info */}
+                    <div className="lg:col-span-4">
+                      <div className="flex items-start gap-3 mb-4">
+                        <Building2 className="h-6 w-6 text-[#E07A47] shrink-0 mt-1" />
+                        <div>
+                          <h3 className="text-2xl font-black mb-1">{disposition.property}</h3>
+                          <p className="text-sm text-muted-foreground mb-3">{disposition.address}</p>
+                          <div className="flex items-center gap-2">
+                            {getStatusIcon(disposition.status)}
+                            <Badge className={`${getStatusColor(disposition.status)} text-white`}>
+                              {disposition.status.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Acquisition Price:</span>
+                          <span className="font-bold">${(disposition.acquisitionPrice / 1000000).toFixed(2)}M</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Total Invested:</span>
+                          <span className="font-bold">${(disposition.totalInvested / 1000000).toFixed(2)}M</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Hold Period:</span>
+                          <span className="font-bold">{disposition.holdPeriod.toFixed(1)} years</span>
+                        </div>
+                        {disposition.broker && (
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Broker:</span>
+                            <span className="font-bold">{disposition.broker}</span>
+                          </div>
+                        )}
+                        {disposition.daysOnMarket > 0 && (
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Days on Market:</span>
+                            <span className="font-bold">{disposition.daysOnMarket} days</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Financial Metrics */}
+                    <div className="lg:col-span-5 grid grid-cols-2 gap-4">
+                      <div className="bg-muted/50 rounded-lg p-4">
+                        <p className="text-xs text-muted-foreground mb-1">
+                          {disposition.status === 'sold' ? 'Sale Price' : 'List Price'}
+                        </p>
+                        <p className="text-2xl font-black text-[#56CCF2]">
+                          ${((disposition.actualSalePrice || disposition.listPrice) / 1000000).toFixed(2)}M
+                        </p>
+                      </div>
+
+                      <div className="bg-muted/50 rounded-lg p-4">
+                        <p className="text-xs text-muted-foreground mb-1">Current Value</p>
+                        <p className="text-2xl font-black">
+                          ${(disposition.currentValue / 1000000).toFixed(2)}M
+                        </p>
+                      </div>
+
+                      <div className={`rounded-lg p-4 ${disposition.status === 'sold' ? 'bg-green-50 border-2 border-green-500' : 'bg-muted/50'}`}>
+                        <p className="text-xs text-muted-foreground mb-1">
+                          {disposition.status === 'sold' ? 'Realized IRR' : 'Projected IRR'}
+                        </p>
+                        <p className={`text-3xl font-black ${disposition.status === 'sold' ? 'text-green-600' : 'text-[#E07A47]'}`}>
+                          {(disposition.realizedIRR || disposition.projectedIRR || 0).toFixed(1)}%
+                        </p>
+                      </div>
+
+                      <div className={`rounded-lg p-4 ${disposition.status === 'sold' ? 'bg-green-50 border-2 border-green-500' : 'bg-muted/50'}`}>
+                        <p className="text-xs text-muted-foreground mb-1">
+                          {disposition.status === 'sold' ? 'Equity Multiple' : 'Projected Multiple'}
+                        </p>
+                        <p className={`text-3xl font-black ${disposition.status === 'sold' ? 'text-green-600' : 'text-[#E07A47]'}`}>
+                          {(disposition.realizedEquityMultiple || disposition.projectedEquityMultiple || 0).toFixed(2)}x
+                        </p>
+                      </div>
+
+                      {disposition.offers > 0 && (
+                        <div className="col-span-2 bg-blue-50 border-2 border-blue-500 rounded-lg p-4">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <p className="text-sm font-bold text-blue-800">
+                                {disposition.offers} Offer{disposition.offers !== 1 ? 's' : ''} Received
+                              </p>
+                              {disposition.bestOffer && (
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  Best: ${(disposition.bestOffer / 1000000).toFixed(2)}M
+                                </p>
+                              )}
+                            </div>
+                            {disposition.buyer && (
+                              <div className="text-right">
+                                <p className="text-xs text-muted-foreground">Buyer:</p>
+                                <p className="text-sm font-bold">{disposition.buyer}</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {disposition.status === 'sold' && disposition.netProceeds && (
+                        <div className="col-span-2 bg-green-50 border-2 border-green-500 rounded-lg p-4">
+                          <p className="text-sm font-bold text-green-800 mb-2">
+                            Net Proceeds to Investors
+                          </p>
+                          <p className="text-3xl font-black text-green-600">
+                            ${(disposition.netProceeds / 1000000).toFixed(2)}M
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Actions & Timeline */}
+                    <div className="lg:col-span-3 flex flex-col justify-between">
+                      <div className="space-y-3 mb-4">
+                        {disposition.status === 'planning' && (
+                          <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-3">
+                            <p className="text-xs font-semibold text-yellow-800 mb-1">
+                              Disposition Planning
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Target List Date: {disposition.targetListDate ? new Date(disposition.targetListDate).toLocaleDateString() : 'TBD'}
+                            </p>
+                          </div>
+                        )}
+
+                        {disposition.status === 'listed' && (
+                          <div className="bg-blue-50 border-2 border-blue-500 rounded-lg p-3">
+                            <p className="text-xs font-semibold text-blue-800 mb-1">
+                              Active Listing
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Listed: {disposition.listDate && new Date(disposition.listDate).toLocaleDateString()}
+                            </p>
+                          </div>
+                        )}
+
+                        {disposition.status === 'under_contract' && disposition.expectedCloseDate && (
+                          <div className="bg-purple-50 border-2 border-purple-500 rounded-lg p-3">
+                            <p className="text-xs font-semibold text-purple-800 mb-1">
+                              Under Contract
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Expected Close: {disposition.expectedCloseDate ? new Date(disposition.expectedCloseDate).toLocaleDateString() : 'TBD'}
+                            </p>
+                          </div>
+                        )}
+
+                        {disposition.status === 'sold' && disposition.closeDate && (
+                          <div className="bg-green-50 border-2 border-green-500 rounded-lg p-3">
+                            <div className="flex items-center gap-2 mb-1">
+                              <CheckCircle2 className="h-4 w-4 text-green-600" />
+                              <p className="text-xs font-semibold text-green-800">
+                                Sale Completed
+                              </p>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              Closed: {disposition.closeDate ? new Date(disposition.closeDate).toLocaleDateString() : 'N/A'}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Button asChild className="w-full bg-[#56CCF2] hover:bg-[#56CCF2]/90">
+                          <Link href={`/dashboard/fund-manager/dispositions/${disposition.id}`}>
+                            View Details
+                          </Link>
+                        </Button>
+
+                        {disposition.status === 'planning' && (
+                          <Button asChild variant="outline" className="w-full border-2 border-[#E07A47]">
+                            <Link href={`/dashboard/fund-manager/dispositions/${disposition.id}/list`}>
+                              List Property
+                            </Link>
+                          </Button>
+                        )}
+
+                        {disposition.status === 'listed' && (
+                          <Button asChild variant="outline" className="w-full border-2 border-[#E07A47]">
+                            <Link href={`/dashboard/fund-manager/dispositions/${disposition.id}/offers`}>
+                              Manage Offers
+                            </Link>
+                          </Button>
+                        )}
+
+                        {disposition.status === 'sold' && (
+                          <Button asChild variant="outline" className="w-full border-2 border-green-500 text-green-600 hover:bg-green-50">
+                            <Link href={`/dashboard/fund-manager/dispositions/${disposition.id}/exit-analysis`}>
+                              <TrendingUp className="h-4 w-4 mr-2" />
+                              Exit Analysis
+                            </Link>
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
-
-        {/* Dispositions Grid */}
-        <div className="grid gap-6">
-          {filteredDispositions.map((disposition) => (
-            <Card key={disposition.id} className="border-4 border-[#E07A47] dark:bg-[#6b7280] hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
-                <div className="grid lg:grid-cols-12 gap-6">
-                  {/* Property Info */}
-                  <div className="lg:col-span-4">
-                    <div className="flex items-start gap-3 mb-4">
-                      <Building2 className="h-6 w-6 text-[#E07A47] shrink-0 mt-1" />
-                      <div>
-                        <h3 className="text-2xl font-black mb-1 dark:text-white">{disposition.property}</h3>
-                        <p className="text-sm text-muted-foreground dark:text-white/70 mb-3">{disposition.address}</p>
-                        <div className="flex items-center gap-2">
-                          {getStatusIcon(disposition.status)}
-                          <Badge className={`${getStatusColor(disposition.status)} text-white`}>
-                            {disposition.status.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
-                          </Badge>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Acquisition Price:</span>
-                        <span className="font-bold dark:text-white">${(disposition.acquisitionPrice / 1000000).toFixed(2)}M</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Total Invested:</span>
-                        <span className="font-bold dark:text-white">${(disposition.totalInvested / 1000000).toFixed(2)}M</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Hold Period:</span>
-                        <span className="font-bold dark:text-white">{disposition.holdPeriod.toFixed(1)} years</span>
-                      </div>
-                      {disposition.broker && (
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground dark:text-white/70">Broker:</span>
-                          <span className="font-bold dark:text-white">{disposition.broker}</span>
-                        </div>
-                      )}
-                      {disposition.daysOnMarket > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground dark:text-white/70">Days on Market:</span>
-                          <span className="font-bold dark:text-white">{disposition.daysOnMarket} days</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Financial Metrics */}
-                  <div className="lg:col-span-5 grid grid-cols-2 gap-4">
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">
-                        {disposition.status === 'sold' ? 'Sale Price' : 'List Price'}
-                      </p>
-                      <p className="text-2xl font-black text-[#56CCF2]">
-                        ${((disposition.actualSalePrice || disposition.listPrice) / 1000000).toFixed(2)}M
-                      </p>
-                    </div>
-
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Current Value</p>
-                      <p className="text-2xl font-black dark:text-white">
-                        ${(disposition.currentValue / 1000000).toFixed(2)}M
-                      </p>
-                    </div>
-
-                    <div className={`rounded-lg p-4 ${disposition.status === 'sold' ? 'bg-green-50 dark:bg-green-900/20 border-2 border-green-500' : 'bg-muted/50 dark:bg-slate-700'}`}>
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">
-                        {disposition.status === 'sold' ? 'Realized IRR' : 'Projected IRR'}
-                      </p>
-                      <p className={`text-3xl font-black ${disposition.status === 'sold' ? 'text-green-600' : 'text-[#E07A47]'}`}>
-                        {(disposition.realizedIRR || disposition.projectedIRR || 0).toFixed(1)}%
-                      </p>
-                    </div>
-
-                    <div className={`rounded-lg p-4 ${disposition.status === 'sold' ? 'bg-green-50 dark:bg-green-900/20 border-2 border-green-500' : 'bg-muted/50 dark:bg-slate-700'}`}>
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">
-                        {disposition.status === 'sold' ? 'Equity Multiple' : 'Projected Multiple'}
-                      </p>
-                      <p className={`text-3xl font-black ${disposition.status === 'sold' ? 'text-green-600' : 'text-[#E07A47]'}`}>
-                        {(disposition.realizedEquityMultiple || disposition.projectedEquityMultiple || 0).toFixed(2)}x
-                      </p>
-                    </div>
-
-                    {disposition.offers > 0 && (
-                      <div className="col-span-2 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-500 rounded-lg p-4">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <p className="text-sm font-bold text-blue-800 dark:text-blue-200">
-                              {disposition.offers} Offer{disposition.offers !== 1 ? 's' : ''} Received
-                            </p>
-                            {disposition.bestOffer && (
-                              <p className="text-xs text-muted-foreground dark:text-white/70 mt-1">
-                                Best: ${(disposition.bestOffer / 1000000).toFixed(2)}M
-                              </p>
-                            )}
-                          </div>
-                          {disposition.buyer && (
-                            <div className="text-right">
-                              <p className="text-xs text-muted-foreground dark:text-white/70">Buyer:</p>
-                              <p className="text-sm font-bold dark:text-white">{disposition.buyer}</p>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {disposition.status === 'sold' && disposition.netProceeds && (
-                      <div className="col-span-2 bg-green-50 dark:bg-green-900/20 border-2 border-green-500 rounded-lg p-4">
-                        <p className="text-sm font-bold text-green-800 dark:text-green-200 mb-2">
-                          Net Proceeds to Investors
-                        </p>
-                        <p className="text-3xl font-black text-green-600">
-                          ${(disposition.netProceeds / 1000000).toFixed(2)}M
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Actions & Timeline */}
-                  <div className="lg:col-span-3 flex flex-col justify-between">
-                    <div className="space-y-3 mb-4">
-                      {disposition.status === 'planning' && (
-                        <div className="bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-400 rounded-lg p-3">
-                          <p className="text-xs font-semibold text-yellow-800 dark:text-yellow-200 mb-1">
-                            📋 Disposition Planning
-                          </p>
-                          <p className="text-xs text-muted-foreground dark:text-white/70">
-                            Target List Date: {disposition.targetListDate ? new Date(disposition.targetListDate).toLocaleDateString() : 'TBD'}
-                          </p>
-                        </div>
-                      )}
-
-                      {disposition.status === 'listed' && (
-                        <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-500 rounded-lg p-3">
-                          <p className="text-xs font-semibold text-blue-800 dark:text-blue-200 mb-1">
-                            🏢 Active Listing
-                          </p>
-                          <p className="text-xs text-muted-foreground dark:text-white/70">
-                            Listed: {disposition.listDate && new Date(disposition.listDate).toLocaleDateString()}
-                          </p>
-                        </div>
-                      )}
-
-                      {disposition.status === 'under_contract' && disposition.expectedCloseDate && (
-                        <div className="bg-purple-50 dark:bg-purple-900/20 border-2 border-purple-500 rounded-lg p-3">
-                          <p className="text-xs font-semibold text-purple-800 dark:text-purple-200 mb-1">
-                            📝 Under Contract
-                          </p>
-                          <p className="text-xs text-muted-foreground dark:text-white/70">
-                            Expected Close: {disposition.expectedCloseDate ? new Date(disposition.expectedCloseDate).toLocaleDateString() : 'TBD'}
-                          </p>
-                        </div>
-                      )}
-
-                      {disposition.status === 'sold' && disposition.closeDate && (
-                        <div className="bg-green-50 dark:bg-green-900/20 border-2 border-green-500 rounded-lg p-3">
-                          <div className="flex items-center gap-2 mb-1">
-                            <CheckCircle2 className="h-4 w-4 text-green-600" />
-                            <p className="text-xs font-semibold text-green-800 dark:text-green-200">
-                              Sale Completed
-                            </p>
-                          </div>
-                          <p className="text-xs text-muted-foreground dark:text-white/70">
-                            Closed: {disposition.closeDate ? new Date(disposition.closeDate).toLocaleDateString() : 'N/A'}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Button asChild className="w-full bg-[#56CCF2] hover:bg-[#56CCF2]/90">
-                        <Link href={`/dashboard/fund-manager/dispositions/${disposition.id}`}>
-                          View Details
-                        </Link>
-                      </Button>
-
-                      {disposition.status === 'planning' && (
-                        <Button asChild variant="outline" className="w-full border-2 border-[#E07A47]">
-                          <Link href={`/dashboard/fund-manager/dispositions/${disposition.id}/list`}>
-                            List Property
-                          </Link>
-                        </Button>
-                      )}
-
-                      {disposition.status === 'listed' && (
-                        <Button asChild variant="outline" className="w-full border-2 border-[#E07A47]">
-                          <Link href={`/dashboard/fund-manager/dispositions/${disposition.id}/offers`}>
-                            Manage Offers
-                          </Link>
-                        </Button>
-                      )}
-
-                      {disposition.status === 'sold' && (
-                        <Button asChild variant="outline" className="w-full border-2 border-green-500 text-green-600 hover:bg-green-50">
-                          <Link href={`/dashboard/fund-manager/dispositions/${disposition.id}/exit-analysis`}>
-                            <TrendingUp className="h-4 w-4 mr-2" />
-                            Exit Analysis
-                          </Link>
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
+      </main>
     </div>
   )
 }

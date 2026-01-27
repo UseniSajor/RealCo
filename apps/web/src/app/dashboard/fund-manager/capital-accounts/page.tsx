@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
+import { useAuth } from "@/lib/auth-context"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -10,14 +12,34 @@ import {
   TrendingUp,
   DollarSign,
   User,
-  ArrowLeft,
-  Search,
   Download,
   BarChart3,
   CheckCircle2,
+  Building,
+  Building2,
+  Users,
+  Home,
+  Receipt,
+  Calculator,
+  FileText,
+  MessageSquare,
+  Search,
 } from "lucide-react"
 
+const sidebarItems = [
+  { title: "Dashboard", href: "/dashboard/fund-manager", icon: Home },
+  { title: "Properties", href: "/dashboard/fund-manager/properties", icon: Building2 },
+  { title: "Investors", href: "/dashboard/fund-manager/investors", icon: Users },
+  { title: "Capital Accounts", href: "/dashboard/fund-manager/capital-accounts", icon: DollarSign },
+  { title: "Distributions", href: "/dashboard/fund-manager/distributions", icon: Receipt },
+  { title: "Financials", href: "/dashboard/fund-manager/financials", icon: Calculator },
+  { title: "Analytics", href: "/dashboard/fund-manager/analytics", icon: BarChart3 },
+  { title: "Reports", href: "/dashboard/fund-manager/reports", icon: FileText },
+  { title: "Communications", href: "/dashboard/fund-manager/communications", icon: MessageSquare },
+]
+
 export default function CapitalAccountsPage() {
+  const { user, logout } = useAuth()
   const [offeringFilter, setOfferingFilter] = useState<'all' | string>('all')
 
   // Mock capital account data
@@ -125,9 +147,9 @@ export default function CapitalAccountsPage() {
   ]
 
   const offerings = ['Riverside Apartments Fund', 'Downtown Lofts Fund', 'Parkside Townhomes Fund']
-  
-  const filteredAccounts = offeringFilter === 'all' 
-    ? accounts 
+
+  const filteredAccounts = offeringFilter === 'all'
+    ? accounts
     : accounts.filter(a => a.offering === offeringFilter)
 
   const totals = filteredAccounts.reduce((acc, a) => ({
@@ -145,219 +167,221 @@ export default function CapitalAccountsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      {/* Header */}
-      <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
-        <div className="container max-w-7xl px-6 py-8 mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Button asChild variant="outline" size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/30">
-                <Link href="/dashboard/fund-manager">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Dashboard
-                </Link>
-              </Button>
+    <div className="flex min-h-screen bg-white">
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Fund Manager Portal"
+        roleIcon={Building}
+        userName={user?.name || "Fund Manager"}
+        onLogout={logout}
+      />
+
+      <main className="flex-1 ml-24 bg-white">
+        {/* Header */}
+        <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
+          <div className="container max-w-7xl px-6 py-8 mx-auto">
+            <div className="flex items-center justify-between mb-6">
               <div>
                 <h1 className="text-4xl font-black">Capital Accounts</h1>
                 <p className="text-white/80">Track investor capital positions and returns</p>
               </div>
+              <Button variant="outline" className="bg-white/10 hover:bg-white/20 text-white border-white/30">
+                <Download className="h-4 w-4 mr-2" />
+                Export Report
+              </Button>
             </div>
-            <Button variant="outline" className="bg-white/10 hover:bg-white/20 text-white border-white/30">
-              <Download className="h-4 w-4 mr-2" />
-              Export Report
-            </Button>
-          </div>
 
-          {/* Portfolio Summary */}
-          <div className="grid grid-cols-5 gap-4">
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/70 text-sm mb-1">Total Committed</p>
-                  <p className="text-2xl font-black">${(totals.committedCapital / 1000000).toFixed(2)}M</p>
+            {/* Portfolio Summary */}
+            <div className="grid grid-cols-5 gap-4">
+              <div className="bg-white/10 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm mb-1">Total Committed</p>
+                    <p className="text-2xl font-black">${(totals.committedCapital / 1000000).toFixed(2)}M</p>
+                  </div>
+                  <PiggyBank className="h-10 w-10 text-white/50" />
                 </div>
-                <PiggyBank className="h-10 w-10 text-white/50" />
               </div>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/70 text-sm mb-1">Total Distributed</p>
-                  <p className="text-2xl font-black">${(totals.totalDistributions / 1000000).toFixed(2)}M</p>
+              <div className="bg-white/10 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm mb-1">Total Distributed</p>
+                    <p className="text-2xl font-black">${(totals.totalDistributions / 1000000).toFixed(2)}M</p>
+                  </div>
+                  <DollarSign className="h-10 w-10 text-green-400" />
                 </div>
-                <DollarSign className="h-10 w-10 text-green-400" />
               </div>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/70 text-sm mb-1">Total Value</p>
-                  <p className="text-2xl font-black">${(totals.totalValue / 1000000).toFixed(2)}M</p>
+              <div className="bg-white/10 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm mb-1">Total Value</p>
+                    <p className="text-2xl font-black">${(totals.totalValue / 1000000).toFixed(2)}M</p>
+                  </div>
+                  <TrendingUp className="h-10 w-10 text-yellow-400" />
                 </div>
-                <TrendingUp className="h-10 w-10 text-yellow-400" />
               </div>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/70 text-sm mb-1">Avg TVPI</p>
-                  <p className="text-3xl font-black">{avgMetrics.tvpi}x</p>
+              <div className="bg-white/10 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm mb-1">Avg TVPI</p>
+                    <p className="text-3xl font-black">{avgMetrics.tvpi}x</p>
+                  </div>
+                  <BarChart3 className="h-10 w-10 text-blue-400" />
                 </div>
-                <BarChart3 className="h-10 w-10 text-blue-400" />
               </div>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/70 text-sm mb-1">Avg IRR</p>
-                  <p className="text-3xl font-black">{avgMetrics.avgIRR}%</p>
+              <div className="bg-white/10 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm mb-1">Avg IRR</p>
+                    <p className="text-3xl font-black">{avgMetrics.avgIRR}%</p>
+                  </div>
+                  <TrendingUp className="h-10 w-10 text-green-400" />
                 </div>
-                <TrendingUp className="h-10 w-10 text-green-400" />
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="container max-w-7xl px-6 py-8 mx-auto">
-        {/* Filters */}
-        <div className="flex items-center gap-4 mb-6">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search by investor name or email..."
-              className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white"
-            />
+        <div className="container max-w-7xl px-6 py-8 mx-auto">
+          {/* Filters */}
+          <div className="flex items-center gap-4 mb-6">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search by investor name or email..."
+                className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-slate-200 focus:border-[#56CCF2] focus:outline-none bg-white"
+              />
+            </div>
+            <div>
+              <select
+                value={offeringFilter}
+                onChange={(e) => setOfferingFilter(e.target.value)}
+                className="px-4 py-2 rounded-lg border-2 border-slate-200 focus:border-[#56CCF2] focus:outline-none bg-white"
+              >
+                <option value="all">All Offerings</option>
+                {offerings.map(o => (
+                  <option key={o} value={o}>{o}</option>
+                ))}
+              </select>
+            </div>
           </div>
-          <div>
-            <select
-              value={offeringFilter}
-              onChange={(e) => setOfferingFilter(e.target.value)}
-              className="px-4 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white"
-            >
-              <option value="all">All Offerings</option>
-              {offerings.map(o => (
-                <option key={o} value={o}>{o}</option>
-              ))}
-            </select>
+
+          {/* Capital Accounts Grid */}
+          <div className="grid gap-6">
+            {filteredAccounts.map((account) => (
+              <Card key={account.id} className="border-4 border-[#E07A47] bg-white hover:shadow-lg transition-shadow">
+                <CardContent className="p-6">
+                  <div className="grid lg:grid-cols-12 gap-6">
+                    {/* Investor Info */}
+                    <div className="lg:col-span-3">
+                      <div className="flex items-center gap-3 mb-3">
+                        <User className="h-6 w-6 text-[#E07A47]" />
+                        <div>
+                          <h3 className="text-xl font-black">{account.investorName}</h3>
+                          <p className="text-sm text-muted-foreground">{account.investorEmail}</p>
+                        </div>
+                      </div>
+                      <Badge className="bg-[#56CCF2] text-white mb-3">
+                        {account.offering}
+                      </Badge>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Investment Date:</span>
+                          <span className="font-bold">{new Date(account.investmentDate).toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Committed:</span>
+                          <span className="font-bold">${(account.committedCapital / 1000).toFixed(0)}K</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Called:</span>
+                          <span className="font-bold">${(account.calledCapital / 1000).toFixed(0)}K</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Capital Activity */}
+                    <div className="lg:col-span-5 grid grid-cols-2 gap-4">
+                      <div className="bg-muted/50 rounded-lg p-4">
+                        <p className="text-xs text-muted-foreground mb-1">Return of Capital</p>
+                        <p className="text-2xl font-black">${(account.returnOfCapital / 1000).toFixed(0)}K</p>
+                      </div>
+
+                      <div className="bg-muted/50 rounded-lg p-4">
+                        <p className="text-xs text-muted-foreground mb-1">Preferred Return</p>
+                        <p className="text-2xl font-black text-green-600">${(account.preferredReturnPaid / 1000).toFixed(0)}K</p>
+                      </div>
+
+                      <div className="bg-muted/50 rounded-lg p-4">
+                        <p className="text-xs text-muted-foreground mb-1">Profit Distributions</p>
+                        <p className="text-2xl font-black text-[#56CCF2]">${(account.profitDistributions / 1000).toFixed(0)}K</p>
+                      </div>
+
+                      <div className="bg-muted/50 rounded-lg p-4">
+                        <p className="text-xs text-muted-foreground mb-1">Total Distributed</p>
+                        <p className="text-2xl font-black text-[#E07A47]">${(account.totalDistributions / 1000).toFixed(0)}K</p>
+                      </div>
+
+                      <div className="bg-muted/50 rounded-lg p-4">
+                        <p className="text-xs text-muted-foreground mb-1">Current Balance</p>
+                        <p className="text-2xl font-black">${(account.currentCapitalBalance / 1000).toFixed(0)}K</p>
+                      </div>
+
+                      <div className="bg-muted/50 rounded-lg p-4">
+                        <p className="text-xs text-muted-foreground mb-1">Unrealized Gain</p>
+                        <p className="text-2xl font-black text-green-600">${(account.unrealizedGain / 1000).toFixed(0)}K</p>
+                      </div>
+                    </div>
+
+                    {/* Performance Metrics */}
+                    <div className="lg:col-span-4">
+                      <div className="bg-[#56CCF2]/10 rounded-lg p-4 border-2 border-[#56CCF2] mb-4">
+                        <p className="text-sm font-bold text-[#56CCF2] mb-2">Total Account Value</p>
+                        <p className="text-4xl font-black text-[#56CCF2]">${(account.totalValue / 1000).toFixed(0)}K</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <CheckCircle2 className="h-4 w-4 text-green-600" />
+                          <span className="text-sm font-bold text-green-600">
+                            +${((account.totalValue - account.calledCapital) / 1000).toFixed(0)}K gain
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2 mb-4">
+                        <div className="bg-muted/50 rounded-lg p-3 text-center">
+                          <p className="text-xs text-muted-foreground mb-1">TVPI</p>
+                          <p className="text-xl font-black text-[#56CCF2]">{account.tvpi}x</p>
+                        </div>
+                        <div className="bg-muted/50 rounded-lg p-3 text-center">
+                          <p className="text-xs text-muted-foreground mb-1">DPI</p>
+                          <p className="text-xl font-black text-[#E07A47]">{account.dpi}x</p>
+                        </div>
+                        <div className="bg-muted/50 rounded-lg p-3 text-center">
+                          <p className="text-xs text-muted-foreground mb-1">IRR</p>
+                          <p className="text-xl font-black text-green-600">{account.irr}%</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Button asChild className="w-full bg-[#56CCF2] hover:bg-[#56CCF2]/90">
+                          <Link href={`/dashboard/fund-manager/capital-accounts/${account.id}`}>
+                            View Full Account
+                          </Link>
+                        </Button>
+                        <Button asChild variant="outline" className="w-full border-2 border-[#E07A47]">
+                          <Link href={`/dashboard/fund-manager/capital-accounts/${account.id}/statement`}>
+                            Generate Statement
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
-
-        {/* Capital Accounts Grid */}
-        <div className="grid gap-6">
-          {filteredAccounts.map((account) => (
-            <Card key={account.id} className="border-4 border-[#E07A47] dark:bg-[#6b7280] hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
-                <div className="grid lg:grid-cols-12 gap-6">
-                  {/* Investor Info */}
-                  <div className="lg:col-span-3">
-                    <div className="flex items-center gap-3 mb-3">
-                      <User className="h-6 w-6 text-[#E07A47]" />
-                      <div>
-                        <h3 className="text-xl font-black dark:text-white">{account.investorName}</h3>
-                        <p className="text-sm text-muted-foreground dark:text-white/70">{account.investorEmail}</p>
-                      </div>
-                    </div>
-                    <Badge className="bg-[#56CCF2] text-white mb-3">
-                      {account.offering}
-                    </Badge>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Investment Date:</span>
-                        <span className="font-bold dark:text-white">{new Date(account.investmentDate).toLocaleDateString()}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Committed:</span>
-                        <span className="font-bold dark:text-white">${(account.committedCapital / 1000).toFixed(0)}K</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Called:</span>
-                        <span className="font-bold dark:text-white">${(account.calledCapital / 1000).toFixed(0)}K</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Capital Activity */}
-                  <div className="lg:col-span-5 grid grid-cols-2 gap-4">
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Return of Capital</p>
-                      <p className="text-2xl font-black dark:text-white">${(account.returnOfCapital / 1000).toFixed(0)}K</p>
-                    </div>
-
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Preferred Return</p>
-                      <p className="text-2xl font-black text-green-600">${(account.preferredReturnPaid / 1000).toFixed(0)}K</p>
-                    </div>
-
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Profit Distributions</p>
-                      <p className="text-2xl font-black text-[#56CCF2]">${(account.profitDistributions / 1000).toFixed(0)}K</p>
-                    </div>
-
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Total Distributed</p>
-                      <p className="text-2xl font-black text-[#E07A47]">${(account.totalDistributions / 1000).toFixed(0)}K</p>
-                    </div>
-
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Current Balance</p>
-                      <p className="text-2xl font-black dark:text-white">${(account.currentCapitalBalance / 1000).toFixed(0)}K</p>
-                    </div>
-
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Unrealized Gain</p>
-                      <p className="text-2xl font-black text-green-600">${(account.unrealizedGain / 1000).toFixed(0)}K</p>
-                    </div>
-                  </div>
-
-                  {/* Performance Metrics */}
-                  <div className="lg:col-span-4">
-                    <div className="bg-[#56CCF2]/10 dark:bg-[#56CCF2]/20 rounded-lg p-4 border-2 border-[#56CCF2] mb-4">
-                      <p className="text-sm font-bold text-[#56CCF2] mb-2">Total Account Value</p>
-                      <p className="text-4xl font-black text-[#56CCF2]">${(account.totalValue / 1000).toFixed(0)}K</p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <CheckCircle2 className="h-4 w-4 text-green-600" />
-                        <span className="text-sm font-bold text-green-600">
-                          +${((account.totalValue - account.calledCapital) / 1000).toFixed(0)}K gain
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-2 mb-4">
-                      <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-3 text-center">
-                        <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">TVPI</p>
-                        <p className="text-xl font-black text-[#56CCF2]">{account.tvpi}x</p>
-                      </div>
-                      <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-3 text-center">
-                        <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">DPI</p>
-                        <p className="text-xl font-black text-[#E07A47]">{account.dpi}x</p>
-                      </div>
-                      <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-3 text-center">
-                        <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">IRR</p>
-                        <p className="text-xl font-black text-green-600">{account.irr}%</p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Button asChild className="w-full bg-[#56CCF2] hover:bg-[#56CCF2]/90">
-                        <Link href={`/dashboard/fund-manager/capital-accounts/${account.id}`}>
-                          View Full Account
-                        </Link>
-                      </Button>
-                      <Button asChild variant="outline" className="w-full border-2 border-[#E07A47]">
-                        <Link href={`/dashboard/fund-manager/capital-accounts/${account.id}/statement`}>
-                          Generate Statement
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
+      </main>
     </div>
   )
 }

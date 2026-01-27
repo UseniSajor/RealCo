@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
+import { useAuth } from "@/lib/auth-context"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -15,9 +17,32 @@ import {
   CheckCircle2,
   Clock,
   AlertCircle,
+  Building2,
+  Home,
+  Search,
+  UserPlus,
+  MapPin,
+  Target,
+  Calculator,
+  BarChart3,
+  TrendingUp,
+  DollarSign,
 } from "lucide-react"
 
+const sidebarItems = [
+  { title: "Dashboard", href: "/dashboard/sponsor", icon: Home },
+  { title: "Property Search", href: "/dashboard/sponsor/property-search", icon: Search },
+  { title: "Leads", href: "/dashboard/sponsor/leads", icon: UserPlus },
+  { title: "Market Research", href: "/dashboard/sponsor/market-research", icon: MapPin },
+  { title: "Deal Pipeline", href: "/dashboard/sponsor/deal-pipeline", icon: Target },
+  { title: "Underwriting", href: "/dashboard/sponsor/underwriting", icon: Calculator },
+  { title: "Analytics", href: "/dashboard/sponsor/analytics", icon: BarChart3 },
+  { title: "Capital Raise", href: "/dashboard/sponsor/investor-relations", icon: TrendingUp },
+  { title: "Distributions", href: "/dashboard/sponsor/distributions", icon: DollarSign },
+]
+
 export default function InvestmentMemoPage() {
+  const { user, logout } = useAuth()
   const [statusFilter, setStatusFilter] = useState<'all' | 'draft' | 'review' | 'approved'>('all')
 
   // Mock investment memos
@@ -186,313 +211,323 @@ export default function InvestmentMemoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      {/* Header */}
-      <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
-        <div className="container max-w-7xl px-6 py-8 mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Button asChild variant="outline" size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/30">
-                <Link href="/dashboard/sponsor">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Dashboard
+    <div className="flex min-h-screen bg-white">
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Sponsor"
+        roleIcon={Building2}
+        userName={user?.email || "Sponsor User"}
+        onLogout={logout}
+      />
+
+      <main className="flex-1 ml-24 bg-white">
+        {/* Header */}
+        <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
+          <div className="container max-w-7xl px-6 py-8 mx-auto">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <Button asChild variant="outline" size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/30">
+                  <Link href="/dashboard/sponsor">
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Back to Dashboard
+                  </Link>
+                </Button>
+                <div>
+                  <h1 className="text-4xl font-black">Investment Memos</h1>
+                  <p className="text-white/80">Comprehensive deal documentation and analysis</p>
+                </div>
+              </div>
+              <Button asChild className="bg-[#56CCF2] hover:bg-[#56CCF2]/90">
+                <Link href="/dashboard/sponsor/investment-memo/new">
+                  <Plus className="h-4 w-4 mr-2" />
+                  New Memo
                 </Link>
               </Button>
-              <div>
-                <h1 className="text-4xl font-black">Investment Memos</h1>
-                <p className="text-white/80">Comprehensive deal documentation and analysis</p>
-              </div>
             </div>
-            <Button asChild className="bg-[#56CCF2] hover:bg-[#56CCF2]/90">
-              <Link href="/dashboard/sponsor/investment-memo/new">
-                <Plus className="h-4 w-4 mr-2" />
-                New Memo
-              </Link>
-            </Button>
-          </div>
 
-          {/* Summary Metrics */}
-          <div className="grid grid-cols-4 gap-4">
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/70 text-sm mb-1">Total Memos</p>
-                  <p className="text-3xl font-black">{metrics.totalMemos}</p>
+            {/* Summary Metrics */}
+            <div className="grid grid-cols-4 gap-4">
+              <div className="bg-white/10 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm mb-1">Total Memos</p>
+                    <p className="text-3xl font-black">{metrics.totalMemos}</p>
+                  </div>
+                  <FileText className="h-10 w-10 text-white/50" />
                 </div>
-                <FileText className="h-10 w-10 text-white/50" />
               </div>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/70 text-sm mb-1">Approved</p>
-                  <p className="text-3xl font-black">{metrics.approved}</p>
+              <div className="bg-white/10 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm mb-1">Approved</p>
+                    <p className="text-3xl font-black">{metrics.approved}</p>
+                  </div>
+                  <CheckCircle2 className="h-10 w-10 text-green-400" />
                 </div>
-                <CheckCircle2 className="h-10 w-10 text-green-400" />
               </div>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/70 text-sm mb-1">In Review</p>
-                  <p className="text-3xl font-black">{metrics.inReview}</p>
+              <div className="bg-white/10 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm mb-1">In Review</p>
+                    <p className="text-3xl font-black">{metrics.inReview}</p>
+                  </div>
+                  <Clock className="h-10 w-10 text-yellow-400" />
                 </div>
-                <Clock className="h-10 w-10 text-yellow-400" />
               </div>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/70 text-sm mb-1">Total Equity</p>
-                  <p className="text-2xl font-black">${(metrics.totalEquityRaise / 1000000).toFixed(0)}M</p>
+              <div className="bg-white/10 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm mb-1">Total Equity</p>
+                    <p className="text-2xl font-black">${(metrics.totalEquityRaise / 1000000).toFixed(0)}M</p>
+                  </div>
+                  <Download className="h-10 w-10 text-blue-400" />
                 </div>
-                <Download className="h-10 w-10 text-blue-400" />
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="container max-w-7xl px-6 py-8 mx-auto">
-        {/* Filters */}
-        <div className="flex items-center gap-4 mb-6">
-          <div className="flex gap-2">
-            {(['all', 'draft', 'review', 'approved'] as const).map((status) => (
-              <Button
-                key={status}
-                variant={statusFilter === status ? "default" : "outline"}
-                size="sm"
-                onClick={() => setStatusFilter(status)}
-                className={statusFilter === status ? "bg-[#56CCF2] hover:bg-[#56CCF2]/90" : "border-2 border-[#E07A47]"}
-              >
-                {status === 'all' ? 'All' : status.charAt(0).toUpperCase() + status.slice(1)}
-              </Button>
-            ))}
+        <div className="container max-w-7xl px-6 py-8 mx-auto">
+          {/* Filters */}
+          <div className="flex items-center gap-4 mb-6">
+            <div className="flex gap-2">
+              {(['all', 'draft', 'review', 'approved'] as const).map((status) => (
+                <Button
+                  key={status}
+                  variant={statusFilter === status ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setStatusFilter(status)}
+                  className={statusFilter === status ? "bg-[#56CCF2] hover:bg-[#56CCF2]/90" : "border-2 border-[#E07A47]"}
+                >
+                  {status === 'all' ? 'All' : status.charAt(0).toUpperCase() + status.slice(1)}
+                </Button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Investment Memos Grid */}
-        <div className="grid gap-6">
-          {filteredMemos.map((memo) => (
-            <Card key={memo.id} className="border-4 border-[#E07A47] dark:bg-[#6b7280] hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
-                <div className="grid lg:grid-cols-12 gap-6">
-                  {/* Memo Info */}
-                  <div className="lg:col-span-4">
-                    <div className="flex items-start gap-3 mb-4">
-                      <FileText className="h-6 w-6 text-[#E07A47] shrink-0 mt-1" />
-                      <div className="flex-1">
-                        <h3 className="text-2xl font-black mb-1 dark:text-white">{memo.dealName}</h3>
-                        <p className="text-sm text-muted-foreground dark:text-white/70 mb-2">{memo.address}</p>
-                        <div className="flex gap-2 mb-3">
-                          <Badge className={`${getStatusColor(memo.status)} text-white`}>
-                            {memo.status.toUpperCase()}
-                          </Badge>
-                          <Badge className="bg-slate-600 text-white">
-                            {memo.assetType}
-                          </Badge>
-                          <Badge className="bg-blue-600 text-white">
-                            v{memo.version}
-                          </Badge>
+          {/* Investment Memos Grid */}
+          <div className="grid gap-6">
+            {filteredMemos.map((memo) => (
+              <Card key={memo.id} className="border-4 border-[#E07A47] hover:shadow-lg transition-shadow">
+                <CardContent className="p-6">
+                  <div className="grid lg:grid-cols-12 gap-6">
+                    {/* Memo Info */}
+                    <div className="lg:col-span-4">
+                      <div className="flex items-start gap-3 mb-4">
+                        <FileText className="h-6 w-6 text-[#E07A47] shrink-0 mt-1" />
+                        <div className="flex-1">
+                          <h3 className="text-2xl font-black mb-1">{memo.dealName}</h3>
+                          <p className="text-sm text-muted-foreground mb-2">{memo.address}</p>
+                          <div className="flex gap-2 mb-3">
+                            <Badge className={`${getStatusColor(memo.status)} text-white`}>
+                              {memo.status.toUpperCase()}
+                            </Badge>
+                            <Badge className="bg-slate-600 text-white">
+                              {memo.assetType}
+                            </Badge>
+                            <Badge className="bg-blue-600 text-white">
+                              v{memo.version}
+                            </Badge>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="space-y-2 text-sm mb-4">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Deal Size:</span>
-                        <span className="font-bold dark:text-white">${(memo.dealSize / 1000000).toFixed(1)}M</span>
+                      <div className="space-y-2 text-sm mb-4">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Deal Size:</span>
+                          <span className="font-bold">${(memo.dealSize / 1000000).toFixed(1)}M</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Equity Raise:</span>
+                          <span className="font-bold text-[#56CCF2]">${(memo.equityRaise / 1000000).toFixed(1)}M</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Target IRR:</span>
+                          <span className="font-bold text-green-600">{memo.targetIRR}%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Target Multiple:</span>
+                          <span className="font-bold text-[#E07A47]">{memo.targetMultiple}x</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Author:</span>
+                          <span className="font-bold">{memo.author}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Last Modified:</span>
+                          <span className="font-bold">{new Date(memo.lastModified).toLocaleDateString()}</span>
+                        </div>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Equity Raise:</span>
-                        <span className="font-bold text-[#56CCF2]">${(memo.equityRaise / 1000000).toFixed(1)}M</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Target IRR:</span>
-                        <span className="font-bold text-green-600">{memo.targetIRR}%</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Target Multiple:</span>
-                        <span className="font-bold text-[#E07A47]">{memo.targetMultiple}x</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Author:</span>
-                        <span className="font-bold dark:text-white">{memo.author}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground dark:text-white/70">Last Modified:</span>
-                        <span className="font-bold dark:text-white">{new Date(memo.lastModified).toLocaleDateString()}</span>
-                      </div>
-                    </div>
 
-                    {memo.status === 'approved' && memo.approvedBy && (
-                      <div className="bg-green-50 dark:bg-green-900/20 border-2 border-green-500 rounded-lg p-3">
-                        <div className="flex items-center gap-2 mb-1">
-                          <CheckCircle2 className="h-4 w-4 text-green-600" />
-                          <p className="text-xs font-semibold text-green-800 dark:text-green-200">
-                            Approved by {memo.approvedBy}
+                      {memo.status === 'approved' && memo.approvedBy && (
+                        <div className="bg-green-50 border-2 border-green-500 rounded-lg p-3">
+                          <div className="flex items-center gap-2 mb-1">
+                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                            <p className="text-xs font-semibold text-green-800">
+                              Approved by {memo.approvedBy}
+                            </p>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {memo.approvedDate && new Date(memo.approvedDate).toLocaleDateString()}
                           </p>
                         </div>
-                        <p className="text-xs text-muted-foreground dark:text-white/70">
-                          {memo.approvedDate && new Date(memo.approvedDate).toLocaleDateString()}
-                        </p>
+                      )}
+                    </div>
+
+                    {/* Memo Sections & Highlights */}
+                    <div className="lg:col-span-5">
+                      <div className="mb-4">
+                        <h4 className="font-bold text-sm mb-3">Memo Sections</h4>
+                        <div className="grid grid-cols-2 gap-2">
+                          {Object.entries(memo.sections).map(([section, completed]) => (
+                            <div key={section} className="flex items-center gap-2">
+                              {completed ? (
+                                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                              ) : (
+                                <AlertCircle className="h-4 w-4 text-red-500" />
+                              )}
+                              <span className={`text-xs ${completed ? '' : 'text-muted-foreground'}`}>
+                                {section.replace(/([A-Z])/g, ' $1').trim()}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    )}
-                  </div>
 
-                  {/* Memo Sections & Highlights */}
-                  <div className="lg:col-span-5">
-                    <div className="mb-4">
-                      <h4 className="font-bold text-sm mb-3 dark:text-white">Memo Sections</h4>
-                      <div className="grid grid-cols-2 gap-2">
-                        {Object.entries(memo.sections).map(([section, completed]) => (
-                          <div key={section} className="flex items-center gap-2">
-                            {completed ? (
-                              <CheckCircle2 className="h-4 w-4 text-green-600" />
-                            ) : (
-                              <AlertCircle className="h-4 w-4 text-red-500" />
-                            )}
-                            <span className={`text-xs ${completed ? 'dark:text-white' : 'text-muted-foreground dark:text-white/70'}`}>
-                              {section.replace(/([A-Z])/g, ' $1').trim()}
-                            </span>
-                          </div>
-                        ))}
+                      <div className="mb-4">
+                        <h4 className="font-bold text-sm mb-2">Investment Highlights</h4>
+                        <ul className="space-y-1">
+                          {memo.highlights.map((highlight, i) => (
+                            <li key={i} className="flex items-start gap-2">
+                              <span className="text-green-600 shrink-0">+</span>
+                              <span className="text-xs">{highlight}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div>
+                        <h4 className="font-bold text-sm mb-2">Risk Factors</h4>
+                        <ul className="space-y-1">
+                          {memo.risks.map((risk, i) => (
+                            <li key={i} className="flex items-start gap-2">
+                              <span className="text-red-600 shrink-0">!</span>
+                              <span className="text-xs">{risk}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
 
-                    <div className="mb-4">
-                      <h4 className="font-bold text-sm mb-2 dark:text-white">Investment Highlights</h4>
-                      <ul className="space-y-1">
-                        {memo.highlights.map((highlight, i) => (
-                          <li key={i} className="flex items-start gap-2">
-                            <span className="text-green-600 shrink-0">✓</span>
-                            <span className="text-xs dark:text-white">{highlight}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    {/* Actions */}
+                    <div className="lg:col-span-3 flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <Button asChild className="w-full bg-[#56CCF2] hover:bg-[#56CCF2]/90">
+                          <Link href={`/dashboard/sponsor/investment-memo/${memo.id}`}>
+                            <Eye className="h-4 w-4 mr-2" />
+                            View Memo
+                          </Link>
+                        </Button>
 
-                    <div>
-                      <h4 className="font-bold text-sm mb-2 dark:text-white">Risk Factors</h4>
-                      <ul className="space-y-1">
-                        {memo.risks.map((risk, i) => (
-                          <li key={i} className="flex items-start gap-2">
-                            <span className="text-red-600 shrink-0">⚠</span>
-                            <span className="text-xs dark:text-white">{risk}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
+                        <Button variant="outline" className="w-full border-2 border-slate-300">
+                          <Download className="h-4 w-4 mr-2" />
+                          Download PDF
+                        </Button>
 
-                  {/* Actions */}
-                  <div className="lg:col-span-3 flex flex-col justify-between">
-                    <div className="space-y-2">
-                      <Button asChild className="w-full bg-[#56CCF2] hover:bg-[#56CCF2]/90">
-                        <Link href={`/dashboard/sponsor/investment-memo/${memo.id}`}>
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Memo
-                        </Link>
-                      </Button>
+                        {memo.status === 'draft' && (
+                          <>
+                            <Button asChild variant="outline" className="w-full border-2 border-[#E07A47]">
+                              <Link href={`/dashboard/sponsor/investment-memo/${memo.id}/edit`}>
+                                Edit Memo
+                              </Link>
+                            </Button>
+                            <Button asChild variant="outline" className="w-full border-2 border-blue-500 text-blue-600 hover:bg-blue-50">
+                              <Link href={`/dashboard/sponsor/investment-memo/${memo.id}/submit`}>
+                                <Send className="h-4 w-4 mr-2" />
+                                Submit for Review
+                              </Link>
+                            </Button>
+                          </>
+                        )}
 
-                      <Button variant="outline" className="w-full border-2 border-slate-300 dark:border-slate-600">
-                        <Download className="h-4 w-4 mr-2" />
-                        Download PDF
-                      </Button>
+                        {memo.status === 'review' && (
+                          <>
+                            <Button asChild variant="outline" className="w-full border-2 border-[#E07A47]">
+                              <Link href={`/dashboard/sponsor/investment-memo/${memo.id}/edit`}>
+                                Revise Memo
+                              </Link>
+                            </Button>
+                            <Button asChild variant="outline" className="w-full border-2 border-green-500 text-green-600 hover:bg-green-50">
+                              <Link href={`/dashboard/sponsor/investment-memo/${memo.id}/approve`}>
+                                <CheckCircle2 className="h-4 w-4 mr-2" />
+                                Approve
+                              </Link>
+                            </Button>
+                          </>
+                        )}
 
-                      {memo.status === 'draft' && (
-                        <>
-                          <Button asChild variant="outline" className="w-full border-2 border-[#E07A47]">
-                            <Link href={`/dashboard/sponsor/investment-memo/${memo.id}/edit`}>
-                              Edit Memo
-                            </Link>
-                          </Button>
-                          <Button asChild variant="outline" className="w-full border-2 border-blue-500 text-blue-600 hover:bg-blue-50">
-                            <Link href={`/dashboard/sponsor/investment-memo/${memo.id}/submit`}>
-                              <Send className="h-4 w-4 mr-2" />
-                              Submit for Review
-                            </Link>
-                          </Button>
-                        </>
-                      )}
-
-                      {memo.status === 'review' && (
-                        <>
-                          <Button asChild variant="outline" className="w-full border-2 border-[#E07A47]">
-                            <Link href={`/dashboard/sponsor/investment-memo/${memo.id}/edit`}>
-                              Revise Memo
-                            </Link>
-                          </Button>
-                          <Button asChild variant="outline" className="w-full border-2 border-green-500 text-green-600 hover:bg-green-50">
-                            <Link href={`/dashboard/sponsor/investment-memo/${memo.id}/approve`}>
-                              <CheckCircle2 className="h-4 w-4 mr-2" />
-                              Approve
-                            </Link>
-                          </Button>
-                        </>
-                      )}
-
-                      {memo.status === 'approved' && (
-                        <>
-                          <Button asChild variant="outline" className="w-full border-2 border-[#E07A47]">
-                            <Link href={`/dashboard/sponsor/investment-memo/${memo.id}/share`}>
-                              <Send className="h-4 w-4 mr-2" />
-                              Share with Investors
-                            </Link>
-                          </Button>
-                          <Button asChild variant="outline" className="w-full border-2 border-purple-500">
-                            <Link href={`/offerings/new?memoId=${memo.id}`}>
-                              Create Offering
-                            </Link>
-                          </Button>
-                        </>
-                      )}
+                        {memo.status === 'approved' && (
+                          <>
+                            <Button asChild variant="outline" className="w-full border-2 border-[#E07A47]">
+                              <Link href={`/dashboard/sponsor/investment-memo/${memo.id}/share`}>
+                                <Send className="h-4 w-4 mr-2" />
+                                Share with Investors
+                              </Link>
+                            </Button>
+                            <Button asChild variant="outline" className="w-full border-2 border-purple-500">
+                              <Link href={`/offerings/new?memoId=${memo.id}`}>
+                                Create Offering
+                              </Link>
+                            </Button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Memo Template Info */}
+          <Card className="border-4 border-[#56CCF2] mt-8">
+            <CardHeader>
+              <CardTitle className="text-2xl">Investment Memo Sections</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div>
+                  <h4 className="font-bold mb-2">Deal Overview</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>- Executive summary</li>
+                    <li>- Investment thesis</li>
+                    <li>- Property details</li>
+                    <li>- Market analysis</li>
+                  </ul>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+                <div>
+                  <h4 className="font-bold mb-2">Financial Analysis</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>- Pro forma projections</li>
+                    <li>- Return metrics (IRR, Multiple)</li>
+                    <li>- Sensitivity analysis</li>
+                    <li>- Exit strategy</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-bold mb-2">Risk Assessment</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>- Market risks</li>
+                    <li>- Execution risks</li>
+                    <li>- Mitigation strategies</li>
+                    <li>- Contingency plans</li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-
-        {/* Memo Template Info */}
-        <Card className="border-4 border-[#56CCF2] dark:bg-[#6b7280] mt-8">
-          <CardHeader>
-            <CardTitle className="text-2xl dark:text-white">Investment Memo Sections</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div>
-                <h4 className="font-bold mb-2 dark:text-white">Deal Overview</h4>
-                <ul className="text-sm text-muted-foreground dark:text-white/70 space-y-1">
-                  <li>• Executive summary</li>
-                  <li>• Investment thesis</li>
-                  <li>• Property details</li>
-                  <li>• Market analysis</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-bold mb-2 dark:text-white">Financial Analysis</h4>
-                <ul className="text-sm text-muted-foreground dark:text-white/70 space-y-1">
-                  <li>• Pro forma projections</li>
-                  <li>• Return metrics (IRR, Multiple)</li>
-                  <li>• Sensitivity analysis</li>
-                  <li>• Exit strategy</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-bold mb-2 dark:text-white">Risk Assessment</h4>
-                <ul className="text-sm text-muted-foreground dark:text-white/70 space-y-1">
-                  <li>• Market risks</li>
-                  <li>• Execution risks</li>
-                  <li>• Mitigation strategies</li>
-                  <li>• Contingency plans</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      </main>
     </div>
   )
 }

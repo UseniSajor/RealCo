@@ -1,32 +1,51 @@
 "use client"
 
-import { MarketingNav } from "@/components/marketing/marketing-nav"
-import { MarketingFooter } from "@/components/marketing/marketing-footer"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
+import { useAuth } from "@/lib/auth-context"
 import { PunchListManager } from "@/components/construction/PunchListManager"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import {
+  Building2,
+  Home,
+  Search,
+  UserPlus,
+  MapPin,
+  Target,
+  Calculator,
+  BarChart3,
+  TrendingUp,
+  DollarSign,
+} from "lucide-react"
+
+const sidebarItems = [
+  { title: "Dashboard", href: "/dashboard/sponsor", icon: Home },
+  { title: "Property Search", href: "/dashboard/sponsor/property-search", icon: Search },
+  { title: "Leads", href: "/dashboard/sponsor/leads", icon: UserPlus },
+  { title: "Market Research", href: "/dashboard/sponsor/market-research", icon: MapPin },
+  { title: "Deal Pipeline", href: "/dashboard/sponsor/deal-pipeline", icon: Target },
+  { title: "Underwriting", href: "/dashboard/sponsor/underwriting", icon: Calculator },
+  { title: "Analytics", href: "/dashboard/sponsor/analytics", icon: BarChart3 },
+  { title: "Capital Raise", href: "/dashboard/sponsor/investor-relations", icon: TrendingUp },
+  { title: "Distributions", href: "/dashboard/sponsor/distributions", icon: DollarSign },
+]
 
 export default function SponsorPunchListPage() {
-  return (
-    <>
-      <MarketingNav />
-      
-      <section className="py-12 min-h-screen bg-muted/30">
-        <div className="container max-w-6xl px-6 mx-auto">
-          {/* Back Button */}
-          <Button variant="ghost" asChild className="mb-6">
-            <Link href="/dashboard/sponsor/construction">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Construction
-            </Link>
-          </Button>
+  const { user, logout } = useAuth()
 
+  return (
+    <div className="flex min-h-screen bg-white">
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Sponsor"
+        roleIcon={Building2}
+        userName={user?.email || "Sponsor User"}
+        onLogout={logout}
+      />
+
+      <main className="flex-1 ml-24 bg-white">
+        <div className="container max-w-6xl px-6 py-12 mx-auto">
           <PunchListManager />
         </div>
-      </section>
-
-      <MarketingFooter />
-    </>
+      </main>
+    </div>
   )
 }

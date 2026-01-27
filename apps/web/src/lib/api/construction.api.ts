@@ -238,6 +238,206 @@ export interface SafetyIncident {
 }
 
 // =============================================================================
+// MOCK DATA FOR DEMO/DEVELOPMENT
+// =============================================================================
+
+export const MOCK_CONSTRUCTION_PROJECTS: ConstructionProject[] = [
+  {
+    id: 'proj_001',
+    projectCode: 'SUNSET-2024',
+    developmentProjectId: 'dev_001',
+    phase: 'FRAMING',
+    percentComplete: 45,
+    plannedStartDate: '2024-01-15',
+    plannedEndDate: '2025-06-30',
+    actualStartDate: '2024-01-20',
+    actualEndDate: null,
+    totalBudget: 12500000,
+    spentToDate: 5625000,
+    scheduleVarianceDays: 5,
+    costVariance: -125000,
+    createdAt: '2024-01-10',
+    updatedAt: new Date().toISOString(),
+    developmentProject: {
+      id: 'dev_001',
+      name: 'Sunset Luxury Apartments',
+      address: '1234 Sunset Blvd, Austin, TX 78701',
+      projectType: 'MULTIFAMILY',
+      offering: {
+        id: 'off_001',
+        name: 'Sunset Apartments Fund I'
+      }
+    },
+    _count: {
+      tasks: 24,
+      dailyLogs: 89,
+      rfis: 12,
+      submittals: 18,
+      inspections: 8,
+      safetyIncidents: 1
+    }
+  },
+  {
+    id: 'proj_002',
+    projectCode: 'HARBOR-2024',
+    developmentProjectId: 'dev_002',
+    phase: 'MEP_ROUGH_IN',
+    percentComplete: 62,
+    plannedStartDate: '2023-09-01',
+    plannedEndDate: '2025-03-31',
+    actualStartDate: '2023-09-05',
+    actualEndDate: null,
+    totalBudget: 28000000,
+    spentToDate: 17360000,
+    scheduleVarianceDays: -3,
+    costVariance: 280000,
+    createdAt: '2023-08-15',
+    updatedAt: new Date().toISOString(),
+    developmentProject: {
+      id: 'dev_002',
+      name: 'Harbor View Office Tower',
+      address: '5678 Harbor Dr, San Diego, CA 92101',
+      projectType: 'COMMERCIAL',
+      offering: {
+        id: 'off_002',
+        name: 'Harbor Office Development'
+      }
+    },
+    _count: {
+      tasks: 42,
+      dailyLogs: 156,
+      rfis: 28,
+      submittals: 35,
+      inspections: 15,
+      safetyIncidents: 0
+    }
+  }
+];
+
+export const MOCK_TASKS: Task[] = [
+  {
+    id: 'task_001',
+    projectId: 'proj_001',
+    parentId: null,
+    title: 'Foundation Work',
+    description: 'Complete foundation pour and curing',
+    status: 'COMPLETED',
+    priority: 'HIGH',
+    percentComplete: 100,
+    plannedStartDate: '2024-01-20',
+    plannedEndDate: '2024-03-01',
+    actualStartDate: '2024-01-20',
+    actualEndDate: '2024-02-28',
+    durationDays: 39,
+    predecessorTaskIds: [],
+    lagDays: 0,
+    isCriticalPath: true,
+    budgetAmount: 850000,
+    actualCost: 825000,
+    assignedToId: 'user_001',
+    attachmentUrls: [],
+    createdAt: '2024-01-15',
+    updatedAt: '2024-02-28',
+  },
+  {
+    id: 'task_002',
+    projectId: 'proj_001',
+    parentId: null,
+    title: 'Structural Framing',
+    description: 'Erect structural steel and wood framing',
+    status: 'IN_PROGRESS',
+    priority: 'HIGH',
+    percentComplete: 65,
+    plannedStartDate: '2024-03-01',
+    plannedEndDate: '2024-05-15',
+    actualStartDate: '2024-03-05',
+    actualEndDate: null,
+    durationDays: 75,
+    predecessorTaskIds: ['task_001'],
+    lagDays: 0,
+    isCriticalPath: true,
+    budgetAmount: 1250000,
+    actualCost: 812500,
+    assignedToId: 'user_002',
+    attachmentUrls: [],
+    createdAt: '2024-02-15',
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'task_003',
+    projectId: 'proj_001',
+    parentId: null,
+    title: 'Electrical Rough-In',
+    description: 'Install electrical conduit and wiring',
+    status: 'NOT_STARTED',
+    priority: 'MEDIUM',
+    percentComplete: 0,
+    plannedStartDate: '2024-04-15',
+    plannedEndDate: '2024-06-30',
+    actualStartDate: null,
+    actualEndDate: null,
+    durationDays: 76,
+    predecessorTaskIds: ['task_002'],
+    lagDays: 5,
+    isCriticalPath: false,
+    budgetAmount: 450000,
+    actualCost: 0,
+    assignedToId: 'user_003',
+    attachmentUrls: [],
+    createdAt: '2024-02-15',
+    updatedAt: '2024-02-15',
+  },
+  {
+    id: 'task_004',
+    projectId: 'proj_001',
+    parentId: null,
+    title: 'Plumbing Rough-In',
+    description: 'Install plumbing pipes and fixtures',
+    status: 'NOT_STARTED',
+    priority: 'MEDIUM',
+    percentComplete: 0,
+    plannedStartDate: '2024-04-20',
+    plannedEndDate: '2024-07-05',
+    actualStartDate: null,
+    actualEndDate: null,
+    durationDays: 76,
+    predecessorTaskIds: ['task_002'],
+    lagDays: 10,
+    isCriticalPath: false,
+    budgetAmount: 380000,
+    actualCost: 0,
+    assignedToId: 'user_004',
+    attachmentUrls: [],
+    createdAt: '2024-02-15',
+    updatedAt: '2024-02-15',
+  },
+  {
+    id: 'task_005',
+    projectId: 'proj_001',
+    parentId: null,
+    title: 'HVAC Installation',
+    description: 'Install HVAC ductwork and units',
+    status: 'NOT_STARTED',
+    priority: 'HIGH',
+    percentComplete: 0,
+    plannedStartDate: '2024-05-01',
+    plannedEndDate: '2024-08-15',
+    actualStartDate: null,
+    actualEndDate: null,
+    durationDays: 106,
+    predecessorTaskIds: ['task_002'],
+    lagDays: 15,
+    isCriticalPath: true,
+    budgetAmount: 620000,
+    actualCost: 0,
+    assignedToId: 'user_005',
+    attachmentUrls: [],
+    createdAt: '2024-02-15',
+    updatedAt: '2024-02-15',
+  }
+];
+
+// =============================================================================
 // API CLASS
 // =============================================================================
 
@@ -283,7 +483,12 @@ class ConstructionAPI {
   // =============================================================================
 
   async getProjects(): Promise<{ projects: ConstructionProject[] }> {
-    return this.request<{ projects: ConstructionProject[] }>('/construction/projects');
+    try {
+      return await this.request<{ projects: ConstructionProject[] }>('/construction/projects');
+    } catch {
+      // Return mock data for demo/development
+      return { projects: MOCK_CONSTRUCTION_PROJECTS };
+    }
   }
 
   async getProject(projectId: string): Promise<{ project: ConstructionProject }> {
@@ -326,7 +531,12 @@ class ConstructionAPI {
   // =============================================================================
 
   async getTasks(projectId: string): Promise<{ tasks: Task[] }> {
-    return this.request<{ tasks: Task[] }>(`/construction/projects/${projectId}/tasks`);
+    try {
+      return await this.request<{ tasks: Task[] }>(`/construction/projects/${projectId}/tasks`);
+    } catch {
+      // Return mock tasks for the project
+      return { tasks: MOCK_TASKS.filter(t => t.projectId === projectId) };
+    }
   }
 
   async createTask(

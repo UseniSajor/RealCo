@@ -4,20 +4,58 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
+import { BackButton } from "@/components/ui/back-button"
+import { useAuth } from "@/lib/auth-context"
 import Link from "next/link"
 import {
   Calculator,
   TrendingUp,
   DollarSign,
   Percent,
-  ArrowLeft,
   Plus,
   Download,
   BarChart3,
   FileText,
+  Home,
+  Search,
+  UserPlus,
+  MapPin,
+  Target,
+  Users,
+  MessageSquare,
+  Settings,
+  Building2,
+  LineChart,
+  PieChart,
+  Activity,
+  Sliders,
+  Table,
+  RefreshCw,
+  AlertTriangle,
+  CheckCircle,
+  ArrowUpRight,
+  ArrowDownRight
 } from "lucide-react"
 
 export default function UnderwritingPage() {
+  const { user, logout } = useAuth()
+
+  const sidebarItems = [
+    { title: "Dashboard", href: "/dashboard/sponsor", icon: Home },
+    { title: "Property Search", href: "/dashboard/sponsor/property-search", icon: Search },
+    { title: "Lead Management", href: "/dashboard/sponsor/leads", icon: UserPlus, badge: "12" },
+    { title: "Market Research", href: "/dashboard/sponsor/market-research", icon: MapPin },
+    { title: "Deal Pipeline", href: "/dashboard/sponsor/deal-pipeline", icon: Target },
+    { title: "Underwriting", href: "/dashboard/sponsor/underwriting", icon: Calculator },
+    { title: "Analytics", href: "/dashboard/sponsor/analytics", icon: BarChart3 },
+    { title: "Capital Raise", href: "/dashboard/sponsor/investor-relations", icon: TrendingUp },
+    { title: "Investor CRM", href: "/dashboard/sponsor/investor-relations", icon: Users },
+    { title: "Distributions", href: "/dashboard/sponsor/distributions", icon: DollarSign },
+    { title: "Messages", href: "/dashboard/sponsor/team", icon: MessageSquare, badge: "3" },
+    { title: "Settings", href: "/dashboard/sponsor/team", icon: Settings },
+  ]
   const [selectedDeal, setSelectedDeal] = useState<string>('all')
 
   // Mock underwriting models
@@ -119,31 +157,74 @@ export default function UnderwritingPage() {
     totalEquity: models.reduce((sum, m) => sum + m.equityRequired, 0),
   }
 
+  // State for advanced model inputs
+  const [showAdvancedModel, setShowAdvancedModel] = useState(false)
+  const [advancedInputs, setAdvancedInputs] = useState({
+    purchasePrice: "42500000",
+    acquisitionCosts: "3",
+    debtAmount: "70",
+    interestRate: "6.5",
+    loanTerm: "10",
+    amortization: "30",
+    exitCapRate: "6.5",
+    holdPeriod: "5",
+    rentGrowth: "3",
+    expenseGrowth: "2.5",
+    vacancyRate: "5",
+    managementFee: "4",
+    capexReserve: "250"
+  })
+
+  // Sensitivity analysis data
+  const sensitivityData = {
+    irr: [
+      { exitCap: "5.5%", rentGrowth2: "22.5%", rentGrowth3: "21.2%", rentGrowth4: "19.8%" },
+      { exitCap: "6.0%", rentGrowth2: "20.8%", rentGrowth3: "19.5%", rentGrowth4: "18.2%" },
+      { exitCap: "6.5%", rentGrowth2: "19.2%", rentGrowth3: "17.9%", rentGrowth4: "16.6%" },
+      { exitCap: "7.0%", rentGrowth2: "17.6%", rentGrowth3: "16.3%", rentGrowth4: "15.0%" },
+      { exitCap: "7.5%", rentGrowth2: "16.1%", rentGrowth3: "14.8%", rentGrowth4: "13.5%" }
+    ]
+  }
+
   return (
-    <div className="min-h-screen bg-muted/30">
-      {/* Header */}
-      <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
-        <div className="container max-w-7xl px-6 py-8 mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Button asChild variant="outline" size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/30">
-                <Link href="/dashboard/sponsor">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Dashboard
-                </Link>
-              </Button>
-              <div>
-                <h1 className="text-4xl font-black">Underwriting & Pro Forma</h1>
-                <p className="text-white/80">Financial models and investment analysis</p>
+    <div className="flex min-h-screen bg-white">
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Sponsor Portal"
+        roleIcon={Building2}
+        userName={user?.name || "Acme Development Group"}
+        onLogout={logout}
+      />
+
+      <main className="flex-1 ml-24">
+        {/* Header */}
+        <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
+          <div className="container max-w-7xl px-6 py-8 mx-auto">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <BackButton href="/dashboard/sponsor" />
+                <div>
+                  <h1 className="text-4xl font-black">Underwriting & Pro Forma</h1>
+                  <p className="text-white/80">Financial models and investment analysis</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  className="bg-white/10 hover:bg-white/20 text-white border-white/30"
+                  onClick={() => setShowAdvancedModel(!showAdvancedModel)}
+                >
+                  <Sliders className="h-4 w-4 mr-2" />
+                  {showAdvancedModel ? "Hide" : "Show"} Advanced Model
+                </Button>
+                <Button asChild className="bg-[#56CCF2] hover:bg-[#56CCF2]/90">
+                  <Link href="/dashboard/sponsor/underwriting/new">
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Model
+                  </Link>
+                </Button>
               </div>
             </div>
-            <Button asChild className="bg-[#56CCF2] hover:bg-[#56CCF2]/90">
-              <Link href="/dashboard/sponsor/underwriting/new">
-                <Plus className="h-4 w-4 mr-2" />
-                New Model
-              </Link>
-            </Button>
-          </div>
 
           {/* Portfolio Metrics */}
           <div className="grid grid-cols-4 gap-4">
@@ -188,6 +269,244 @@ export default function UnderwritingPage() {
       </div>
 
       <div className="container max-w-7xl px-6 py-8 mx-auto">
+        {/* Advanced Model Builder */}
+        {showAdvancedModel && (
+          <div className="mb-8 space-y-6">
+            <Card className="border-4 border-[#56CCF2]">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calculator className="h-6 w-6 text-[#56CCF2]" />
+                  Advanced Pro Forma Model Builder
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-4 gap-6">
+                  {/* Acquisition Inputs */}
+                  <div className="space-y-4">
+                    <h4 className="font-bold text-[#E07A47] flex items-center gap-2">
+                      <Building2 className="h-4 w-4" />
+                      Acquisition
+                    </h4>
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">Purchase Price ($)</label>
+                      <Input
+                        type="number"
+                        value={advancedInputs.purchasePrice}
+                        onChange={(e) => setAdvancedInputs(prev => ({ ...prev, purchasePrice: e.target.value }))}
+                        className="border-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">Acquisition Costs (%)</label>
+                      <Input
+                        type="number"
+                        step="0.1"
+                        value={advancedInputs.acquisitionCosts}
+                        onChange={(e) => setAdvancedInputs(prev => ({ ...prev, acquisitionCosts: e.target.value }))}
+                        className="border-2"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Debt Inputs */}
+                  <div className="space-y-4">
+                    <h4 className="font-bold text-[#56CCF2] flex items-center gap-2">
+                      <DollarSign className="h-4 w-4" />
+                      Debt Assumptions
+                    </h4>
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">LTV (%)</label>
+                      <Input
+                        type="number"
+                        step="1"
+                        value={advancedInputs.debtAmount}
+                        onChange={(e) => setAdvancedInputs(prev => ({ ...prev, debtAmount: e.target.value }))}
+                        className="border-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">Interest Rate (%)</label>
+                      <Input
+                        type="number"
+                        step="0.25"
+                        value={advancedInputs.interestRate}
+                        onChange={(e) => setAdvancedInputs(prev => ({ ...prev, interestRate: e.target.value }))}
+                        className="border-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">Loan Term (years)</label>
+                      <Input
+                        type="number"
+                        value={advancedInputs.loanTerm}
+                        onChange={(e) => setAdvancedInputs(prev => ({ ...prev, loanTerm: e.target.value }))}
+                        className="border-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">Amortization (years)</label>
+                      <Input
+                        type="number"
+                        value={advancedInputs.amortization}
+                        onChange={(e) => setAdvancedInputs(prev => ({ ...prev, amortization: e.target.value }))}
+                        className="border-2"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Operating Assumptions */}
+                  <div className="space-y-4">
+                    <h4 className="font-bold text-green-600 flex items-center gap-2">
+                      <Activity className="h-4 w-4" />
+                      Operating Assumptions
+                    </h4>
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">Rent Growth (%/yr)</label>
+                      <Input
+                        type="number"
+                        step="0.5"
+                        value={advancedInputs.rentGrowth}
+                        onChange={(e) => setAdvancedInputs(prev => ({ ...prev, rentGrowth: e.target.value }))}
+                        className="border-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">Expense Growth (%/yr)</label>
+                      <Input
+                        type="number"
+                        step="0.5"
+                        value={advancedInputs.expenseGrowth}
+                        onChange={(e) => setAdvancedInputs(prev => ({ ...prev, expenseGrowth: e.target.value }))}
+                        className="border-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">Vacancy Rate (%)</label>
+                      <Input
+                        type="number"
+                        step="0.5"
+                        value={advancedInputs.vacancyRate}
+                        onChange={(e) => setAdvancedInputs(prev => ({ ...prev, vacancyRate: e.target.value }))}
+                        className="border-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">Management Fee (%)</label>
+                      <Input
+                        type="number"
+                        step="0.5"
+                        value={advancedInputs.managementFee}
+                        onChange={(e) => setAdvancedInputs(prev => ({ ...prev, managementFee: e.target.value }))}
+                        className="border-2"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Exit Assumptions */}
+                  <div className="space-y-4">
+                    <h4 className="font-bold text-purple-600 flex items-center gap-2">
+                      <TrendingUp className="h-4 w-4" />
+                      Exit Assumptions
+                    </h4>
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">Hold Period (years)</label>
+                      <Input
+                        type="number"
+                        value={advancedInputs.holdPeriod}
+                        onChange={(e) => setAdvancedInputs(prev => ({ ...prev, holdPeriod: e.target.value }))}
+                        className="border-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">Exit Cap Rate (%)</label>
+                      <Input
+                        type="number"
+                        step="0.25"
+                        value={advancedInputs.exitCapRate}
+                        onChange={(e) => setAdvancedInputs(prev => ({ ...prev, exitCapRate: e.target.value }))}
+                        className="border-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">CapEx Reserve ($/unit/yr)</label>
+                      <Input
+                        type="number"
+                        value={advancedInputs.capexReserve}
+                        onChange={(e) => setAdvancedInputs(prev => ({ ...prev, capexReserve: e.target.value }))}
+                        className="border-2"
+                      />
+                    </div>
+                    <Button className="w-full mt-4 bg-[#E07A47] hover:bg-[#D96835]">
+                      <RefreshCw className="mr-2 h-4 w-4" />
+                      Run Model
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Sensitivity Analysis */}
+            <Card className="border-4 border-[#E07A47]">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Table className="h-6 w-6 text-[#E07A47]" />
+                  IRR Sensitivity Analysis
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b-2">
+                        <th className="text-left py-3 px-4 font-bold bg-slate-100">Exit Cap Rate</th>
+                        <th className="text-center py-3 px-4 font-bold bg-green-50">2% Rent Growth</th>
+                        <th className="text-center py-3 px-4 font-bold bg-yellow-50">3% Rent Growth</th>
+                        <th className="text-center py-3 px-4 font-bold bg-red-50">4% Rent Growth</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sensitivityData.irr.map((row, idx) => (
+                        <tr key={idx} className="border-b hover:bg-slate-50">
+                          <td className="py-3 px-4 font-bold bg-slate-50">{row.exitCap}</td>
+                          <td className="py-3 px-4 text-center text-green-600 font-bold">{row.rentGrowth2}</td>
+                          <td className="py-3 px-4 text-center text-yellow-600 font-bold">{row.rentGrowth3}</td>
+                          <td className="py-3 px-4 text-center text-red-600 font-bold">{row.rentGrowth4}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="mt-4 grid grid-cols-3 gap-4">
+                  <div className="p-4 bg-green-50 rounded-lg border-2 border-green-200">
+                    <div className="flex items-center gap-2 mb-2">
+                      <CheckCircle className="h-5 w-5 text-green-600" />
+                      <span className="font-bold text-green-800">Base Case</span>
+                    </div>
+                    <p className="text-2xl font-black text-green-600">18.5% IRR</p>
+                    <p className="text-sm text-green-700">6.5% exit cap / 3% rent growth</p>
+                  </div>
+                  <div className="p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
+                    <div className="flex items-center gap-2 mb-2">
+                      <ArrowUpRight className="h-5 w-5 text-blue-600" />
+                      <span className="font-bold text-blue-800">Upside Case</span>
+                    </div>
+                    <p className="text-2xl font-black text-blue-600">22.5% IRR</p>
+                    <p className="text-sm text-blue-700">5.5% exit cap / 2% rent growth</p>
+                  </div>
+                  <div className="p-4 bg-yellow-50 rounded-lg border-2 border-yellow-200">
+                    <div className="flex items-center gap-2 mb-2">
+                      <ArrowDownRight className="h-5 w-5 text-yellow-600" />
+                      <span className="font-bold text-yellow-800">Downside Case</span>
+                    </div>
+                    <p className="text-2xl font-black text-yellow-600">13.5% IRR</p>
+                    <p className="text-sm text-yellow-700">7.5% exit cap / 4% rent growth</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
         {/* Filter */}
         <div className="flex items-center gap-4 mb-6">
           <div>
@@ -363,7 +682,8 @@ export default function UnderwritingPage() {
             </Card>
           ))}
         </div>
-      </div>
+        </div>
+      </main>
     </div>
   )
 }

@@ -4,6 +4,9 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
+import { BackButton } from "@/components/ui/back-button"
+import { useAuth } from "@/lib/auth-context"
 import Link from "next/link"
 import {
   TrendingUp,
@@ -14,7 +17,6 @@ import {
   DollarSign,
   Percent,
   Users,
-  ArrowLeft,
   Download,
   RefreshCw,
   BarChart3,
@@ -23,9 +25,33 @@ import {
   Calendar,
   Target,
   Activity,
+  Search,
+  UserPlus,
+  Calculator,
+  FileText,
+  MessageSquare,
+  Settings,
+  HardHat,
 } from "lucide-react"
 
 export default function MarketResearchPage() {
+  const { user, logout } = useAuth()
+
+  const sidebarItems = [
+    { title: "Dashboard", href: "/dashboard/sponsor", icon: Home },
+    { title: "Property Search", href: "/dashboard/sponsor/property-search", icon: Search },
+    { title: "Lead Management", href: "/dashboard/sponsor/leads", icon: UserPlus, badge: "12" },
+    { title: "Market Research", href: "/dashboard/sponsor/market-research", icon: MapPin },
+    { title: "Deal Pipeline", href: "/dashboard/sponsor/deal-pipeline", icon: Target },
+    { title: "Underwriting", href: "/dashboard/sponsor/underwriting", icon: Calculator },
+    { title: "Analytics", href: "/dashboard/sponsor/analytics", icon: BarChart3 },
+    { title: "Capital Raise", href: "/dashboard/sponsor/investor-relations", icon: TrendingUp },
+    { title: "Distributions", href: "/dashboard/sponsor/distributions", icon: DollarSign },
+    { title: "Draw Requests", href: "/dashboard/sponsor/draw-request", icon: FileText },
+    { title: "Investor CRM", href: "/dashboard/sponsor/investor-relations", icon: Users },
+    { title: "Messages", href: "/dashboard/sponsor/team", icon: MessageSquare, badge: "3" },
+    { title: "Settings", href: "/dashboard/sponsor/team", icon: Settings },
+  ]
   const [selectedMarket, setSelectedMarket] = useState('Austin')
   const [selectedAssetType, setSelectedAssetType] = useState<'all' | 'multifamily' | 'office' | 'industrial' | 'retail'>('all')
 
@@ -203,33 +229,39 @@ export default function MarketResearchPage() {
   const assetData = selectedAssetType !== 'all' ? getAssetData() : null
 
   return (
-    <div className="min-h-screen bg-white p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <Button variant="ghost" asChild className="mb-2">
-              <Link href="/dashboard/sponsor">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Dashboard
-              </Link>
-            </Button>
-            <h1 className="text-4xl font-black mb-2">Market Research</h1>
-            <p className="text-muted-foreground">
-              Real-time market data and comparable analysis
-            </p>
+    <div className="flex min-h-screen bg-white">
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Sponsor Portal"
+        roleIcon={Building2}
+        userName={user?.name || "Acme Development Group"}
+        onLogout={logout}
+      />
+
+      <main className="flex-1 ml-24 p-8">
+        <div className="max-w-7xl mx-auto space-y-6">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <BackButton href="/dashboard/sponsor" />
+              <div>
+                <h1 className="text-4xl font-black mb-2">Market Research</h1>
+                <p className="text-muted-foreground">
+                  Real-time market data and comparable analysis
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" className="border-2 border-[#56CCF2]">
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Refresh Data
+              </Button>
+              <Button className="bg-[#E07A47] hover:bg-[#E07A47]/90">
+                <Download className="mr-2 h-4 w-4" />
+                Export Report
+              </Button>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" className="border-2 border-[#56CCF2]">
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Refresh Data
-            </Button>
-            <Button className="bg-[#E07A47] hover:bg-[#E07A47]/90">
-              <Download className="mr-2 h-4 w-4" />
-              Export Report
-            </Button>
-          </div>
-        </div>
 
         {/* Market & Asset Type Selectors */}
         <Card className="border-4 border-[#E07A47]">
@@ -604,7 +636,8 @@ export default function MarketResearchPage() {
             </div>
           </>
         )}
-      </div>
+        </div>
+      </main>
     </div>
   )
 }

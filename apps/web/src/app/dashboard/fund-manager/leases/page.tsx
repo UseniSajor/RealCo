@@ -18,9 +18,31 @@ import {
   CheckCircle2,
   Clock,
   TrendingUp,
+  Building2,
+  Users,
+  Receipt,
+  Calculator,
+  BarChart3,
+  MessageSquare,
+  Building,
 } from "lucide-react"
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar"
+import { useAuth } from "@/lib/auth-context"
+
+const sidebarItems = [
+  { title: "Dashboard", href: "/dashboard/fund-manager", icon: Home },
+  { title: "Properties", href: "/dashboard/fund-manager/properties", icon: Building2 },
+  { title: "Investors", href: "/dashboard/fund-manager/investors", icon: Users },
+  { title: "Capital Accounts", href: "/dashboard/fund-manager/capital-accounts", icon: DollarSign },
+  { title: "Distributions", href: "/dashboard/fund-manager/distributions", icon: Receipt },
+  { title: "Financials", href: "/dashboard/fund-manager/financials", icon: Calculator },
+  { title: "Analytics", href: "/dashboard/fund-manager/analytics", icon: BarChart3 },
+  { title: "Reports", href: "/dashboard/fund-manager/reports", icon: FileText },
+  { title: "Communications", href: "/dashboard/fund-manager/communications", icon: MessageSquare },
+]
 
 export default function LeasesPage() {
+  const { user, logout } = useAuth()
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'expiring' | 'pending'>('all')
 
   // Mock lease data
@@ -139,7 +161,15 @@ export default function LeasesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="flex min-h-screen bg-white">
+      <DashboardSidebar
+        items={sidebarItems}
+        role="Fund Manager Portal"
+        roleIcon={Building}
+        userName={user?.name || "Fund Manager"}
+        onLogout={logout}
+      />
+      <main className="flex-1 ml-24 bg-white">
       {/* Header */}
       <div className="border-b-4 border-[#E07A47] bg-[#2C3E50] text-white">
         <div className="container max-w-7xl px-6 py-8 mx-auto">
@@ -214,7 +244,7 @@ export default function LeasesPage() {
             <input
               type="text"
               placeholder="Search leases by tenant, unit, or property..."
-              className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-slate-200 dark:border-[#E07A47] focus:border-[#56CCF2] focus:outline-none bg-white dark:bg-[#6b7280] dark:text-white"
+              className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-slate-200 border-slate-200 focus:border-[#56CCF2] focus:outline-none bg-white bg-white text-slate-900"
             />
           </div>
           <div className="flex gap-2">
@@ -235,7 +265,7 @@ export default function LeasesPage() {
         {/* Leases Grid */}
         <div className="grid gap-6">
           {filteredLeases.map((lease) => (
-            <Card key={lease.id} className="border-4 border-[#E07A47] dark:bg-[#6b7280] hover:shadow-lg transition-shadow">
+            <Card key={lease.id} className="border-4 border-[#E07A47] bg-white hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <div className="grid lg:grid-cols-12 gap-6">
                   {/* Tenant & Property Info */}
@@ -244,16 +274,16 @@ export default function LeasesPage() {
                       <div>
                         <div className="flex items-center gap-2 mb-2">
                           <User className="h-5 w-5 text-[#E07A47]" />
-                          <h3 className="text-xl font-black dark:text-white">{lease.tenantName}</h3>
+                          <h3 className="text-xl font-black text-slate-900">{lease.tenantName}</h3>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-white/70 mb-1">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground text-slate-900/70 mb-1">
                           <Home className="h-4 w-4" />
                           {lease.property} - Unit {lease.unit}
                         </div>
-                        <div className="text-sm text-muted-foreground dark:text-white/70 mb-1">
+                        <div className="text-sm text-muted-foreground text-slate-900/70 mb-1">
                           {lease.tenantEmail}
                         </div>
-                        <div className="text-sm text-muted-foreground dark:text-white/70">
+                        <div className="text-sm text-muted-foreground text-slate-900/70">
                           {lease.tenantPhone}
                         </div>
                       </div>
@@ -270,27 +300,27 @@ export default function LeasesPage() {
 
                   {/* Lease Details */}
                   <div className="lg:col-span-5 grid grid-cols-2 gap-4">
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Lease Period</p>
-                      <p className="text-sm font-bold dark:text-white">
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                      <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">Lease Period</p>
+                      <p className="text-sm font-bold text-slate-900">
                         {new Date(lease.startDate).toLocaleDateString()}
                       </p>
-                      <p className="text-xs text-muted-foreground dark:text-white/70">to</p>
-                      <p className="text-sm font-bold dark:text-white">
+                      <p className="text-xs text-muted-foreground text-slate-900/70">to</p>
+                      <p className="text-sm font-bold text-slate-900">
                         {new Date(lease.endDate).toLocaleDateString()}
                       </p>
                     </div>
 
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Monthly Rent</p>
-                      <p className="text-2xl font-black dark:text-white">${lease.monthlyRent}</p>
-                      <p className="text-xs text-muted-foreground dark:text-white/70">
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                      <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">Monthly Rent</p>
+                      <p className="text-2xl font-black text-slate-900">${lease.monthlyRent}</p>
+                      <p className="text-xs text-muted-foreground text-slate-900/70">
                         Deposit: ${lease.securityDeposit}
                       </p>
                     </div>
 
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Days Until Expiration</p>
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                      <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">Days Until Expiration</p>
                       <p className={`text-2xl font-black ${
                         lease.daysUntilExpiration <= 30 ? 'text-red-600' :
                         lease.daysUntilExpiration <= 60 ? 'text-yellow-600' :
@@ -300,8 +330,8 @@ export default function LeasesPage() {
                       </p>
                     </div>
 
-                    <div className="bg-muted/50 dark:bg-slate-700 rounded-lg p-4">
-                      <p className="text-xs text-muted-foreground dark:text-white/70 mb-1">Payment Status</p>
+                    <div className="bg-muted/50 bg-slate-50 rounded-lg p-4">
+                      <p className="text-xs text-muted-foreground text-slate-900/70 mb-1">Payment Status</p>
                       <div className="flex items-center gap-2">
                         {lease.rentPaidOnTime ? (
                           <>
@@ -322,15 +352,15 @@ export default function LeasesPage() {
                   <div className="lg:col-span-3 flex flex-col justify-between">
                     <div className="space-y-2 mb-4">
                       {lease.status === 'expiring' && lease.daysUntilExpiration <= 60 && (
-                        <div className="bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-400 rounded-lg p-2">
+                        <div className="bg-yellow-50 bg-yellow-50 border-2 border-yellow-400 rounded-lg p-2">
                           <div className="flex items-start gap-2">
                             <AlertCircle className="h-4 w-4 text-yellow-600 shrink-0 mt-0.5" />
                             <div>
-                              <p className="text-xs font-semibold text-yellow-800 dark:text-yellow-200">
+                              <p className="text-xs font-semibold text-yellow-800 text-yellow-800">
                                 Expiring in {lease.daysUntilExpiration} days
                               </p>
                               {lease.renewalOffered && (
-                                <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-1">
+                                <p className="text-xs text-yellow-700 text-yellow-700 mt-1">
                                   Renewal offer sent
                                 </p>
                               )}
@@ -340,16 +370,16 @@ export default function LeasesPage() {
                       )}
                       
                       {lease.leaseViolations > 0 && (
-                        <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-400 rounded-lg p-2">
-                          <p className="text-xs font-semibold text-red-800 dark:text-red-200">
+                        <div className="bg-red-50 bg-red-50 border-2 border-red-400 rounded-lg p-2">
+                          <p className="text-xs font-semibold text-red-800 text-red-800">
                             {lease.leaseViolations} lease violation(s)
                           </p>
                         </div>
                       )}
 
                       {lease.status === 'pending' && (
-                        <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-400 rounded-lg p-2">
-                          <p className="text-xs font-semibold text-blue-800 dark:text-blue-200">
+                        <div className="bg-blue-50 bg-blue-50 border-2 border-blue-400 rounded-lg p-2">
+                          <p className="text-xs font-semibold text-blue-800 text-blue-800">
                             Application pending review
                           </p>
                         </div>
@@ -386,6 +416,7 @@ export default function LeasesPage() {
           ))}
         </div>
       </div>
+      </main>
     </div>
   )
 }
